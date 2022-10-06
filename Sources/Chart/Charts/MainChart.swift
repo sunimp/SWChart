@@ -62,7 +62,7 @@ class MainChart: Chart {
             lowLimitText.size = configuration.lowLimitTextSize
         }
 
-        if configuration.showVericalLines {
+        if configuration.showVerticalLines {
             verticalLines.gridType = .vertical
             verticalLines.lineDirection = .top
             verticalLines.lineWidth = configuration.verticalLinesWidth
@@ -113,6 +113,7 @@ class MainChart: Chart {
 
         curve.strokeColor = colorType.curveColor(configuration: configuration)
         gradient.gradientColors = zip(colorType.gradientColors(configuration: configuration), configuration.gradientAlphas).map { $0.withAlphaComponent($1) }
+        gradient.gradientLocations = configuration.gradientLocations
     }
 
     func setGradient(hidden: Bool) {

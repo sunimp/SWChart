@@ -40,7 +40,7 @@ class ChartCircle: ChartPointsObject {
         }
 
         for point in points {
-//            let correctedPoint = ShapeHelper.convertRelative(point: point, size: size ?? .zero, padding: insets)
+            let correctedPoint = ShapeHelper.convertRelative(point: point, size: size ?? .zero, padding: insets)
             path.addArc(withCenter: point, radius: radius, startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
         }
 

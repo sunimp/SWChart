@@ -7,11 +7,11 @@ public class ChartConfiguration {
     public var showIndicators = true
     public var showDominance = false
     public var showLimits = true
-    public var showVericalLines = true
+    public var showVerticalLines = true
     public var isInteractive = true
 
-    public var mainHeight: CGFloat = 160
-    public var indicatorHeight: CGFloat = 56
+    public var mainHeight: CGFloat = 183
+    public var indicatorHeight: CGFloat = 47
     public var timelineHeight: CGFloat = 21
 
     public var animationDuration: TimeInterval = 0.35
@@ -35,6 +35,8 @@ public class ChartConfiguration {
     public var pressedGradient = [UIColor.lightGray, UIColor.lightGray]
     public var neutralGradient = [UIColor.gray, UIColor.gray]
 
+    public var gradientPositions: [CGFloat] = [0, 1]
+    public var gradientLocations: [NSNumber]? = nil
     public var gradientAlphas: [CGFloat] = [0.05, 0.5]
 
     public var limitLinesWidth: CGFloat = onePixel
