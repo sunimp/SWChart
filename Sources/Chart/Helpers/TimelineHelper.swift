@@ -8,6 +8,7 @@ public protocol ITimelineHelper {
 public class TimelineHelper: ITimelineHelper {
     private let day = 24
     private let month = 30 * 24
+    private let year = 12 * 30 * 24
 
     private func stepBack(for timestamp: TimeInterval, separateHourlyInterval: Int) -> TimeInterval {
         let hourInSeconds: TimeInterval = 60 * 60
@@ -30,8 +31,9 @@ public class TimelineHelper: ITimelineHelper {
 
         switch separateHourlyInterval {
         case 0..<day: lastTimestamp = lastDate.startOfHour?.timeIntervalSince1970 ?? endTimestamp
-        case 24..<month: lastTimestamp = lastDate.startOfDay.timeIntervalSince1970
-        default: lastTimestamp = lastDate.startOfMonth?.timeIntervalSince1970 ?? endTimestamp
+        case day..<month: lastTimestamp = lastDate.startOfDay.timeIntervalSince1970
+        case month..<year: lastTimestamp = lastDate.startOfMonth?.timeIntervalSince1970 ?? endTimestamp
+        default: lastTimestamp = lastDate.startOfYear?.timeIntervalSince1970 ?? endTimestamp
         }
 
         while lastTimestamp >= startTimestamp {
@@ -60,10 +62,12 @@ public class TimelineHelper: ITimelineHelper {
                 return "--"
             }
             return String("\(day)")
-        default:
+        case month..<year:
             dateFormatter.setLocalizedDateFormatFromTemplate("MMM")
             return dateFormatter.string(from: date)
-
+        default:
+            dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
+            return dateFormatter.string(from: date)
         }
     }
 
