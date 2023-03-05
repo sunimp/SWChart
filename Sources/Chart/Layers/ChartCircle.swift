@@ -13,9 +13,21 @@ class ChartCircle: ChartPointsObject {
         }
     }
 
-    public var strokeColor: UIColor? = .clear {
+    override public var strokeColor: UIColor {
         didSet {
-            circleLayer.strokeColor = strokeColor?.cgColor
+            circleLayer.strokeColor = strokeColor.cgColor
+        }
+    }
+
+    override var fillColor: UIColor {
+        didSet {
+            circleLayer.fillColor = fillColor.cgColor
+        }
+    }
+
+    override var width: CGFloat {
+        didSet {
+            circleLayer.lineWidth = width
         }
     }
 

@@ -36,7 +36,7 @@ class ChartTouchArea: Chart {
         self.configuration = configuration
 
         if configuration.isInteractive {
-            verticalLine.lineWidth = configuration.touchLineWidth
+            verticalLine.width = configuration.touchLineWidth
             verticalLine.gridType = .vertical
             verticalLine.retinaCorrected = false
 
@@ -128,7 +128,7 @@ class ChartTouchArea: Chart {
     }
 
     private func updateUI() {
-        verticalLine.strokeColor = configuration?.touchLineColor
+        verticalLine.strokeColor = configuration?.touchLineColor ?? .clear
         pointCircle.backgroundColor = configuration?.touchCircleColor
     }
 

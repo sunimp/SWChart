@@ -5,7 +5,7 @@ class ChartHistogram: ChartPointsObject {
     private let positiveBars = ChartBars()
     private let negativeBars = ChartBars()
 
-    var barPosition: ChartBarPosition = .end
+    var barPosition: ChartBarPosition = .center
 
     override var layer: CALayer {
         wrapperLayer
@@ -32,6 +32,8 @@ class ChartHistogram: ChartPointsObject {
 
     public var barWidth: CGFloat = 4 {
         didSet {
+            positiveBars.width = barWidth
+            negativeBars.width = barWidth
             positiveBars.layer.displayIfNeeded()
             negativeBars.layer.displayIfNeeded()
         }

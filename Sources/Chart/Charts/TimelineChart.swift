@@ -38,7 +38,7 @@ class TimelineChart: Chart {
 
         if let configuration = configuration {
             horizontalLines.gridType = .horizontal
-            horizontalLines.lineWidth = configuration.borderWidth
+            horizontalLines.width = configuration.borderWidth
             horizontalLines.strokeColor = configuration.borderColor
             horizontalLines.set(points: [CGPoint(x: 0, y: 0), CGPoint(x: 1, y: 0)])
         }

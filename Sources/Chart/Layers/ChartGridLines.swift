@@ -22,15 +22,20 @@ class ChartGridLines: ChartPointsObject {
         }
     }
 
-    public var strokeColor: UIColor? = .clear {
+    override public var strokeColor: UIColor {
         didSet {
-            linesLayer.strokeColor = strokeColor?.cgColor
+            linesLayer.strokeColor = strokeColor.cgColor
+        }
+    }
+    override var fillColor: UIColor {
+        didSet {
+            linesLayer.fillColor = fillColor.cgColor
         }
     }
 
-    public var lineWidth: CGFloat = 1 {
+    override public var width: CGFloat {
         didSet {
-            linesLayer.lineWidth = lineWidth
+            linesLayer.lineWidth = width
         }
     }
 
@@ -55,7 +60,7 @@ class ChartGridLines: ChartPointsObject {
         linesLayer.backgroundColor = UIColor.clear.cgColor
         linesLayer.fillColor = UIColor.clear.cgColor
 
-        linesLayer.lineWidth = lineWidth
+        linesLayer.lineWidth = width
     }
 
     override func path(points: [CGPoint]) -> CGPath {
@@ -65,7 +70,7 @@ class ChartGridLines: ChartPointsObject {
             return path.cgPath
         }
 
-        let offset = retinaCorrected ? LayerFrameHelper.offset(lineWidth: lineWidth) : 0
+        let offset = retinaCorrected ? LayerFrameHelper.offset(lineWidth: width) : 0
 
         for point in points {
             if let invisibleIndent = invisibleIndent,     // if point closer than ignoring size, dont show line

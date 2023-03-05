@@ -22,16 +22,17 @@ class ChartMacd {
 
         macdHistogram.positiveBarFillColor = configuration.macdPositiveColor
         macdHistogram.negativeBarFillColor = configuration.macdNegativeColor
+        macdHistogram.width = configuration.macdHistogramWidth
         macdHistogram.insets = configuration.macdHistogramInsets
         macdHistogram.animationDuration = configuration.animationDuration
 
         macdSignal.strokeColor = configuration.macdSignalColor
-        macdSignal.lineWidth = configuration.macdSignalLineWidth
+        macdSignal.width = configuration.macdSignalLineWidth
         macdSignal.padding = configuration.macdLinesInsets
         macdSignal.animationDuration = configuration.animationDuration
 
         macd.strokeColor = configuration.macdColor
-        macd.lineWidth = configuration.macdLineWidth
+        macd.width = configuration.macdLineWidth
         macd.padding = configuration.macdLinesInsets
         macd.animationDuration = configuration.animationDuration
 

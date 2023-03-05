@@ -19,13 +19,13 @@ class ChartRsi {
         self.configuration = configuration
 
         rsi.strokeColor = configuration.rsiLineColor
-        rsi.lineWidth = configuration.rsiLineWidth
+        rsi.width = configuration.rsiLineWidth
         rsi.animationStyle = .strokeEnd
         rsi.padding = configuration.rsiPadding
         rsi.animationDuration = configuration.animationDuration
 
         rsiLimitLines.strokeColor = configuration.limitLinesColor
-        rsiLimitLines.lineWidth = configuration.limitLinesWidth
+        rsiLimitLines.width = configuration.limitLinesWidth
         rsiLimitLines.lineDashPattern = configuration.limitLinesDashPattern
         rsiLimitLines.padding = configuration.rsiPadding
         rsiLimitLines.set(points: [CGPoint(x: 0, y: configuration.rsiBottomLimitValue), CGPoint(x: 0, y: configuration.rsiTopLimitValue)])

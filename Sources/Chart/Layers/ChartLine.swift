@@ -13,15 +13,21 @@ class ChartLine: ChartPointsObject {
         }
     }
 
-    public var strokeColor: UIColor = .clear {
+    override public var fillColor: UIColor {
+        didSet {
+            lineLayer.fillColor = fillColor.cgColor
+        }
+    }
+
+    override public var strokeColor: UIColor {
         didSet {
             lineLayer.strokeColor = strokeColor.cgColor
         }
     }
 
-    public var lineWidth: CGFloat = 1 {
+    override public var width: CGFloat {
         didSet {
-            lineLayer.lineWidth = lineWidth
+            lineLayer.lineWidth = width
         }
     }
 

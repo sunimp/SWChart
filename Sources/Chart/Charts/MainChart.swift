@@ -2,7 +2,7 @@ import UIKit
 
 class MainChart: Chart {
     private let border = ChartBorder()
-    private let curve = ChartLine()
+    private var curve: ChartPointsObject
     private let gradient = ChartLineBottomGradient()
     private let horizontalLines = ChartGridLines()
     private let verticalLines = ChartGridLines()
@@ -11,8 +11,17 @@ class MainChart: Chart {
 
     private var configuration: ChartConfiguration?
 
+    private static func curve(type: ChartConfiguration.CurveType?) -> ChartPointsObject {
+        switch type {
+        case .bars:return ChartBars()
+        default: return ChartLine()
+        }
+    }
+
     init(configuration: ChartConfiguration? = nil) {
         self.configuration = configuration
+
+        curve = MainChart.curve(type: configuration?.curveType)
 
         super.init(frame: .zero)
 
@@ -30,6 +39,7 @@ class MainChart: Chart {
     }
 
     required init?(coder: NSCoder) {
+        curve = ChartLine()
         super.init(coder: coder)
     }
 
@@ -40,6 +50,11 @@ class MainChart: Chart {
             border.lineWidth = configuration.borderWidth
         }
 
+        let curve = MainChart.curve(type: configuration.curveType)
+        replace(self.curve, by: curve)
+        self.curve = curve
+
+        curve.width = configuration.curveWidth
         curve.padding = configuration.curvePadding
         curve.animationDuration = configuration.animationDuration
 
@@ -48,7 +63,7 @@ class MainChart: Chart {
 
         if configuration.showLimits {
             horizontalLines.gridType = .horizontal
-            horizontalLines.lineWidth = configuration.limitLinesWidth
+            horizontalLines.width = configuration.limitLinesWidth
             horizontalLines.lineDashPattern = configuration.limitLinesDashPattern
             horizontalLines.padding = configuration.limitLinesPadding
             horizontalLines.set(points: [CGPoint(x: 0, y: 0), CGPoint(x: 0, y: 1)])
@@ -65,7 +80,7 @@ class MainChart: Chart {
         if configuration.showVerticalLines {
             verticalLines.gridType = .vertical
             verticalLines.lineDirection = .top
-            verticalLines.lineWidth = configuration.verticalLinesWidth
+            verticalLines.width = configuration.verticalLinesWidth
             verticalLines.invisibleIndent = configuration.verticalInvisibleIndent
         }
 
@@ -112,6 +127,9 @@ class MainChart: Chart {
         }
 
         curve.strokeColor = colorType.curveColor(configuration: configuration)
+        if configuration.curveType == .bars {
+            curve.fillColor = colorType.curveColor(configuration: configuration)
+        }
         gradient.gradientColors = zip(colorType.gradientColors(configuration: configuration), configuration.gradientAlphas).map { $0.withAlphaComponent($1) }
         gradient.gradientLocations = configuration.gradientLocations
     }

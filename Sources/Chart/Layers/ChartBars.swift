@@ -5,12 +5,12 @@ enum ChartBarPosition {
 }
 
 class ChartBars: ChartPointsObject {
-    private let minimumGap: CGFloat = 2
+    private let onePixel: CGFloat = 1 / UIScreen.main.scale
 
     private let barsLayer = CAShapeLayer()
     private let maskLayer = CALayer()
 
-    var barPosition: ChartBarPosition = .end
+    var barPosition: ChartBarPosition = .center
     var morphingAnimationDisabled = false
 
     override var layer: CALayer {
@@ -23,13 +23,18 @@ class ChartBars: ChartPointsObject {
         }
     }
 
-    public var strokeColor: UIColor = .clear {
+    override public var strokeColor: UIColor {
         didSet {
             barsLayer.strokeColor = strokeColor.cgColor
         }
     }
-
-    public var barWidth: CGFloat = 4 {
+    override var fillColor: UIColor {
+        didSet {
+            barsLayer.fillColor = fillColor.cgColor
+            barsLayer.displayIfNeeded()
+        }
+    }
+    override public var width: CGFloat {
         didSet {
             barsLayer.displayIfNeeded()
         }
@@ -38,6 +43,12 @@ class ChartBars: ChartPointsObject {
     public var barFillColor: UIColor? = nil {
         didSet {
             barsLayer.fillColor = barFillColor?.cgColor
+        }
+    }
+
+    public var lineCapStyle: CGLineCap = .round {
+        didSet {
+            barsLayer.displayIfNeeded()
         }
     }
 
@@ -73,32 +84,61 @@ class ChartBars: ChartPointsObject {
 
     override func path(points: [CGPoint]) -> CGPath {
         let barsPath = UIBezierPath()
+        let width = calculateBarWidth(points: points, width: barsLayer.bounds.width)
+        barsPath.lineWidth = 1 / UIScreen.main.scale        // set minimal line width. All pixels inside will be filled
+        let pixelShift = barsPath.lineWidth / 2             // pixel shift, because line drawing by center of x/y
 
-        var lastX: CGFloat = -CGFloat.greatestFiniteMagnitude
-        points.forEach { point in
+        let reverse = pathDirection == .bottom
+        let drawCap = lineCapStyle == .round
+
+        let verticalPixelShift = reverse ? -pixelShift : pixelShift
+        let verticalFullShift = reverse ? -width : width
+
+        points.enumerated().forEach { index, point in
             var startX: CGFloat
             switch barPosition {
             case .start:
-                startX = point.x
+                startX = point.x + pixelShift
             case .center:
-                startX = point.x - (barWidth / 2)
+                startX = point.x - width / 2 + pixelShift
             case .end:
-                startX = point.x - barWidth
-            }
-            if lastX > startX {     // between bars need minimumGap pixels
-                startX = lastX
+                startX = point.x - width + pixelShift
             }
 
-            let maxAllowedWidth = min(barsLayer.bounds.width - startX, barWidth)
-            lastX = startX + maxAllowedWidth + minimumGap
+            let low = zeroY + verticalFullShift / 2 + 2 * verticalPixelShift
+            let high = point.y - verticalFullShift / 2 - verticalPixelShift
 
-            barsPath.move(to: CGPoint(x: startX, y: zeroY))
-            barsPath.addLine(to: CGPoint(x: startX, y: point.y))
-            barsPath.addLine(to: CGPoint(x: startX + maxAllowedWidth, y: point.y))
-            barsPath.addLine(to: CGPoint(x: startX + maxAllowedWidth, y: zeroY))
+            barsPath.move(to: CGPoint(x: startX, y: low))
+            barsPath.addLine(to: CGPoint(x: startX, y: high))
+            if drawCap {
+                barsPath.addArc(withCenter: CGPoint(x: startX + width / 2, y: high), radius: width / 2 , startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
+            }
+            let endX = startX + width // - barsPath.lineWidth
+
+            barsPath.addLine(to: CGPoint(x: endX, y: high))
+            barsPath.addLine(to: CGPoint(x: endX, y: low))
+            if drawCap {
+                barsPath.addArc(withCenter: CGPoint(x: startX + width / 2, y: low), radius: width / 2, startAngle: 0, endAngle: Double.pi, clockwise: reverse)
+            }
             barsPath.close()
         }
         return barsPath.cgPath
+    }
+
+    func calculateBarWidth(points: [CGPoint], width: CGFloat) -> CGFloat {
+        guard points.count > 1 else { return width }
+        var maxWidth = self.width
+
+        let minimumWithGap = 2 * onePixel                           // if gap more than 2 pixels, we can add gap between bars
+        for index in 0..<(points.count - 2) {
+            let gap = points[index + 1].x - points[index].x     // distance between two bars
+            if gap < minimumWithGap {                           // if there is not enough space, set smallest width
+                maxWidth = onePixel
+                break
+            }
+            maxWidth = min(gap - onePixel, maxWidth)
+        }
+        return max(maxWidth, onePixel)
     }
 
     override func corrected(points: [CGPoint], newCount: Int) -> [CGPoint] {

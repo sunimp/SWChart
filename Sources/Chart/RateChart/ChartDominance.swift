@@ -25,7 +25,7 @@ class ChartDominance {
         self.configuration = configuration
 
         dominance.strokeColor = configuration.dominanceLineColor
-        dominance.lineWidth = configuration.dominanceLineWidth
+        dominance.width = configuration.dominanceLineWidth
         dominance.animationStyle = .strokeEnd
         dominance.padding = configuration.curvePadding
         dominance.animationDuration = configuration.animationDuration

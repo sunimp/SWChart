@@ -1,7 +1,7 @@
 import UIKit
 
 class Chart: UIView {
-    private var chartObjects = [IChartObject]()
+    var chartObjects = [IChartObject]()
 
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
@@ -21,7 +21,21 @@ class Chart: UIView {
 
     func add(_ object: IChartObject) {
         chartObjects.append(object)
-        self.layer.addSublayer(object.layer)
+        layer.addSublayer(object.layer)
+
+        object.layer.setNeedsLayout()
+    }
+
+    func replace(_ oldObject: IChartObject, by object: IChartObject) {
+        guard let objectIndex = chartObjects.firstIndex(where: { $0 === oldObject }),
+              let layerIndex = layer.sublayers?.firstIndex(of: oldObject.layer) else {
+
+            print("Can't found object")
+            return
+        }
+
+        chartObjects[objectIndex] = object
+        layer.replaceSublayer(oldObject.layer, with: object.layer)
 
         object.layer.setNeedsLayout()
     }

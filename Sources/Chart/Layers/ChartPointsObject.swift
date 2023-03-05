@@ -1,6 +1,6 @@
 import UIKit
 
-protocol IChartObject {
+protocol IChartObject: AnyObject {
     var layer: CALayer { get }
     func updateFrame(in bounds: CGRect, duration: CFTimeInterval?, timingFunction: CAMediaTimingFunction?)
 }
@@ -25,6 +25,10 @@ class ChartPointsObject: NSObject, IChartObject {
     public var animationStyle: ChartStartAnimationStyle = .verticalGrowing
     public var insets: UIEdgeInsets = .zero
     public var size: CGSize? = nil
+
+    open var strokeColor: UIColor = .clear
+    open var fillColor: UIColor = .clear
+    open var width: CGFloat = 4
 
     public var padding: UIEdgeInsets = .zero
 

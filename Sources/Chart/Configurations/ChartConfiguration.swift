@@ -22,7 +22,9 @@ public class ChartConfiguration {
 
     public var backgroundColor: UIColor = .clear
 
-    public var curveWidth: CGFloat = onePixel
+    public var curveType: CurveType = .line
+    public var curveWidth: CGFloat = 1
+    public var curveMinimalHeight: CGFloat = 2
     public var curvePadding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
 
     public var trendUpColor = UIColor.green
@@ -57,6 +59,8 @@ public class ChartConfiguration {
 
     public var volumeBarsFillColor: UIColor = .lightGray
     public var volumeBarsColor: UIColor = .clear
+    public var volumeBarsWidth: CGFloat = 4
+    public var volumeMinimalHeight: CGFloat = 2
     public var volumeBarsInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
 
     public var timelineTextColor: UIColor = UIColor.white.withAlphaComponent(0.5)
@@ -104,6 +108,7 @@ public class ChartConfiguration {
     public var macdSignalColor: UIColor = .blue
     public var macdSignalLineWidth: CGFloat = 1
     public var macdColor: UIColor = .orange
+    public var macdHistogramWidth: CGFloat = 8
     public var macdLineWidth: CGFloat = 1
     public var macdPositiveColor: UIColor = UIColor.green.withAlphaComponent(0.5)
     public var macdNegativeColor: UIColor = UIColor.red.withAlphaComponent(0.5)
@@ -136,6 +141,11 @@ public class ChartConfiguration {
     public var rsiTextSize: CGSize = CGSize(width: 15, height: 14)
 
     public init() {
+    }
+
+    public enum CurveType {
+        case line
+        case bars
     }
 
 }
