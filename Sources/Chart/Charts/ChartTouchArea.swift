@@ -13,6 +13,8 @@ class ChartTouchArea: Chart {
     private var points = [CGPoint]()
     private var last: Int?
 
+    private var curvePadding: UIEdgeInsets = .zero
+
     weak var delegate: ITouchAreaDelegate?
     private var configuration: ChartConfiguration?
 
@@ -36,9 +38,13 @@ class ChartTouchArea: Chart {
         self.configuration = configuration
 
         if configuration.isInteractive {
+            curvePadding = configuration.curvePadding
+
             verticalLine.width = configuration.touchLineWidth
             verticalLine.gridType = .vertical
             verticalLine.retinaCorrected = false
+            verticalLine.padding = configuration.curvePadding
+            verticalLine.bottomInset = configuration.curveBottomInset
 
             pointCircle.radius = configuration.touchCircleRadius
 
@@ -85,7 +91,7 @@ class ChartTouchArea: Chart {
     private func findNearest(position: CGFloat) -> Int? {
         guard bounds.width > 0 else { return nil }
 
-        let position = position / bounds.width
+        let position = (position - curvePadding.left) / (bounds.width - curvePadding.width)
         for i in 0..<points.count {
             if position == points[i].x {                    // x equal point.x . Return point
                 return i

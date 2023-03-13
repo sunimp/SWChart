@@ -31,13 +31,14 @@ class ChartPointsObject: NSObject, IChartObject {
     open var width: CGFloat = 4
 
     public var padding: UIEdgeInsets = .zero
+    public var bottomInset: CGFloat = .zero
 
     var layer: CALayer {                                        // layer which will be added to chart
         fatalError("Must be implemented by Concrete subclass.")
     }
 
     var zeroY: CGFloat {
-        pathDirection == .bottom ? layer.bounds.height : 0
+        pathDirection == .bottom ? layer.bounds.height - bottomInset : bottomInset
     }
 
     var animationLayer: CALayer {                               // layer which will be used to animation

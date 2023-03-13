@@ -51,6 +51,12 @@ class ChartGridLines: ChartPointsObject {
         }
     }
 
+    override public var bottomInset: CGFloat {
+        didSet {
+            linesLayer.displayIfNeeded()
+        }
+    }
+
     override init() {
         super.init()
 
@@ -86,7 +92,7 @@ class ChartGridLines: ChartPointsObject {
                 let toX = lineDirection == .bottom ? (linesLayer.bounds.width) : 0
                 endPoint = CGPoint(x: toX + offset, y: correctedPoint.y)
             case .vertical:
-                let toY = lineDirection == .bottom ? (linesLayer.bounds.height) : 0
+                let toY = lineDirection == .bottom ? (linesLayer.bounds.height - bottomInset) : bottomInset
                 endPoint = CGPoint(x: correctedPoint.x, y: toY + offset)
             }
             path.addLine(to: endPoint)

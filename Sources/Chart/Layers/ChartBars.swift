@@ -52,6 +52,12 @@ class ChartBars: ChartPointsObject {
         }
     }
 
+    override public var bottomInset: CGFloat {
+        didSet {
+            barsLayer.displayIfNeeded()
+        }
+    }
+
     override init() {
         super.init()
 
@@ -71,7 +77,7 @@ class ChartBars: ChartPointsObject {
         case .strokeEnd:
             maskLayer.bounds = barsLayer.bounds
 
-            let startBounds = CGRect(x: 0, y: 0, width: 0, height: barsLayer.bounds.height)
+            let startBounds = CGRect(x: 0, y: 0, width: 0, height: barsLayer.bounds.height - bottomInset)
             let boundsAnimation = ShapeHelper.animation(keyPath: "bounds", from: startBounds, to: barsLayer.bounds, duration: duration, timingFunction: timingFunction)
             maskLayer.add(boundsAnimation, forKey: strokeAnimationKey)
             return CABasicAnimation(keyPath: animationKey)
@@ -84,15 +90,15 @@ class ChartBars: ChartPointsObject {
 
     override func path(points: [CGPoint]) -> CGPath {
         let barsPath = UIBezierPath()
-        let width = calculateBarWidth(points: points, width: barsLayer.bounds.width)
-        barsPath.lineWidth = 1 / UIScreen.main.scale        // set minimal line width. All pixels inside will be filled
-        let pixelShift = barsPath.lineWidth / 2             // pixel shift, because line drawing by center of x/y
+        let width = calculateBarWidth(points: points, width: barsLayer.bounds.width - padding.width)
+
+        barsLayer.lineWidth = onePixel        // set minimal line width. All pixels inside will be filled
+        let pixelShift = onePixel / 2             // pixel shift, because line drawing by center of x/y
 
         let reverse = pathDirection == .bottom
         let drawCap = lineCapStyle == .round
 
-        let verticalPixelShift = reverse ? -pixelShift : pixelShift
-        let verticalFullShift = reverse ? -width : width
+        let sign: CGFloat = reverse ? -1 : 1
 
         points.enumerated().forEach { index, point in
             var startX: CGFloat
@@ -105,20 +111,23 @@ class ChartBars: ChartPointsObject {
                 startX = point.x - width + pixelShift
             }
 
-            let low = zeroY + verticalFullShift / 2 + 2 * verticalPixelShift
-            let high = point.y - verticalFullShift / 2 - verticalPixelShift
+            let low = zeroY + (width / 2 + 2 * pixelShift) * sign
+            let high = point.y - (width / 2 + pixelShift) * sign
 
             barsPath.move(to: CGPoint(x: startX, y: low))
             barsPath.addLine(to: CGPoint(x: startX, y: high))
+
+            let centerX = startX + width / 2 - onePixel / 2
+
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: startX + width / 2, y: high), radius: width / 2 , startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
+                barsPath.addArc(withCenter: CGPoint(x: centerX, y: high), radius: width / 2 - onePixel , startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
             }
-            let endX = startX + width // - barsPath.lineWidth
+            let endX = startX + width - onePixel
 
             barsPath.addLine(to: CGPoint(x: endX, y: high))
             barsPath.addLine(to: CGPoint(x: endX, y: low))
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: startX + width / 2, y: low), radius: width / 2, startAngle: 0, endAngle: Double.pi, clockwise: reverse)
+                barsPath.addArc(withCenter: CGPoint(x: centerX, y: low), radius: width / 2 - onePixel, startAngle: 0, endAngle: Double.pi, clockwise: reverse)
             }
             barsPath.close()
         }

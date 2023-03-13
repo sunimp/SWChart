@@ -56,6 +56,7 @@ class MainChart: Chart {
 
         curve.width = configuration.curveWidth
         curve.padding = configuration.curvePadding
+        curve.bottomInset = configuration.curveBottomInset
         curve.animationDuration = configuration.animationDuration
 
         gradient.padding = configuration.curvePadding

@@ -41,6 +41,7 @@ class IndicatorChart: Chart {
         horizontalLines.width = configuration.borderWidth
         horizontalLines.strokeColor = configuration.borderColor
         horizontalLines.set(points: [CGPoint(x: 0, y: 0), CGPoint(x: 1, y: 0)])
+        horizontalLines.layer.isHidden = !configuration.showBorders
 
         return self
     }
@@ -64,6 +65,10 @@ class IndicatorChart: Chart {
 
     func setVerticalLines(hidden: Bool) {
         verticalLines.layer.isHidden = hidden
+    }
+
+    func setHorizontalLines(hidden: Bool) {
+        horizontalLines.layer.isHidden = hidden
     }
 
 }
