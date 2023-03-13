@@ -124,9 +124,6 @@ public class RateChartView: UIView {
         chartRsi.set(points: converted[.rsi], animated: true)
 
         chartDominance.set(values: converted[.dominance], animated: animated)
-        if let firstDominance = chartData.items.first?.indicators[.dominance], let lastDominance = chartData.items.last?.indicators[.dominance] {
-            chartDominance.setLast(value: lastDominance, diff: (lastDominance - firstDominance) / firstDominance * 100)
-        }
     }
 
     public func setCurve(colorType: ChartColorType) {
@@ -170,10 +167,6 @@ public class RateChartView: UIView {
 
     public func setDominance(hidden: Bool) {
         chartDominance.set(hidden: hidden)
-    }
-
-    public func setDominanceLast(value: Decimal?, diff: Decimal?) {
-        chartDominance.setLast(value: value, diff: diff)
     }
 
     public func setLimits(hidden: Bool) {

@@ -10,9 +10,6 @@ class ChartDominance {
 
     private let dominance = ChartLine()
 
-    private let valueText = ChartText()
-    private let diffText = ChartText()
-
     private var configuration: ChartConfiguration?
 
     init(configuration: ChartConfiguration? = nil) {
@@ -30,27 +27,11 @@ class ChartDominance {
         dominance.padding = configuration.curvePadding
         dominance.animationDuration = configuration.animationDuration
 
-
-        valueText.textColor = configuration.dominanceTextColor
-        valueText.font = configuration.dominanceTextFont
-        valueText.textAlignment = .right
-        valueText.insets = configuration.dominanceInsets
-        valueText.size = configuration.dominanceSize
-        valueText.set(text: configuration.dominanceTextPrefix)
-
-        diffText.font = configuration.dominanceDiffTextFont
-        diffText.textAlignment = .right
-        diffText.insets = configuration.dominanceDiffInsets
-        diffText.size = configuration.dominanceDiffSize
-
         return self
     }
 
     @discardableResult func add(to chart: Chart) -> Self {
         chart.add(dominance)
-
-        chart.add(valueText)
-        chart.add(diffText)
 
         return self
     }
@@ -61,22 +42,6 @@ class ChartDominance {
 
     func set(hidden: Bool) {
         dominance.layer.isHidden = hidden
-        valueText.layer.isHidden = hidden
-        diffText.layer.isHidden = hidden
-    }
-
-    func setLast(value: Decimal?, diff: Decimal?) {
-        if let diff = diff, let configuration = configuration {
-            diffText.textColor = diff < 0 ? configuration.dominanceDiffNegativeColor : configuration.dominanceDiffPositiveColor
-        }
-
-        let correctedDominance = value.flatMap { format(percentValue: $0, signed: false) }
-        let correctedDiff = diff.flatMap { format(percentValue: $0) }
-
-        let dominanceText = ([configuration?.dominanceTextPrefix, correctedDominance].compactMap { $0 }).joined(separator: " ")
-        valueText.set(text: dominanceText)
-
-        diffText.set(text: correctedDiff)
     }
 
     func set(selected: Bool) {

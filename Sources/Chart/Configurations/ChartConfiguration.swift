@@ -26,6 +26,7 @@ public class ChartConfiguration {
     public var curveWidth: CGFloat = 1
     public var curveMinimalHeight: CGFloat = 2
     public var curvePadding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
+    public var curveBottomInset: CGFloat = 0
 
     public var trendUpColor = UIColor.green
     public var trendDownColor = UIColor.red
@@ -88,18 +89,6 @@ public class ChartConfiguration {
 
     public var dominanceLineColor = UIColor.orange
     public var dominanceLineWidth: CGFloat = 1
-
-    public var dominanceTextFont: UIFont = .systemFont(ofSize: 12)
-    public var dominanceTextColor = UIColor.orange
-    public var dominanceInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 72)
-    public var dominanceSize: CGSize? = CGSize(width: 180, height: 14)
-    public var dominanceTextPrefix: String = "BTC Dominance"
-
-    public var dominanceDiffPositiveColor: UIColor = UIColor.green
-    public var dominanceDiffNegativeColor: UIColor = UIColor.red
-    public var dominanceDiffTextFont: UIFont = .systemFont(ofSize: 12)
-    public var dominanceDiffInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 16)
-    public var dominanceDiffSize: CGSize? = CGSize(width: 52, height: 14)
 
     public var macdHistogramInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     public var macdLinesInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
