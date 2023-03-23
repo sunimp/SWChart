@@ -65,7 +65,7 @@ class ChartTouchArea: Chart {
         gestureRecognizer = UILongPressGestureRecognizer(target: self, action:#selector(handlePanGesture(gesture:)))
         if let gestureRecognizer = gestureRecognizer {
             self.addGestureRecognizer(gestureRecognizer)
-            gestureRecognizer.minimumPressDuration = 0
+            gestureRecognizer.minimumPressDuration = 0.05
             gestureRecognizer.delaysTouchesBegan = false
         }
     }
