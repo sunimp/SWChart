@@ -135,7 +135,7 @@ class ChartBars: ChartPointsObject {
     }
 
     func calculateBarWidth(points: [CGPoint], width: CGFloat) -> CGFloat {
-        guard points.count > 1 else { return width }
+        guard points.count > 1 else { return self.width }
         var maxWidth = self.width
 
         let minimumWithGap = 2 * onePixel                           // if gap more than 2 pixels, we can add gap between bars
