@@ -61,9 +61,11 @@ class ChartHistogram: ChartPointsObject {
             $0.strokeColor = .clear
             $0.barFillColor = nil
             $0.barPosition = barPosition
+            $0.lineCapStyle = .square
 
             wrapperLayer.addSublayer($0.layer)
         }
+
         negativeBars.pathDirection = .top
 
         reversePoint = false

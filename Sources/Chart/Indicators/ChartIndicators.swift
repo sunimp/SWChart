@@ -6,30 +6,37 @@ struct MacdData {
     let histogram: [Decimal]
 }
 
-class ChartIndicators {
+public class ChartIndicators {
+    public static let maximumPeriod = 200
 
-    static func ma(period: Int, values: [Decimal]) -> [Decimal] {
-        guard values.count >= period, period > 0 else {
-            return []
+    static func checkValidData(period: Int, valueCount: Int) throws {
+        guard period > 0 else {
+            throw IndicatorError.tooSmallPeriod
         }
+        guard period <= maximumPeriod else {
+            throw IndicatorError.tooLargePeriod
+        }
+
+        guard valueCount >= period else {
+            throw IndicatorError.notEnoughData
+        }
+    }
+
+    public static func ma(period: Int, values: [Decimal]) throws -> [Decimal] {
+        try checkValidData(period: period, valueCount: values.count)
 
         var result = [Decimal]()
 
-        var prev = values[0..<period].reduce(0, +) / Decimal(period)
-        result.append(prev)
-
-        for i in (0..<(values.count - period)) {
-            prev = values[i..<(i + period)].reduce(0, +) / Decimal(period)
+        for i in (0..<(values.count - period + 1)) {
+            let prev = values[i..<(i + period)].reduce(0, +) / Decimal(period)
 
             result.append(prev)
         }
         return result
     }
 
-    static func ema(period: Int, values: [Decimal]) -> [Decimal] {
-        guard values.count >= period else {
-            return []
-        }
+    public static func ema(period: Int, values: [Decimal]) throws -> [Decimal] {
+        try checkValidData(period: period, valueCount: values.count)
 
         let a = 2 / (1 + Decimal(period))
 
@@ -46,10 +53,28 @@ class ChartIndicators {
         return result
     }
 
-    static func rsi(period: Int, values: [Decimal]) -> [Decimal] {
-        guard period != 0 else {
-            return []
+    public static func wma(period: Int, values: [Decimal]) throws -> [Decimal] {
+        try checkValidData(period: period, valueCount: values.count)
+
+        let a = Decimal(period * (period + 1) / 2)
+
+        var result = [Decimal]()
+
+        for i in (0..<(values.count - period + 1)) {
+            var indicator: Decimal = 0
+            for j in (i..<(i + period)) {
+                indicator += values[j] * Decimal(j - i + 1)
+            }
+            indicator /= a
+
+            result.append(indicator)
         }
+        return result
+    }
+
+    public static func rsi(period: Int, values: [Decimal]) throws -> [Decimal] {
+        try checkValidData(period: period, valueCount: values.count)
+
         let decPeriod = Decimal(period)
 
         var upMove = [Decimal]()
@@ -110,18 +135,18 @@ class ChartIndicators {
         return rsi
     }
 
-    static func macd(fast: Int, long: Int, signal: Int, values: [Decimal]) -> MacdData {
+    static func macd(fast: Int, long: Int, signal: Int, values: [Decimal]) throws -> MacdData {
         let diff = long - fast
         guard diff > 0 else {
             return MacdData(macd: [], signal: [], histogram: [])
         }
 
-        let emaFast = ema(period: fast, values: values)
-        let emaLong = ema(period: long, values: values)
+        let emaFast = try ema(period: fast, values: values)
+        let emaLong = try ema(period: long, values: values)
         let macd = emaLong.enumerated().map { (index, long) in
             emaFast[index + diff] - long
         }
-        let emaSignal = ema(period: signal, values: macd)
+        let emaSignal = try ema(period: signal, values: macd)
 
         let signalDiff = macd.count - emaSignal.count
         let histogram: [Decimal]
@@ -131,6 +156,16 @@ class ChartIndicators {
         }
 
         return MacdData(macd: macd, signal: emaSignal, histogram: histogram)
+    }
+
+}
+
+extension ChartIndicators {
+
+    public enum IndicatorError: Error {
+        case notEnoughData
+        case tooSmallPeriod
+        case tooLargePeriod
     }
 
 }

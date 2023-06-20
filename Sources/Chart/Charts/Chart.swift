@@ -23,7 +23,16 @@ class Chart: UIView {
         chartObjects.append(object)
         layer.addSublayer(object.layer)
 
+        layer.layoutIfNeeded()
         object.layer.setNeedsLayout()
+    }
+
+    func remove(_ object: IChartObject) {
+        guard let index = chartObjects.firstIndex(where: { $0 === object }) else {
+            return
+        }
+        chartObjects.remove(at: index)
+        object.layer.removeFromSuperlayer()
     }
 
     func replace(_ oldObject: IChartObject, by object: IChartObject) {

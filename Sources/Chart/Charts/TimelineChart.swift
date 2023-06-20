@@ -50,8 +50,8 @@ class TimelineChart: Chart {
         self.texts.forEach { $0.layer.removeFromSuperlayer() }
         self.texts.removeAll()
 
-        self.timelineTexts = texts
-        self.timelinePositions = positions
+        timelineTexts = texts
+        timelinePositions = positions
 
         texts.forEach {
             let text = ChartText()

@@ -84,7 +84,7 @@ class ChartBars: ChartPointsObject {
         }
     }
 
-    override public func set(points: [CGPoint], animated: Bool = false) {
+    override public func set(points: [CGPoint]?, animated: Bool = false) {
         super.set(points: points, animated: animated)
     }
 
@@ -111,24 +111,28 @@ class ChartBars: ChartPointsObject {
                 startX = point.x - width + pixelShift
             }
 
-            let low = zeroY + (width / 2 + 2 * pixelShift) * sign
-            let high = point.y - (width / 2 + pixelShift) * sign
+            let tooSmallForArc = reverse ? ((zeroY - point.y) < width) : ((point.y - zeroY) < width)
+            let placeForArc = drawCap && !tooSmallForArc ? (width / 2) * sign : 0
+            let low = zeroY + placeForArc
+            let high = point.y - placeForArc
 
             barsPath.move(to: CGPoint(x: startX, y: low))
             barsPath.addLine(to: CGPoint(x: startX, y: high))
 
             let centerX = startX + width / 2 - onePixel / 2
+            let endX = startX + width - onePixel
 
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: centerX, y: high), radius: width / 2 - onePixel , startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
+                barsPath.addArc(withCenter: CGPoint(x: centerX, y: high), radius: !tooSmallForArc ? width / 2 - onePixel: 0, startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
             }
-            let endX = startX + width - onePixel
 
             barsPath.addLine(to: CGPoint(x: endX, y: high))
             barsPath.addLine(to: CGPoint(x: endX, y: low))
+
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: centerX, y: low), radius: width / 2 - onePixel, startAngle: 0, endAngle: Double.pi, clockwise: reverse)
+                barsPath.addArc(withCenter: CGPoint(x: centerX, y: low), radius: !tooSmallForArc ? width / 2 - onePixel : 0, startAngle: 0, endAngle: Double.pi, clockwise: reverse)
             }
+
             barsPath.close()
         }
         return barsPath.cgPath

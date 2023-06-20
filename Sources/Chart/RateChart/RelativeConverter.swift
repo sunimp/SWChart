@@ -9,15 +9,17 @@ private class ChartRange {
         self.max = max
     }
 
+    var all: [Decimal] { [min, max] }
 }
 
 class RelativeConverter {
 
-    static private func ranges(chartData: ChartData) -> [ChartIndicatorName: ChartRange] {
-        var ranges = [ChartIndicatorName: ChartRange]()
+    private static func allRanges(chartData: ChartData, indicators: [ChartIndicator]) -> [String: ChartRange] {
+        var ranges = [String: ChartRange]()
 
-        // calculate ranges for all indicators
-        for item in chartData.items {
+        let visibleItems = chartData.visibleItems
+        // calculate ranges for all keys
+        for item in visibleItems {
             for (key, value) in item.indicators {
                 guard let range = ranges[key] else {
                     ranges[key] = ChartRange(min: value, max: value)
@@ -31,49 +33,77 @@ class RelativeConverter {
                 }
             }
         }
-        // set ranges for volume : from 0 to max
-        if let volumeRange = ranges[.volume] {
-            ranges[.volume] = ChartRange(min: 0, max: volumeRange.max)
-        }
-
-        // set ranges for ema : relative rate chart
-        if let rateRange = ranges[.rate] {
-            ranges[.emaShort] = rateRange
-            ranges[.emaLong] = rateRange
-        }
-
-        // merge ranges for macd : to show all lines and zoom histogram to maximum
-        if let macdRange = ranges[.macd],
-           let signalRange = ranges[.macdSignal],
-           let histogramRange = ranges[.macdHistogram] {
-
-            let lineAbs = [macdRange.min, macdRange.max,
-                           signalRange.min, signalRange.max,
-                           histogramRange.min, histogramRange.max]
-                .map { abs($0) }
-                .max() ?? 0
-            let commonRange = ChartRange(min: -lineAbs, max: lineAbs)
-            ranges[.macd] = commonRange
-            ranges[.macdSignal] = commonRange
-
-            let histogramAbs = [histogramRange.min, histogramRange.max]
-                .map { abs($0) }
-                .max() ?? 0
-            ranges[.macdHistogram] = ChartRange(min: -histogramAbs, max: histogramAbs)
-        }
-        // range for RSI : 0 to 100
-        ranges[.rsi] = ChartRange(min: 0, max: 100)
-        ranges[.dominance] = ranges[.dominance] ?? ChartRange(min: 0, max: 100)
 
         return ranges
     }
 
-    static private func relative(chartData: ChartData, ranges: [ChartIndicatorName: ChartRange]) -> [ChartIndicatorName: [CGPoint]] {
+    static private func ranges(chartData: ChartData, indicators: [ChartIndicator]) -> [String: ChartRange] {
+        var ranges = allRanges(chartData: chartData, indicators: indicators)
+
+        // for rate and all MA indicator find extremum values
+        var extremums = [Decimal]()
+        if let rate = ranges[ChartData.rate] {
+            extremums.append(contentsOf: rate.all)
+        }
+
+        let maIds = indicators
+                .filter { $0.indicatorType == .ma }
+                .map { $0.json }
+
+        for id in maIds {
+            guard let range = ranges[id] else {
+                continue
+            }
+            extremums.append(contentsOf: range.all)
+        }
+        // calculate new range
+        let extremumRange = ChartRange(min: extremums.min() ?? 0, max: extremums.max() ?? 0)
+
+        // set range for all onChart indicators and rate
+        ranges[ChartData.rate] = extremumRange
+        maIds.forEach { ranges[$0] = extremumRange }
+
+        // set ranges for volume : from 0 to max
+        if let volumeRange = ranges[ChartData.volume] {
+            ranges[ChartData.volume] = ChartRange(min: 0, max: volumeRange.max)
+        }
+
+        // set 0..100 for every rsi
+        let rsiIds = indicators
+                .filter { $0.indicatorType == .rsi }
+                .map { $0.json }
+
+        let rsiRange = ChartRange(min: 0, max: 100)
+        rsiIds.forEach { ranges[$0] = rsiRange }
+
+        // merge ranges for macd : to show all lines and zoom histogram to maximum
+        let macdIds = indicators
+                .filter { $0.indicatorType == .macd }
+                .map { $0.json }
+
+        for id in macdIds {
+            let signal = ChartIndicatorType.MacdType.signal.name(id: id)
+            let macdId = ChartIndicatorType.MacdType.macd.name(id: id)
+
+            var extremums = ranges[signal]?.all ?? []
+            extremums.append(contentsOf: ranges[macdId]?.all ?? [])
+            let maxValue = extremums.map { abs($0) }.max() ?? 0
+
+            let result = ChartRange(min: -maxValue, max: maxValue)
+
+            ranges[signal] = result
+            ranges[macdId] = result
+        }
+
+        return ranges
+    }
+
+    static private func relative(chartData: ChartData, ranges: [String: ChartRange]) -> [String: [CGPoint]] {
         let timestampDelta = chartData.endWindow - chartData.startWindow
         guard !timestampDelta.isZero else {
             return [:]
         }
-        var relativeData = [ChartIndicatorName: [CGPoint]]()
+        var relativeData = [String: [CGPoint]]()
 
         for item in chartData.items {
             let timestamp = item.timestamp - chartData.startWindow
@@ -103,10 +133,10 @@ class RelativeConverter {
         return relativeData
     }
 
-    static func convert(chartData: ChartData) -> [ChartIndicatorName: [CGPoint]] {
+    static func convert(chartData: ChartData, indicators: [ChartIndicator]) -> [String: [CGPoint]] {
 
         // calculate ranges for all data
-        let indicatorRanges = ranges(chartData: chartData)
+        let indicatorRanges = ranges(chartData: chartData, indicators: indicators)
         // make relative points
         return relative(chartData: chartData, ranges: indicatorRanges)
     }

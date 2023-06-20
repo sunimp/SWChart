@@ -5,6 +5,8 @@ class IndicatorChart: Chart {
     private let verticalLines = ChartGridLines()
     private let horizontalLines = ChartGridLines()
 
+    private var showVolume: Bool = true
+
     init(configuration: ChartConfiguration? = nil) {
         super.init(frame: .zero)
 
@@ -53,7 +55,6 @@ class IndicatorChart: Chart {
     func setVolumeColor(color: UIColor) {
         volumeBars.barFillColor = color
     }
-
 
     func setVolumes(hidden: Bool) {
         volumeBars.layer.isHidden = hidden

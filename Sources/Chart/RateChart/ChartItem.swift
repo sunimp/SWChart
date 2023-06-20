@@ -1,7 +1,7 @@
 import Foundation
 
 public class ChartItem: Comparable {
-    public var indicators = [ChartIndicatorName: Decimal]()
+    public var indicators = [String: Decimal]()
 
     public let timestamp: TimeInterval
 
@@ -9,7 +9,7 @@ public class ChartItem: Comparable {
         self.timestamp = timestamp
     }
 
-    @discardableResult public func added(name: ChartIndicatorName, value: Decimal) -> Self {
+    @discardableResult public func added(name: String, value: Decimal) -> Self {
         indicators[name] = value
 
         return self

@@ -13,19 +13,22 @@ public class RateChartView: UIView {
     private let timelineChart = TimelineChart()
     private let chartTouchArea = ChartTouchArea()
 
-    private let chartEma = ChartEma()
-    private let chartMacd = ChartMacd()
-    private let chartRsi = ChartRsi()
-    private let chartDominance = ChartDominance()
-
+    private var viewModels = [ChartViewModel]()
     private var colorType: ChartColorType = .neutral
-    private var configuration: ChartConfiguration?
+    private var configuration: ChartConfiguration
 
     public weak var delegate: IChartViewTouchDelegate?
 
     private var chartData: ChartData?
+    public var indicatorsIsHidden: Bool = true {
+        didSet {
+            viewModels.forEach { $0.set(hidden: indicatorsIsHidden) }
+        }
+    }
 
-    public init(configuration: ChartConfiguration? = nil) {
+    public init(configuration: ChartConfiguration) {
+        self.configuration = configuration
+
         super.init(frame: .zero)
 
         translatesAutoresizingMaskIntoConstraints = false
@@ -36,14 +39,10 @@ public class RateChartView: UIView {
         addSubview(timelineChart)
         addSubview(chartTouchArea)
 
-        if let configuration = configuration {
-            apply(configuration: configuration)
-        }
+        apply(configuration: configuration)
     }
 
     @discardableResult public func apply(configuration: ChartConfiguration) -> Self {
-        self.configuration = configuration
-
         backgroundColor = configuration.backgroundColor
 
         mainChart.snp.remakeConstraints { maker in
@@ -62,6 +61,7 @@ public class RateChartView: UIView {
             lastView = indicatorChart
         } else {
             indicatorChart.snp.removeConstraints()
+            indicatorChart.isHidden = true
         }
         indicatorChart.apply(configuration: configuration)
 
@@ -81,23 +81,6 @@ public class RateChartView: UIView {
             chartTouchArea.delegate = self
         }
 
-        if configuration.showIndicators {
-            indicatorChart.isHidden = false
-            chartEma.add(to: mainChart).apply(configuration: configuration)
-            chartMacd.add(to: indicatorChart).apply(configuration: configuration)
-            chartRsi.add(to: indicatorChart).apply(configuration: configuration)
-
-            chartEma.set(hidden: true)
-            chartMacd.set(hidden: true)
-            chartRsi.set(hidden: true)
-        } else {
-            indicatorChart.isHidden = true
-        }
-
-        if configuration.showDominance {
-            chartDominance.add(to: mainChart).apply(configuration: configuration)
-        }
-
         layoutIfNeeded()
 
         return self
@@ -108,28 +91,68 @@ public class RateChartView: UIView {
         fatalError("not implemented")
     }
 
-    public func set(chartData: ChartData, animated: Bool = true) {
-        self.chartData = chartData
+    public func set(chartData: ChartData, indicators: [ChartIndicator] = [], animated: Bool = true) throws {
+        // 1. calculate all indicators and add it to chartData
+        let factory = IndicatorFactory()
+        try factory.store(indicators: indicators, chartData: chartData)
 
-        let converted = RelativeConverter.convert(chartData: chartData)
+        // 2. convert real values to visible points from 0..1 by x&y
+        let converted = RelativeConverter.convert(chartData: chartData, indicators: indicators)
 
-        if let points = converted[.rate] {
+        // 3. set points for rate and volume
+        if let points = converted[ChartData.rate] {
             mainChart.set(points: points, animated: animated)
             chartTouchArea.set(points: points)
         }
-        indicatorChart.set(volumes: converted[.volume] ?? [], animated: animated)
+        indicatorChart.set(volumes: converted[ChartData.volume], animated: animated)
 
-        chartEma.set(short: converted[.emaShort], long: converted[.emaLong], animated: animated)
-        chartMacd.set(macd: converted[.macd], macdHistogram: converted[.macdHistogram], macdSignal: converted[.macdSignal], animated: animated)
-        chartRsi.set(points: converted[.rsi], animated: true)
+        // 4. get diff to update all chartIndicator layers
+        let updatedIds = indicators.map { $0.json }
 
-        chartDominance.set(values: converted[.dominance], animated: animated)
+        // 4a. remove unused viewModels
+        for model in viewModels {
+            if !updatedIds.contains(model.id) {
+                // remove from chart
+                if model.onChart {
+                    model.remove(from: mainChart)
+                } else {
+                    model.remove(from: indicatorChart)
+                }
+                // remove indicator data from chartData
+                model.remove(from: chartData)
+                // remove from array
+                if let index = viewModels.firstIndex(of: model) {
+                    viewModels.remove(at: index)
+                }
+            }
+        }
+
+        // store changes after adding and deleting indicators
+        self.chartData = chartData
+
+        // 4b. update existed and add new viewModels
+        for indicator in indicators {
+            // 1. if already exist - will update, else create
+            if let firstIndex = viewModels.firstIndex(where: { model in model.id == indicator.json }) {
+                viewModels[firstIndex].set(points: converted, animated: animated)
+            } else {
+                if let viewModel = try? ChartViewModel.create(indicator: indicator, commonConfiguration: configuration) {
+                    if viewModel.onChart {
+                        viewModel.add(to: mainChart)
+                    } else {
+                        viewModel.add(to: indicatorChart)
+                    }
+                    viewModels.append(viewModel)
+                    viewModel.set(hidden: indicatorsIsHidden)
+                    viewModel.set(points: converted, animated: animated)
+                }
+            }
+        }
+
+//        chartDominance.set(values: converted[.dominance], animated: animated)
     }
 
     public func setCurve(colorType: ChartColorType) {
-        guard configuration != nil else {
-            return
-        }
         self.colorType = colorType
         mainChart.setLine(colorType: colorType)
     }
@@ -153,22 +176,6 @@ public class RateChartView: UIView {
         indicatorChart.setVolumes(hidden: hidden)
     }
 
-    public func setEma(hidden: Bool) {
-        chartEma.set(hidden: hidden)
-    }
-
-    public func setMacd(hidden: Bool) {
-        chartMacd.set(hidden: hidden)
-    }
-
-    public func setRsi(hidden: Bool) {
-        chartRsi.set(hidden: hidden)
-    }
-
-    public func setDominance(hidden: Bool) {
-        chartDominance.set(hidden: hidden)
-    }
-
     public func setLimits(hidden: Bool) {
         mainChart.setLimits(hidden: hidden)
     }
@@ -182,16 +189,8 @@ public class RateChartView: UIView {
 extension RateChartView: ITouchAreaDelegate {
 
     func touchDown() {
-        guard configuration != nil else {
-            return
-        }
-
         mainChart.setLine(colorType: .pressed)
-
-        chartEma.set(selected: true)
-        chartMacd.set(selected: true)
-        chartRsi.set(selected: true)
-        chartDominance.set(selected: true)
+        viewModels.forEach { $0.set(selected: true) }
 
         delegate?.touchDown()
     }
@@ -209,11 +208,7 @@ extension RateChartView: ITouchAreaDelegate {
 
     func touchUp() {
         mainChart.setLine(colorType: colorType)
-
-        chartEma.set(selected: false)
-        chartMacd.set(selected: false)
-        chartRsi.set(selected: false)
-        chartDominance.set(selected: false)
+        viewModels.forEach { $0.set(selected: false) }
 
         delegate?.touchUp()
     }

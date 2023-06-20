@@ -1,11 +1,10 @@
 import UIKit
 
 public class ChartConfiguration {
-    private static let onePixel = 1 / UIScreen.main.scale
+    static let onePixel = 1 / UIScreen.main.scale
 
     public var showBorders = true
     public var showIndicators = true
-    public var showDominance = false
     public var showLimits = true
     public var showVerticalLines = true
     public var isInteractive = true
@@ -15,7 +14,6 @@ public class ChartConfiguration {
     public var timelineHeight: CGFloat = 21
 
     public var animationDuration: TimeInterval = 0.35
-    public var timingFunction: CAMediaTimingFunctionName = .easeInEaseOut
 
     public var borderWidth: CGFloat = 1
     public var borderColor: UIColor = UIColor.clear.withAlphaComponent(0.5)
@@ -24,7 +22,6 @@ public class ChartConfiguration {
 
     public var curveType: CurveType = .line
     public var curveWidth: CGFloat = 1
-    public var curveMinimalHeight: CGFloat = 2
     public var curvePadding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
     public var curveBottomInset: CGFloat = 0
 
@@ -73,52 +70,8 @@ public class ChartConfiguration {
     public var touchLineColor: UIColor = UIColor.white
     public var touchCircleColor: UIColor = UIColor.white
 
-    public var emaShortColor: UIColor = UIColor.blue
-    public var emaShortLineWidth: CGFloat = 1
-    public var emaShortInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 35)
-    public var emaShortSize: CGSize? = CGSize(width: 15, height: 14)
-    public var emaShortText: String = "25"
-
-    public var emaLongColor: UIColor = UIColor.orange
-    public var emaLongLineWidth: CGFloat = 1
-    public var emaLongInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 16)
-    public var emaLongSize: CGSize? = CGSize(width: 15, height: 14)
-    public var emaLongText: String = "50"
-
-    public var emaTextFont: UIFont = .systemFont(ofSize: 12)
-
     public var dominanceLineColor = UIColor.orange
     public var dominanceLineWidth: CGFloat = 1
-
-    public var macdHistogramInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-    public var macdLinesInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
-
-    public var macdSelectedColor: UIColor = UIColor.white.withAlphaComponent(0.5)
-    public var macdSignalColor: UIColor = .blue
-    public var macdSignalLineWidth: CGFloat = 1
-    public var macdColor: UIColor = .orange
-    public var macdHistogramWidth: CGFloat = 8
-    public var macdLineWidth: CGFloat = 1
-    public var macdPositiveColor: UIColor = UIColor.green.withAlphaComponent(0.5)
-    public var macdNegativeColor: UIColor = UIColor.red.withAlphaComponent(0.5)
-
-    public var macdTextColor: UIColor = .gray
-    public var macdTextFont: UIFont = .systemFont(ofSize: 12)
-
-    public var macdLongInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 45)
-    public var macdLongSize: CGSize? = CGSize(width: 15, height: 14)
-    public var macdLongText: String = "26"
-
-    public var macdShortInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 28)
-    public var macdShortSize: CGSize? = CGSize(width: 13, height: 14)
-    public var macdShortText: String = "12"
-
-    public var macdSignalInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 16)
-    public var macdSignalSize: CGSize? = CGSize(width: 8, height: 14)
-    public var macdSignalText: String = "9"
-
-    public var rsiLineColor: UIColor = .blue
-    public var rsiLineWidth: CGFloat = 1
 
     public var rsiPadding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
     public var rsiTopLimitValue: CGFloat = 0.7
