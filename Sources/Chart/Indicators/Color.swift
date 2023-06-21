@@ -1,29 +1,29 @@
 import UIKit
 import UIExtensions
 
-struct Color: Codable {
-    let value: UIColor
+public struct Color: Codable {
+    public let value: UIColor
 
     enum CodingKeys: CodingKey {
         case value
     }
 
-    init(_ color: UIColor) {
+    public init(_ color: UIColor) {
         value = color
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let hex = try container.decode(Int.self)
         value = UIColor(hex: hex)
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(value.hex)
     }
 
-    var hex: Int {
+    public var hex: Int {
         value.hex
     }
 

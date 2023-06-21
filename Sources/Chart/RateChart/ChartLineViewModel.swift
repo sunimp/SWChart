@@ -3,6 +3,20 @@ import UIKit
 class ChartLineConfiguration {
     public var lineColor: UIColor = UIColor.blue
     public var lineWidth: CGFloat = 1
+
+    public var animationDuration: TimeInterval = 0.35
+    public var curvePadding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
+    public var curveBottomInset: CGFloat = 0
+
+    static func configured(_ configuration: ChartConfiguration) -> ChartLineConfiguration {
+        let config = ChartLineConfiguration()
+
+        config.animationDuration = configuration.animationDuration
+        config.curvePadding = configuration.curvePadding
+        config.curveBottomInset = configuration.curveBottomInset
+        return config
+    }
+
 }
 
 class ChartLineViewModel: ChartViewModel {
@@ -16,6 +30,8 @@ class ChartLineViewModel: ChartViewModel {
 
         maLine.width = configuration.lineWidth
         maLine.strokeColor = configuration.lineColor
+        maLine.padding = configuration.curvePadding
+        maLine.bottomInset = configuration.curveBottomInset
     }
 
     @discardableResult override func add(to chart: Chart) -> Self {

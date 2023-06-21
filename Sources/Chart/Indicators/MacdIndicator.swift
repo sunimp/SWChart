@@ -79,4 +79,14 @@ extension MacdIndicator {
         }
     }
 
+    public enum MacdType: String {
+        case macd = "macd"
+        case signal = "signal"
+        case histogram = "histogram"
+
+        func name(id: String) -> String {
+            [id, rawValue].joined(separator: "_")
+        }
+    }
+
 }

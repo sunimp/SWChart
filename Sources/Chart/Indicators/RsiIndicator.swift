@@ -3,22 +3,19 @@ import UIKit
 public class RsiIndicator: ChartIndicator, Equatable {
     let id: String
     let period: Int
-    let color: Color
-    let width: CGFloat
+    let configuration: ChartIndicator.LineConfiguration
 
     private enum CodingKeys : String, CodingKey {
         case id
         case period
         case type
-        case color
-        case width
+        case configuration
     }
 
-    public init(id: String, period: Int, onChart: Bool = false, color: UIColor = .blue, width: CGFloat = 1) {
+    public init(id: String, period: Int, onChart: Bool = false, configuration: ChartIndicator.LineConfiguration = .default) {
         self.id = id
         self.period = period
-        self.color = Color(color)
-        self.width = width
+        self.configuration = configuration
 
         super.init(onChart: onChart)
     }
@@ -27,8 +24,7 @@ public class RsiIndicator: ChartIndicator, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         period = try container.decode(Int.self, forKey: .period)
-        color = try container.decode(Color.self, forKey: .color)
-        width = try container.decode(CGFloat.self, forKey: .width)
+        configuration = try container.decode(ChartIndicator.LineConfiguration.self, forKey: .configuration)
         try super.init(from: decoder)
     }
 
@@ -36,16 +32,14 @@ public class RsiIndicator: ChartIndicator, Equatable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(period, forKey: .period)
-        try container.encode(color, forKey: .color)
-        try container.encode(width, forKey: .width)
+        try container.encode(configuration, forKey: .configuration)
         try super.encode(to: encoder)
     }
 
     public static func ==(lhs: RsiIndicator, rhs: RsiIndicator) -> Bool {
         lhs.id == rhs.id &&
                 lhs.period == rhs.period &&
-                lhs.color.hex == rhs.color.hex &&
-                lhs.width == rhs.width
+                lhs.configuration == rhs.configuration
     }
 
 }

@@ -4,23 +4,21 @@ public class MaIndicator: ChartIndicator, Equatable {
     let id: String
     let period: Int
     let type: MaType
-    let color: Color
-    let width: CGFloat
+    let configuration: ChartIndicator.LineConfiguration
 
     private enum CodingKeys : String, CodingKey {
         case id
         case period
         case type
-        case color
+        case configuration
         case width
     }
 
-    public init(id: String, period: Int, type: MaType, onChart: Bool = true, color: UIColor = .blue, width: CGFloat = 1) {
+    public init(id: String, period: Int, type: MaType, onChart: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
         self.id = id
         self.period = period
         self.type = type
-        self.color = Color(color)
-        self.width = width
+        self.configuration = configuration
 
         super.init(onChart: onChart)
     }
@@ -30,8 +28,7 @@ public class MaIndicator: ChartIndicator, Equatable {
         id = try container.decode(String.self, forKey: .id)
         period = try container.decode(Int.self, forKey: .period)
         type = try container.decode(MaType.self, forKey: .type)
-        color = try container.decode(Color.self, forKey: .color)
-        width = try container.decode(CGFloat.self, forKey: .width)
+        configuration = try container.decode(ChartIndicator.LineConfiguration.self, forKey: .configuration)
         try super.init(from: decoder)
     }
 
@@ -40,8 +37,7 @@ public class MaIndicator: ChartIndicator, Equatable {
         try container.encode(id, forKey: .id)
         try container.encode(period, forKey: .period)
         try container.encode(type, forKey: .type)
-        try container.encode(color, forKey: .color)
-        try container.encode(width, forKey: .width)
+        try container.encode(configuration, forKey: .configuration)
         try super.encode(to: encoder)
     }
 
@@ -49,8 +45,7 @@ public class MaIndicator: ChartIndicator, Equatable {
         lhs.id == rhs.id &&
                 lhs.period == rhs.period &&
                 lhs.type == rhs.type &&
-                lhs.color.hex == rhs.color.hex &&
-                lhs.width == rhs.width
+                lhs.configuration == rhs.configuration
     }
 
 }

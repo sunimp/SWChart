@@ -91,7 +91,7 @@ class ViewController: UIViewController {
     }
 
     private func show() {
-        try! chartView.set(chartData: chartData, indicators: indicators, animated: true)
+        chartView.set(chartData: chartData, indicators: indicators, animated: true)
         chartView.setCurve(colorType: .neutral)
     }
 

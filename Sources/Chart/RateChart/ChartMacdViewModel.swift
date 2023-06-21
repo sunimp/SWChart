@@ -87,16 +87,16 @@ class ChartMacdViewModel: ChartViewModel {
     }
 
     override func remove(from chartData: ChartData) -> Self {
-        chartData.removeIndicator(id: ChartIndicatorType.MacdType.signal.name(id: id))
-        chartData.removeIndicator(id: ChartIndicatorType.MacdType.macd.name(id: id))
-        chartData.removeIndicator(id: ChartIndicatorType.MacdType.histogram.name(id: id))
+        chartData.removeIndicator(id: MacdIndicator.MacdType.signal.name(id: id))
+        chartData.removeIndicator(id: MacdIndicator.MacdType.macd.name(id: id))
+        chartData.removeIndicator(id: MacdIndicator.MacdType.histogram.name(id: id))
         return self
     }
 
     override func set(points: [String: [CGPoint]], animated: Bool) {
-        signal.set(points: points[ChartIndicatorType.MacdType.signal.name(id: id)] ?? [], animated: animated)
-        macd.set(points: points[ChartIndicatorType.MacdType.macd.name(id: id)] ?? [], animated: animated)
-        histogram.set(points: points[ChartIndicatorType.MacdType.histogram.name(id: id)] ?? [], animated: animated)
+        signal.set(points: points[MacdIndicator.MacdType.signal.name(id: id)] ?? [], animated: animated)
+        macd.set(points: points[MacdIndicator.MacdType.macd.name(id: id)] ?? [], animated: animated)
+        histogram.set(points: points[MacdIndicator.MacdType.histogram.name(id: id)] ?? [], animated: animated)
     }
 
     func set(macd: [CGPoint]?, macdHistogram: [CGPoint]?, macdSignal: [CGPoint]?, animated: Bool) {

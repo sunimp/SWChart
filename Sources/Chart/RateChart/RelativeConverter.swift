@@ -82,8 +82,8 @@ class RelativeConverter {
                 .map { $0.json }
 
         for id in macdIds {
-            let signal = ChartIndicatorType.MacdType.signal.name(id: id)
-            let macdId = ChartIndicatorType.MacdType.macd.name(id: id)
+            let signal = MacdIndicator.MacdType.signal.name(id: id)
+            let macdId = MacdIndicator.MacdType.macd.name(id: id)
 
             var extremums = ranges[signal]?.all ?? []
             extremums.append(contentsOf: ranges[macdId]?.all ?? [])

@@ -43,6 +43,8 @@ public class RateChartView: UIView {
     }
 
     @discardableResult public func apply(configuration: ChartConfiguration) -> Self {
+        self.configuration = configuration
+
         backgroundColor = configuration.backgroundColor
 
         mainChart.snp.remakeConstraints { maker in
@@ -91,10 +93,10 @@ public class RateChartView: UIView {
         fatalError("not implemented")
     }
 
-    public func set(chartData: ChartData, indicators: [ChartIndicator] = [], animated: Bool = true) throws {
+    @discardableResult public func set(chartData: ChartData, indicators: [ChartIndicator] = [], animated: Bool = true) -> [IndicatorFactory.CalculatingError] {
         // 1. calculate all indicators and add it to chartData
         let factory = IndicatorFactory()
-        try factory.store(indicators: indicators, chartData: chartData)
+        let calculatingErrors = factory.store(indicators: indicators, chartData: chartData)
 
         // 2. convert real values to visible points from 0..1 by x&y
         let converted = RelativeConverter.convert(chartData: chartData, indicators: indicators)
@@ -136,7 +138,8 @@ public class RateChartView: UIView {
             if let firstIndex = viewModels.firstIndex(where: { model in model.id == indicator.json }) {
                 viewModels[firstIndex].set(points: converted, animated: animated)
             } else {
-                if let viewModel = try? ChartViewModel.create(indicator: indicator, commonConfiguration: configuration) {
+                do {
+                    let viewModel = try ChartViewModel.create(indicator: indicator, commonConfiguration: configuration)
                     if viewModel.onChart {
                         viewModel.add(to: mainChart)
                     } else {
@@ -145,11 +148,13 @@ public class RateChartView: UIView {
                     viewModels.append(viewModel)
                     viewModel.set(hidden: indicatorsIsHidden)
                     viewModel.set(points: converted, animated: animated)
+                } catch {
+                    print("Can't create indicator: \(indicator.json) ||| \(error)")
                 }
             }
         }
 
-//        chartDominance.set(values: converted[.dominance], animated: animated)
+        return calculatingErrors
     }
 
     public func setCurve(colorType: ChartColorType) {

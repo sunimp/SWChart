@@ -73,4 +73,24 @@ extension ChartIndicator {
         case wrongIndicatorClass
     }
 
+    public struct LineConfiguration: Codable, Equatable {
+        let color: Color
+        let width: CGFloat
+
+        public init(color: Color, width: CGFloat) {
+            self.color = color
+            self.width = width
+        }
+
+        static public var `default`: LineConfiguration {
+            LineConfiguration(color: Color(.blue), width: 1)
+        }
+
+        public static func ==(lhs: LineConfiguration, rhs: LineConfiguration) -> Bool {
+            lhs.color.hex == rhs.color.hex &&
+                lhs.width == rhs.width
+        }
+
+    }
+
 }

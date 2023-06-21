@@ -138,7 +138,7 @@ public class ChartIndicators {
     static func macd(fast: Int, long: Int, signal: Int, values: [Decimal]) throws -> MacdData {
         let diff = long - fast
         guard diff > 0 else {
-            return MacdData(macd: [], signal: [], histogram: [])
+            throw IndicatorError.wrongParameters
         }
 
         let emaFast = try ema(period: fast, values: values)
@@ -166,6 +166,8 @@ extension ChartIndicators {
         case notEnoughData
         case tooSmallPeriod
         case tooLargePeriod
+        case wrongParameters
+        case invalidIndicator
     }
 
 }
