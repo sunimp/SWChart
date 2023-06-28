@@ -1,33 +1,37 @@
 import UIKit
 
-public class MacdIndicator: ChartIndicator, Equatable {
-    let id: String
+public class MacdIndicator: ChartIndicator {
     let fast: Int
     let long: Int
     let signal: Int
     let configuration: Configuration
 
     private enum CodingKeys : String, CodingKey {
-        case id
         case fast
         case long
         case signal
         case configuration
     }
 
-    public init(id: String, fast: Int, long: Int, signal: Int, onChart: Bool = false, configuration: Configuration = .default) {
-        self.id = id
+    public init(id: String, index: Int, enabled: Bool, fast: Int, long: Int, signal: Int, onChart: Bool = false, configuration: Configuration = .default) {
         self.fast = fast
         self.long = long
         self.signal = signal
         self.configuration = configuration
 
-        super.init(onChart: onChart)
+        super.init(id: id, index: index, enabled: enabled, onChart: onChart)
+    }
+
+    override public var greatestPeriod: Int {
+        max(fast, long, signal)
+    }
+
+    public override var category: Category {
+        .oscillator
     }
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
         fast = try container.decode(Int.self, forKey: .fast)
         long = try container.decode(Int.self, forKey: .long)
         signal = try container.decode(Int.self, forKey: .signal)
@@ -37,7 +41,6 @@ public class MacdIndicator: ChartIndicator, Equatable {
 
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
         try container.encode(fast, forKey: .fast)
         try container.encode(long, forKey: .long)
         try container.encode(signal, forKey: .signal)
@@ -47,6 +50,7 @@ public class MacdIndicator: ChartIndicator, Equatable {
 
     public static func ==(lhs: MacdIndicator, rhs: MacdIndicator) -> Bool {
         lhs.id == rhs.id &&
+                lhs.index == rhs.index &&
                 lhs.fast == rhs.fast &&
                 lhs.long == rhs.long &&
                 lhs.signal == rhs.signal &&
@@ -58,15 +62,24 @@ public class MacdIndicator: ChartIndicator, Equatable {
 extension MacdIndicator {
 
     public struct Configuration: Codable, Equatable {
-        let fastColor: Color
-        let longColor: Color
-        let positiveColor: Color
-        let negativeColor: Color
+        let fastColor: ChartColor
+        let longColor: ChartColor
+        let positiveColor: ChartColor
+        let negativeColor: ChartColor
         let width: CGFloat
         let signalWidth: CGFloat
 
         static public var `default`: Configuration {
-            Configuration(fastColor: Color(.blue), longColor: Color(.yellow), positiveColor: Color(.green), negativeColor: Color(.red), width: 1, signalWidth: 2)
+            Configuration(fastColor: ChartColor(.blue), longColor: ChartColor(.yellow), positiveColor: ChartColor(.green), negativeColor: ChartColor(.red), width: 1, signalWidth: 2)
+        }
+
+        public init(fastColor: ChartColor, longColor: ChartColor, positiveColor: ChartColor, negativeColor: ChartColor, width: CGFloat, signalWidth: CGFloat) {
+            self.fastColor = fastColor
+            self.longColor = longColor
+            self.positiveColor = positiveColor
+            self.negativeColor = negativeColor
+            self.width = width
+            self.signalWidth = signalWidth
         }
 
         public static func ==(lhs: Configuration, rhs: Configuration) -> Bool {

@@ -3,8 +3,8 @@ import UIKit
 public class ChartMacdConfiguration {
     public var animationDuration: TimeInterval = 0.35
 
-    public var histogramInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-    public var linesInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+    public var histogramPadding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+    public var linesPadding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
 
     public var signalColor: UIColor = .blue
     public var signalLineWidth: CGFloat = 1
@@ -14,8 +14,10 @@ public class ChartMacdConfiguration {
     public var positiveColor: UIColor = UIColor.green.withAlphaComponent(0.5)
     public var negativeColor: UIColor = UIColor.red.withAlphaComponent(0.5)
 
-    static func configured(_ configuration: ChartConfiguration) -> ChartMacdConfiguration {
+    static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartMacdConfiguration {
         let config = ChartMacdConfiguration()
+        config.histogramPadding = onChart ? configuration.curvePadding : configuration.indicatorAreaPadding
+        config.linesPadding = onChart ? configuration.curvePadding : configuration.indicatorAreaPadding
         config.animationDuration = configuration.animationDuration
 
         return config
@@ -53,17 +55,17 @@ class ChartMacdViewModel: ChartViewModel {
         histogram.positiveBarFillColor = configuration.positiveColor
         histogram.negativeBarFillColor = configuration.negativeColor
         histogram.width = configuration.histogramWidth
-        histogram.insets = configuration.histogramInsets
+        histogram.padding = configuration.histogramPadding
         histogram.animationDuration = configuration.animationDuration
 
         signal.strokeColor = configuration.signalColor
         signal.width = configuration.signalLineWidth
-        signal.padding = configuration.linesInsets
+        signal.padding = configuration.linesPadding
         signal.animationDuration = configuration.animationDuration
 
         macd.strokeColor = configuration.macdColor
         macd.width = configuration.lineWidth
-        macd.padding = configuration.linesInsets
+        macd.padding = configuration.linesPadding
         macd.animationDuration = configuration.animationDuration
 
         return self
@@ -106,6 +108,7 @@ class ChartMacdViewModel: ChartViewModel {
     }
 
     override func set(hidden: Bool) {
+        super.set(hidden: hidden)
         macd.layer.isHidden = hidden
         histogram.layer.isHidden = hidden
         signal.layer.isHidden = hidden

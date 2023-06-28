@@ -20,9 +20,10 @@ public class RateChartView: UIView {
     public weak var delegate: IChartViewTouchDelegate?
 
     private var chartData: ChartData?
-    public var indicatorsIsHidden: Bool = true {
+    public var indicatorsIsHidden: Bool = false {
         didSet {
             viewModels.forEach { $0.set(hidden: indicatorsIsHidden) }
+            syncVolumeHidden()
         }
     }
 
@@ -54,7 +55,7 @@ public class RateChartView: UIView {
         mainChart.apply(configuration: configuration)
 
         var lastView: UIView = mainChart
-        if configuration.showIndicators {
+        if configuration.showIndicatorArea {
             indicatorChart.snp.remakeConstraints { maker in
                 maker.top.equalTo(mainChart.snp.bottom)
                 maker.leading.trailing.equalToSuperview()
@@ -136,6 +137,7 @@ public class RateChartView: UIView {
         for indicator in indicators {
             // 1. if already exist - will update, else create
             if let firstIndex = viewModels.firstIndex(where: { model in model.id == indicator.json }) {
+                viewModels[firstIndex].set(hidden: !indicator.enabled || indicatorsIsHidden)
                 viewModels[firstIndex].set(points: converted, animated: animated)
             } else {
                 do {
@@ -146,7 +148,7 @@ public class RateChartView: UIView {
                         viewModel.add(to: indicatorChart)
                     }
                     viewModels.append(viewModel)
-                    viewModel.set(hidden: indicatorsIsHidden)
+                    viewModel.set(hidden: !indicator.enabled || indicatorsIsHidden)
                     viewModel.set(points: converted, animated: animated)
                 } catch {
                     print("Can't create indicator: \(indicator.json) ||| \(error)")
@@ -154,7 +156,15 @@ public class RateChartView: UIView {
             }
         }
 
+        //4c. check volume visibility: show always if indicators is hidden, or show when no indicators on indicator layer enabled
+        syncVolumeHidden()
+
         return calculatingErrors
+    }
+
+    private func syncVolumeHidden() {
+        let hasVisibleIndicator = viewModels.contains { viewModel in !viewModel.onChart && !viewModel.isHidden }
+        indicatorChart.setVolumes(hidden: hasVisibleIndicator && !indicatorsIsHidden)
     }
 
     public func setCurve(colorType: ChartColorType) {
@@ -202,8 +212,8 @@ extension RateChartView: ITouchAreaDelegate {
 
     func select(at index: Int) {
         guard let data = chartData,
-              index < data.items.count,
-              let item = chartData?.items[index] else {
+              index < data.visibleItems.count,
+              let item = chartData?.visibleItems[index] else {
 
             return
         }

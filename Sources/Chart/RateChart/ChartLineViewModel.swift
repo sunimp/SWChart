@@ -5,15 +5,15 @@ class ChartLineConfiguration {
     public var lineWidth: CGFloat = 1
 
     public var animationDuration: TimeInterval = 0.35
-    public var curvePadding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
-    public var curveBottomInset: CGFloat = 0
+    public var padding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
+    public var bottomInset: CGFloat = 0
 
-    static func configured(_ configuration: ChartConfiguration) -> ChartLineConfiguration {
+    static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartLineConfiguration {
         let config = ChartLineConfiguration()
 
         config.animationDuration = configuration.animationDuration
-        config.curvePadding = configuration.curvePadding
-        config.curveBottomInset = configuration.curveBottomInset
+        config.padding = onChart ? configuration.curvePadding : configuration.indicatorAreaPadding
+        config.bottomInset = onChart ? configuration.curveBottomInset : 0
         return config
     }
 
@@ -30,8 +30,8 @@ class ChartLineViewModel: ChartViewModel {
 
         maLine.width = configuration.lineWidth
         maLine.strokeColor = configuration.lineColor
-        maLine.padding = configuration.curvePadding
-        maLine.bottomInset = configuration.curveBottomInset
+        maLine.padding = configuration.padding
+        maLine.bottomInset = configuration.bottomInset
     }
 
     @discardableResult override func add(to chart: Chart) -> Self {
@@ -49,6 +49,7 @@ class ChartLineViewModel: ChartViewModel {
     }
 
     override func set(hidden: Bool) {
+        super.set(hidden: hidden)
         maLine.layer.isHidden = hidden
     }
 

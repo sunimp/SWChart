@@ -3,11 +3,18 @@ import UIExtensions
 import HsExtensions
 
 public class ChartIndicator: Codable {
-    var _class: String = "Indicator"
+    var _class: String
+    public let id: String
+    public let index: Int
+    public var enabled: Bool
     let onChart: Bool
 
-    init(onChart: Bool) {
+
+    init(id: String, index: Int, enabled: Bool, onChart: Bool) {
         _class = String(describing: Self.self)
+        self.id = id
+        self.index = index
+        self.enabled = enabled
         self.onChart = onChart
     }
 
@@ -15,7 +22,7 @@ public class ChartIndicator: Codable {
         (try? Self.json(from: self)) ?? _class
     }
 
-    var indicatorType: AbstractType {
+    var abstractType: AbstractType {
         switch _class {
         case String(describing: MaIndicator.self):
             return .ma
@@ -28,6 +35,14 @@ public class ChartIndicator: Codable {
         }
     }
 
+    public var greatestPeriod: Int {
+        0
+    }
+
+    open var category: Category {
+        fatalError("must be overridden by subclass")
+    }
+
     static func json<T: Encodable>(from object: T) throws -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys
@@ -36,32 +51,19 @@ public class ChartIndicator: Codable {
         return String(decoding: data, as: UTF8.self)
     }
 
-    static func instance<T: Decodable>(from json: String) throws -> T {
-        try JSONDecoder().decode(T.self, from: json.hs.data)
-    }
+}
 
-    public static func create(from json: String) throws -> ChartIndicator {
-        let indicator: ChartIndicator = try instance(from: json)
+extension ChartIndicator: Equatable {
 
-        switch indicator._class {
-        case String(describing: MaIndicator.self):
-            let maIndicator: MaIndicator = try instance(from: json)
-            return maIndicator
-        case String(describing: RsiIndicator.self):
-            let maIndicator: RsiIndicator = try instance(from: json)
-            return maIndicator
-        case String(describing: MacdIndicator.self):
-            let maIndicator: MacdIndicator = try instance(from: json)
-            return maIndicator
-        default: throw InitializeError.wrongIndicatorClass
-        }
+    public static func ==(lhs: ChartIndicator, rhs: ChartIndicator) -> Bool {
+        lhs.json == rhs.json
     }
 
 }
 
 extension ChartIndicator {
 
-    enum AbstractType: String {
+    public enum AbstractType: String {
         case invalid
         case ma
         case macd
@@ -69,21 +71,26 @@ extension ChartIndicator {
         case precalculated
     }
 
+    public enum Category: CaseIterable {
+        case movingAverage
+        case oscillator
+    }
+
     public enum InitializeError: Error {
         case wrongIndicatorClass
     }
 
     public struct LineConfiguration: Codable, Equatable {
-        let color: Color
+        let color: ChartColor
         let width: CGFloat
 
-        public init(color: Color, width: CGFloat) {
+        public init(color: ChartColor, width: CGFloat) {
             self.color = color
             self.width = width
         }
 
         static public var `default`: LineConfiguration {
-            LineConfiguration(color: Color(.blue), width: 1)
+            LineConfiguration(color: ChartColor(.blue), width: 1)
         }
 
         public static func ==(lhs: LineConfiguration, rhs: LineConfiguration) -> Bool {

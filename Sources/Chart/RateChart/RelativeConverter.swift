@@ -47,7 +47,7 @@ class RelativeConverter {
         }
 
         let maIds = indicators
-                .filter { $0.indicatorType == .ma }
+                .filter { $0.abstractType == .ma }
                 .map { $0.json }
 
         for id in maIds {
@@ -70,7 +70,7 @@ class RelativeConverter {
 
         // set 0..100 for every rsi
         let rsiIds = indicators
-                .filter { $0.indicatorType == .rsi }
+                .filter { $0.abstractType == .rsi }
                 .map { $0.json }
 
         let rsiRange = ChartRange(min: 0, max: 100)
@@ -78,7 +78,7 @@ class RelativeConverter {
 
         // merge ranges for macd : to show all lines and zoom histogram to maximum
         let macdIds = indicators
-                .filter { $0.indicatorType == .macd }
+                .filter { $0.abstractType == .macd }
                 .map { $0.json }
 
         for id in macdIds {
@@ -105,7 +105,7 @@ class RelativeConverter {
         }
         var relativeData = [String: [CGPoint]]()
 
-        for item in chartData.items {
+        for item in chartData.visibleItems {
             let timestamp = item.timestamp - chartData.startWindow
             let x = CGFloat(timestamp / timestampDelta)
 

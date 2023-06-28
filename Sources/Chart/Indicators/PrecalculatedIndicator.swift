@@ -1,16 +1,14 @@
 import UIKit
 
-public class PrecalculatedIndicator: ChartIndicator, Equatable {
-    let id: String
+public class PrecalculatedIndicator: ChartIndicator {
     let values: [Decimal]
     let configuration: ChartIndicator.LineConfiguration
 
-    public init(id: String, values: [Decimal], onChart: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
-        self.id = id
+    public init(id: String, index: Int = 0, enabled: Bool, values: [Decimal], onChart: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
         self.values = values
         self.configuration = configuration
 
-        super.init(onChart: onChart)
+        super.init(id: id, index: index, enabled: enabled, onChart: onChart)
     }
 
     private enum CodingKeys : String, CodingKey {
@@ -20,7 +18,6 @@ public class PrecalculatedIndicator: ChartIndicator, Equatable {
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
         configuration = try container.decode(ChartIndicator.LineConfiguration.self, forKey: .configuration)
 
         values = []
@@ -29,13 +26,13 @@ public class PrecalculatedIndicator: ChartIndicator, Equatable {
 
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
         try container.encode(configuration, forKey: .configuration)
         try super.encode(to: encoder)
     }
 
     public static func ==(lhs: PrecalculatedIndicator, rhs: PrecalculatedIndicator) -> Bool {
         lhs.id == rhs.id &&
+                lhs.index == rhs.index &&
                 lhs.values == rhs.values &&
                 lhs.onChart == rhs.onChart &&
                 lhs.configuration == rhs.configuration

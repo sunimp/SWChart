@@ -4,7 +4,7 @@ public class ChartConfiguration {
     static let onePixel = 1 / UIScreen.main.scale
 
     public var showBorders = true
-    public var showIndicators = true
+    public var showIndicatorArea = true
     public var showLimits = true
     public var showVerticalLines = true
     public var isInteractive = true
@@ -59,7 +59,9 @@ public class ChartConfiguration {
     public var volumeBarsColor: UIColor = .clear
     public var volumeBarsWidth: CGFloat = 4
     public var volumeMinimalHeight: CGFloat = 2
-    public var volumeBarsInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+
+    public var indicatorAreaPadding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+    public var indicatorAreaBottomInset: CGFloat = 0
 
     public var timelineTextColor: UIColor = UIColor.white.withAlphaComponent(0.5)
     public var timelineFont: UIFont = .systemFont(ofSize: 12)

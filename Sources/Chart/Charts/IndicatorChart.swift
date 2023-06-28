@@ -27,7 +27,7 @@ class IndicatorChart: Chart {
         volumeBars.barFillColor = configuration.volumeBarsFillColor
         volumeBars.width = configuration.volumeBarsWidth
         volumeBars.strokeColor = configuration.volumeBarsColor
-        volumeBars.padding = configuration.volumeBarsInsets
+        volumeBars.padding = configuration.indicatorAreaPadding
         volumeBars.animationDuration = configuration.animationDuration
 
         if configuration.showVerticalLines {

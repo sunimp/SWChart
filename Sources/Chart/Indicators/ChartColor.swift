@@ -1,7 +1,7 @@
 import UIKit
 import UIExtensions
 
-public struct Color: Codable {
+public struct ChartColor: Codable {
     public let value: UIColor
 
     enum CodingKeys: CodingKey {
@@ -14,8 +14,8 @@ public struct Color: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let hex = try container.decode(Int.self)
-        value = UIColor(hex: hex)
+        let hexa = try container.decode(Int.self)
+        value = UIColor(hexa: hexa)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -39,7 +39,16 @@ extension UIColor {
 
         getRed(&r, green: &g, blue: &b, alpha: &a)
 
-        return Int(r * 255) << 16 | Int(g * 255) << 8 | Int(b * 255) << 0
+        return Int(r * 255) << 24 | Int(g * 255) << 16 | Int(b * 255) << 8 | Int(a * 255) << 0
+    }
+
+    public convenience init(hexa: Int) {
+        self.init(
+                red: CGFloat((hexa >> 24) & 0xff) / 255,
+                green: CGFloat((hexa >> 16) & 0xff) / 255,
+                blue: CGFloat((hexa >> 8) & 0xff) / 255,
+                alpha: CGFloat(hexa & 0xff) / 255
+        )
     }
 
 }

@@ -23,11 +23,11 @@ public class ChartRsiConfiguration {
     public var limitTextColor: UIColor = UIColor.white.withAlphaComponent(0.5)
     public var limitTextFont: UIFont = .systemFont(ofSize: 12)
 
-    static func configured(_ configuration: ChartConfiguration) -> ChartRsiConfiguration {
+    static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartRsiConfiguration {
         let config = ChartRsiConfiguration()
         config.animationDuration = configuration.animationDuration
 
-        config.padding = configuration.rsiPadding
+        config.padding = onChart ? configuration.curvePadding : configuration.indicatorAreaPadding
         config.topLimitValue = configuration.rsiTopLimitValue
         config.bottomLimitValue = configuration.rsiBottomLimitValue
 
@@ -117,6 +117,7 @@ class ChartRsiViewModel: ChartViewModel {
     }
 
     override func set(hidden: Bool) {
+        super.set(hidden: hidden)
         rsi.layer.isHidden = hidden
         rsiLimitLines.layer.isHidden = hidden
         rsiTopValue.layer.isHidden = hidden

@@ -50,6 +50,12 @@ class ChartHistogram: ChartPointsObject {
             negativeBars.barFillColor = negativeBarFillColor
         }
     }
+    override var padding: UIEdgeInsets {
+        didSet {
+            positiveBars.padding = padding
+            negativeBars.padding = padding
+        }
+    }
 
     override init() {
         super.init()

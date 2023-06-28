@@ -105,7 +105,7 @@ class ViewController: UIViewController {
 
         // ma:
         for i in 0...Int.random(in: 0...2) {
-            indicators.append(MaIndicator(id: "ma-\(i)", period: Int.random(in: 10...25), type: Bool.random() ? .ema : .sma, color: Self.maColors[i]))
+            indicators.append(MaIndicator(id: "ma", index: i, period: Int.random(in: 10...25), type: Bool.random() ? .ema : .sma, color: Self.maColors[i]))
         }
         if Bool.random() {
             indicators.append(RsiIndicator(id: "rsi", period: Int.random(in: 10...25), onChart: false))
