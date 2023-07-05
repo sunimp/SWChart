@@ -1,10 +1,10 @@
 import UIKit
 
 public class MacdIndicator: ChartIndicator {
-    let fast: Int
-    let long: Int
-    let signal: Int
-    let configuration: Configuration
+    public let fast: Int
+    public let slow: Int
+    public let signal: Int
+    public let configuration: Configuration
 
     private enum CodingKeys : String, CodingKey {
         case fast
@@ -13,17 +13,17 @@ public class MacdIndicator: ChartIndicator {
         case configuration
     }
 
-    public init(id: String, index: Int, enabled: Bool, fast: Int, long: Int, signal: Int, onChart: Bool = false, configuration: Configuration = .default) {
+    public init(id: String, index: Int, enabled: Bool, fast: Int, slow: Int, signal: Int, onChart: Bool = false, single: Bool = true, configuration: Configuration = .default) {
         self.fast = fast
-        self.long = long
+        self.slow = slow
         self.signal = signal
         self.configuration = configuration
 
-        super.init(id: id, index: index, enabled: enabled, onChart: onChart)
+        super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
     override public var greatestPeriod: Int {
-        max(fast, long, signal)
+        slow + signal
     }
 
     public override var category: Category {
@@ -33,7 +33,7 @@ public class MacdIndicator: ChartIndicator {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         fast = try container.decode(Int.self, forKey: .fast)
-        long = try container.decode(Int.self, forKey: .long)
+        slow = try container.decode(Int.self, forKey: .long)
         signal = try container.decode(Int.self, forKey: .signal)
         configuration = try container.decode(Configuration.self, forKey: .configuration)
         try super.init(from: decoder)
@@ -42,7 +42,7 @@ public class MacdIndicator: ChartIndicator {
     public override func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(fast, forKey: .fast)
-        try container.encode(long, forKey: .long)
+        try container.encode(slow, forKey: .long)
         try container.encode(signal, forKey: .signal)
         try container.encode(configuration, forKey: .configuration)
         try super.encode(to: encoder)
@@ -52,7 +52,7 @@ public class MacdIndicator: ChartIndicator {
         lhs.id == rhs.id &&
                 lhs.index == rhs.index &&
                 lhs.fast == rhs.fast &&
-                lhs.long == rhs.long &&
+                lhs.slow == rhs.slow &&
                 lhs.signal == rhs.signal &&
                 lhs.configuration == rhs.configuration
     }

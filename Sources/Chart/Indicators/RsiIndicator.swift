@@ -1,8 +1,8 @@
 import UIKit
 
 public class RsiIndicator: ChartIndicator {
-    let period: Int
-    let configuration: ChartIndicator.LineConfiguration
+    public let period: Int
+    public let configuration: ChartIndicator.LineConfiguration
 
     private enum CodingKeys : String, CodingKey {
         case period
@@ -10,11 +10,11 @@ public class RsiIndicator: ChartIndicator {
         case configuration
     }
 
-    public init(id: String, index: Int, enabled: Bool, period: Int, onChart: Bool = false, configuration: ChartIndicator.LineConfiguration = .default) {
+    public init(id: String, index: Int, enabled: Bool, period: Int, onChart: Bool = false, single: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
         self.period = period
         self.configuration = configuration
 
-        super.init(id: id, index: index, enabled: enabled, onChart: onChart)
+        super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
     override public var greatestPeriod: Int {

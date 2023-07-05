@@ -37,7 +37,7 @@ class RelativeConverter {
         return ranges
     }
 
-    static private func ranges(chartData: ChartData, indicators: [ChartIndicator]) -> [String: ChartRange] {
+    static private func ranges(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: ChartRange] {
         var ranges = allRanges(chartData: chartData, indicators: indicators)
 
         // for rate and all MA indicator find extremum values
@@ -50,11 +50,13 @@ class RelativeConverter {
                 .filter { $0.abstractType == .ma }
                 .map { $0.json }
 
-        for id in maIds {
-            guard let range = ranges[id] else {
-                continue
+        if showIndicators {
+            for id in maIds {
+                guard let range = ranges[id] else {
+                    continue
+                }
+                extremums.append(contentsOf: range.all)
             }
-            extremums.append(contentsOf: range.all)
         }
         // calculate new range
         let extremumRange = ChartRange(min: extremums.min() ?? 0, max: extremums.max() ?? 0)
@@ -133,10 +135,9 @@ class RelativeConverter {
         return relativeData
     }
 
-    static func convert(chartData: ChartData, indicators: [ChartIndicator]) -> [String: [CGPoint]] {
-
+    static func convert(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: [CGPoint]] {
         // calculate ranges for all data
-        let indicatorRanges = ranges(chartData: chartData, indicators: indicators)
+        let indicatorRanges = ranges(chartData: chartData, indicators: indicators, showIndicators: showIndicators)
         // make relative points
         return relative(chartData: chartData, ranges: indicatorRanges)
     }

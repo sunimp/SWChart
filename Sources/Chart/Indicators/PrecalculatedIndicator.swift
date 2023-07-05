@@ -4,11 +4,11 @@ public class PrecalculatedIndicator: ChartIndicator {
     let values: [Decimal]
     let configuration: ChartIndicator.LineConfiguration
 
-    public init(id: String, index: Int = 0, enabled: Bool, values: [Decimal], onChart: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
+    public init(id: String, index: Int = 0, enabled: Bool, values: [Decimal], onChart: Bool = true, single: Bool = false, configuration: ChartIndicator.LineConfiguration = .default) {
         self.values = values
         self.configuration = configuration
 
-        super.init(id: id, index: index, enabled: enabled, onChart: onChart)
+        super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
     private enum CodingKeys : String, CodingKey {

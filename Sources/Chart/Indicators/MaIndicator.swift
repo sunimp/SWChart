@@ -1,9 +1,9 @@
 import UIKit
 
 public class MaIndicator: ChartIndicator {
-    let period: Int
-    let type: MaType
-    let configuration: ChartIndicator.LineConfiguration
+    public let period: Int
+    public let type: MaType
+    public let configuration: ChartIndicator.LineConfiguration
 
     private enum CodingKeys : String, CodingKey {
         case period
@@ -12,12 +12,12 @@ public class MaIndicator: ChartIndicator {
         case width
     }
 
-    public init(id: String, index: Int, enabled: Bool, period: Int, type: MaType, onChart: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
+    public init(id: String, index: Int, enabled: Bool, period: Int, type: MaType, onChart: Bool = true, single: Bool = false, configuration: ChartIndicator.LineConfiguration = .default) {
         self.period = period
         self.type = type
         self.configuration = configuration
 
-        super.init(id: id, index: index, enabled: enabled, onChart: onChart)
+        super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
     override public var greatestPeriod: Int {
@@ -56,7 +56,7 @@ public class MaIndicator: ChartIndicator {
 
 extension MaIndicator {
 
-    public enum MaType: String, Codable {
+    public enum MaType: String, CaseIterable, Codable {
         case ema
         case sma
         case wma

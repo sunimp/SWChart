@@ -7,22 +7,24 @@ public class ChartIndicator: Codable {
     public let id: String
     public let index: Int
     public var enabled: Bool
-    let onChart: Bool
+    public let onChart: Bool
+    public let single: Bool
 
 
-    init(id: String, index: Int, enabled: Bool, onChart: Bool) {
+    init(id: String, index: Int, enabled: Bool, onChart: Bool, single: Bool) {
         _class = String(describing: Self.self)
         self.id = id
         self.index = index
         self.enabled = enabled
         self.onChart = onChart
+        self.single = single
     }
 
     public var json: String {
         (try? Self.json(from: self)) ?? _class
     }
 
-    var abstractType: AbstractType {
+    public var abstractType: AbstractType {
         switch _class {
         case String(describing: MaIndicator.self):
             return .ma

@@ -20,12 +20,6 @@ public class RateChartView: UIView {
     public weak var delegate: IChartViewTouchDelegate?
 
     private var chartData: ChartData?
-    public var indicatorsIsHidden: Bool = false {
-        didSet {
-            viewModels.forEach { $0.set(hidden: indicatorsIsHidden) }
-            syncVolumeHidden()
-        }
-    }
 
     public init(configuration: ChartConfiguration) {
         self.configuration = configuration
@@ -94,13 +88,13 @@ public class RateChartView: UIView {
         fatalError("not implemented")
     }
 
-    @discardableResult public func set(chartData: ChartData, indicators: [ChartIndicator] = [], animated: Bool = true) -> [IndicatorFactory.CalculatingError] {
+    @discardableResult public func set(chartData: ChartData, indicators: [ChartIndicator] = [], showIndicators: Bool = true, animated: Bool = true) -> [IndicatorFactory.CalculatingError] {
         // 1. calculate all indicators and add it to chartData
         let factory = IndicatorFactory()
         let calculatingErrors = factory.store(indicators: indicators, chartData: chartData)
 
         // 2. convert real values to visible points from 0..1 by x&y
-        let converted = RelativeConverter.convert(chartData: chartData, indicators: indicators)
+        let converted = RelativeConverter.convert(chartData: chartData, indicators: indicators, showIndicators: showIndicators)
 
         // 3. set points for rate and volume
         if let points = converted[ChartData.rate] {
@@ -112,8 +106,9 @@ public class RateChartView: UIView {
         // 4. get diff to update all chartIndicator layers
         let updatedIds = indicators.map { $0.json }
 
-        // 4a. remove unused viewModels
+        // 4a. remove unused viewModels and apply visibility
         for model in viewModels {
+            model.set(hidden: !showIndicators)
             if !updatedIds.contains(model.id) {
                 // remove from chart
                 if model.onChart {
@@ -137,7 +132,7 @@ public class RateChartView: UIView {
         for indicator in indicators {
             // 1. if already exist - will update, else create
             if let firstIndex = viewModels.firstIndex(where: { model in model.id == indicator.json }) {
-                viewModels[firstIndex].set(hidden: !indicator.enabled || indicatorsIsHidden)
+                viewModels[firstIndex].set(hidden: !indicator.enabled || !showIndicators)
                 viewModels[firstIndex].set(points: converted, animated: animated)
             } else {
                 do {
@@ -148,7 +143,7 @@ public class RateChartView: UIView {
                         viewModel.add(to: indicatorChart)
                     }
                     viewModels.append(viewModel)
-                    viewModel.set(hidden: !indicator.enabled || indicatorsIsHidden)
+                    viewModel.set(hidden: !indicator.enabled || !showIndicators)
                     viewModel.set(points: converted, animated: animated)
                 } catch {
                     print("Can't create indicator: \(indicator.json) ||| \(error)")
@@ -157,14 +152,10 @@ public class RateChartView: UIView {
         }
 
         //4c. check volume visibility: show always if indicators is hidden, or show when no indicators on indicator layer enabled
-        syncVolumeHidden()
+        let hasVisibleOffChainIndicator = viewModels.contains { viewModel in !viewModel.onChart && !viewModel.isHidden }
+        indicatorChart.setVolumes(hidden: hasVisibleOffChainIndicator && showIndicators)
 
         return calculatingErrors
-    }
-
-    private func syncVolumeHidden() {
-        let hasVisibleIndicator = viewModels.contains { viewModel in !viewModel.onChart && !viewModel.isHidden }
-        indicatorChart.setVolumes(hidden: hasVisibleIndicator && !indicatorsIsHidden)
     }
 
     public func setCurve(colorType: ChartColorType) {

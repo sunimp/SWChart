@@ -30,7 +30,7 @@ public class IndicatorFactory {
                     chartData.add(name: indicatorName, values: values)
                 case let indicator as MacdIndicator:
                     // calculate data
-                    let values = try IndicatorCalculator.macd(fast: indicator.fast, long: indicator.long, signal: indicator.signal, values: rates)
+                    let values = try IndicatorCalculator.macd(fast: indicator.fast, long: indicator.slow, signal: indicator.signal, values: rates)
                     // todo: remove or replace MacdIndicator.MacdType.macd.name(id: indicatorName)
                     chartData.add(name: MacdIndicator.MacdType.macd.name(id: indicatorName), values: values.macd)
                     chartData.add(name: MacdIndicator.MacdType.signal.name(id: indicatorName), values: values.signal)

@@ -9,6 +9,8 @@ class ViewController: UIViewController {
     private var chartData = ChartData(items: [], startWindow: 0, endWindow: 0)
     private var indicators: [ChartIndicator] = []
 
+    private showIndicators = true
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -91,13 +93,13 @@ class ViewController: UIViewController {
     }
 
     private func show() {
-        chartView.set(chartData: chartData, indicators: indicators, animated: true)
+        chartView.set(chartData: chartData, indicators: indicators, showIndicators: showIndicators, animated: true)
         chartView.setCurve(colorType: .neutral)
     }
 
     @objc func toggleIndicators() {
-        chartView.indicatorsIsHidden.toggle()
-        chartView.setVolumes(hidden: !chartView.indicatorsIsHidden)
+        showIndicators = !showIndicators
+        show()
     }
     
     @objc func generateIndicators() {
@@ -110,7 +112,7 @@ class ViewController: UIViewController {
         if Bool.random() {
             indicators.append(RsiIndicator(id: "rsi", period: Int.random(in: 10...25), onChart: false))
         } else {
-            indicators.append(MacdIndicator(id: "macd", fast: Int.random(in: 6...10), long: Int.random(in: 12...16), signal: 24))
+            indicators.append(MacdIndicator(id: "macd", fast: Int.random(in: 6...10), slow: Int.random(in: 12...16), signal: 24))
         }
         self.indicators = indicators
         show()
