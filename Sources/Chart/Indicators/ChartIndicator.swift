@@ -83,8 +83,8 @@ extension ChartIndicator {
     }
 
     public struct LineConfiguration: Codable, Equatable {
-        let color: ChartColor
-        let width: CGFloat
+        public let color: ChartColor
+        public let width: CGFloat
 
         public init(color: ChartColor, width: CGFloat) {
             self.color = color

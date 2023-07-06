@@ -7,12 +7,12 @@ public class ChartRsiConfiguration {
     public var lineColor: UIColor = .blue
     public var lineWidth: CGFloat = 1
 
-    public var padding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+    public var padding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     public var topLimitValue: CGFloat = 0.7
     public var bottomLimitValue: CGFloat = 0.3
 
-    public var highTextInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: -1, bottom: -1, right: 16)
-    public var lowTextInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 16)
+    public var highTextInsets: UIEdgeInsets = UIEdgeInsets(top: 6, left: 16, bottom: -1, right: -1)
+    public var lowTextInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: 16, bottom: -2, right: -1)
 
     public var textSize: CGSize = CGSize(width: 15, height: 14)
 
@@ -21,7 +21,7 @@ public class ChartRsiConfiguration {
     public var limitLinesColor: UIColor = UIColor.white.withAlphaComponent(0.5)
 
     public var limitTextColor: UIColor = UIColor.white.withAlphaComponent(0.5)
-    public var limitTextFont: UIFont = .systemFont(ofSize: 12)
+    public var limitTextFont: UIFont = .systemFont(ofSize: 10)
 
     static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartRsiConfiguration {
         let config = ChartRsiConfiguration()

@@ -4,7 +4,7 @@ public class ChartMacdConfiguration {
     public var animationDuration: TimeInterval = 0.35
 
     public var histogramPadding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-    public var linesPadding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+    public var linesPadding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
     public var signalColor: UIColor = .blue
     public var signalLineWidth: CGFloat = 1

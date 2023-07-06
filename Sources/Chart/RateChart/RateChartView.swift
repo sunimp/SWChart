@@ -3,7 +3,7 @@ import SnapKit
 
 public protocol IChartViewTouchDelegate: AnyObject {
     func touchDown()
-    func select(item: ChartItem)
+    func select(item: ChartItem, indicators: [ChartIndicator])
     func touchUp()
 }
 
@@ -20,6 +20,7 @@ public class RateChartView: UIView {
     public weak var delegate: IChartViewTouchDelegate?
 
     private var chartData: ChartData?
+    private var indicators = [ChartIndicator]()
 
     public init(configuration: ChartConfiguration) {
         self.configuration = configuration
@@ -127,6 +128,7 @@ public class RateChartView: UIView {
 
         // store changes after adding and deleting indicators
         self.chartData = chartData
+        self.indicators = showIndicators ? indicators : []
 
         // 4b. update existed and add new viewModels
         for indicator in indicators {
@@ -209,7 +211,7 @@ extension RateChartView: ITouchAreaDelegate {
             return
         }
 
-        delegate?.select(item: item)
+        delegate?.select(item: item, indicators: indicators)
     }
 
     func touchUp() {

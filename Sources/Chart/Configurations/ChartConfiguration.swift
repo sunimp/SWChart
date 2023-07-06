@@ -45,7 +45,7 @@ public class ChartConfiguration {
     public var limitLinesPadding: UIEdgeInsets = UIEdgeInsets(top: 18, left: 0, bottom: 18, right: 0)
 
     public var limitTextColor: UIColor = UIColor.white.withAlphaComponent(0.5)
-    public var limitTextFont: UIFont = .systemFont(ofSize: 12)
+    public var limitTextFont: UIFont = .systemFont(ofSize: 10)
     public var highLimitTextInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 16, bottom: -1, right: 32)
     public var highLimitTextSize: CGSize = CGSize(width: 0, height: 14)
     public var lowLimitTextInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: 16, bottom: 4, right: 32)
@@ -75,12 +75,12 @@ public class ChartConfiguration {
     public var dominanceLineColor = UIColor.orange
     public var dominanceLineWidth: CGFloat = 1
 
-    public var rsiPadding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
+    public var rsiPadding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     public var rsiTopLimitValue: CGFloat = 0.7
     public var rsiBottomLimitValue: CGFloat = 0.3
 
-    public var rsiHighTextInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: -1, bottom: -1, right: 16)
-    public var rsiLowTextInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: 4, right: 16)
+    public var rsiHighTextInsets: UIEdgeInsets = UIEdgeInsets(top: 6, left: 16, bottom: -1, right: -1)
+    public var rsiLowTextInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: 16, bottom: -2, right: -1)
 
     public var rsiTextSize: CGSize = CGSize(width: 15, height: 14)
 

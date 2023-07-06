@@ -9,7 +9,7 @@ class ViewController: UIViewController {
     private var chartData = ChartData(items: [], startWindow: 0, endWindow: 0)
     private var indicators: [ChartIndicator] = []
 
-    private showIndicators = true
+    private var showIndicators = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,12 +107,12 @@ class ViewController: UIViewController {
 
         // ma:
         for i in 0...Int.random(in: 0...2) {
-            indicators.append(MaIndicator(id: "ma", index: i, period: Int.random(in: 10...25), type: Bool.random() ? .ema : .sma, color: Self.maColors[i]))
+            indicators.append(MaIndicator(id: "ma", index: i, enabled: true, period: Int.random(in: 10...25), type: Bool.random() ? .ema : .sma))
         }
         if Bool.random() {
-            indicators.append(RsiIndicator(id: "rsi", period: Int.random(in: 10...25), onChart: false))
+            indicators.append(RsiIndicator(id: "rsi", index: 0, enabled: true, period: Int.random(in: 10...25), onChart: false))
         } else {
-            indicators.append(MacdIndicator(id: "macd", fast: Int.random(in: 6...10), slow: Int.random(in: 12...16), signal: 24))
+            indicators.append(MacdIndicator(id: "macd", index: 0, enabled: true, fast: Int.random(in: 6...10), slow: Int.random(in: 12...16), signal: 24))
         }
         self.indicators = indicators
         show()

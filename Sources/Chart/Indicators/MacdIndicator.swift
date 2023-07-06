@@ -62,10 +62,10 @@ public class MacdIndicator: ChartIndicator {
 extension MacdIndicator {
 
     public struct Configuration: Codable, Equatable {
-        let fastColor: ChartColor
-        let longColor: ChartColor
-        let positiveColor: ChartColor
-        let negativeColor: ChartColor
+        public let fastColor: ChartColor
+        public let longColor: ChartColor
+        public let positiveColor: ChartColor
+        public let negativeColor: ChartColor
         let width: CGFloat
         let signalWidth: CGFloat
 
@@ -97,7 +97,7 @@ extension MacdIndicator {
         case signal = "signal"
         case histogram = "histogram"
 
-        func name(id: String) -> String {
+        public func name(id: String) -> String {
             [id, rawValue].joined(separator: "_")
         }
     }

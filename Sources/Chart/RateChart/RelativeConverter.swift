@@ -84,17 +84,24 @@ class RelativeConverter {
                 .map { $0.json }
 
         for id in macdIds {
-            let signal = MacdIndicator.MacdType.signal.name(id: id)
+            let signalId = MacdIndicator.MacdType.signal.name(id: id)
             let macdId = MacdIndicator.MacdType.macd.name(id: id)
+            let histogramId = MacdIndicator.MacdType.histogram.name(id: id)
 
-            var extremums = ranges[signal]?.all ?? []
+            var extremums = ranges[signalId]?.all ?? []
             extremums.append(contentsOf: ranges[macdId]?.all ?? [])
-            let maxValue = extremums.map { abs($0) }.max() ?? 0
+            let histogramExtremums = ranges[histogramId]?.all ?? []
 
+            print(extremums.map { $0.description })
+            let maxValue = extremums.map { abs($0) }.max() ?? 0
+            let histogramMaxValue = histogramExtremums.map { abs($0) }.max() ?? 0
+
+            print(maxValue.description)
             let result = ChartRange(min: -maxValue, max: maxValue)
 
-            ranges[signal] = result
+            ranges[signalId] = result
             ranges[macdId] = result
+            ranges[histogramId] = ChartRange(min: -histogramMaxValue, max: histogramMaxValue)
         }
 
         return ranges
