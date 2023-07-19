@@ -92,11 +92,9 @@ class RelativeConverter {
             extremums.append(contentsOf: ranges[macdId]?.all ?? [])
             let histogramExtremums = ranges[histogramId]?.all ?? []
 
-            print(extremums.map { $0.description })
             let maxValue = extremums.map { abs($0) }.max() ?? 0
             let histogramMaxValue = histogramExtremums.map { abs($0) }.max() ?? 0
 
-            print(maxValue.description)
             let result = ChartRange(min: -maxValue, max: maxValue)
 
             ranges[signalId] = result

@@ -1,9 +1,9 @@
 import Foundation
 
-struct MacdData {
-    let macd: [Decimal]
-    let signal: [Decimal]
-    let histogram: [Decimal]
+public struct MacdData {
+    public let macd: [Decimal]
+    public let signal: [Decimal]
+    public let histogram: [Decimal]
 }
 
 public class IndicatorCalculator {
@@ -135,7 +135,7 @@ public class IndicatorCalculator {
         return rsi
     }
 
-    static func macd(fast: Int, long: Int, signal: Int, values: [Decimal]) throws -> MacdData {
+    public static func macd(fast: Int, long: Int, signal: Int, values: [Decimal]) throws -> MacdData {
         let diff = long - fast
         guard diff > 0 else {
             throw IndicatorError.wrongParameters

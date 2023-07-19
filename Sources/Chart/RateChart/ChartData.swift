@@ -54,4 +54,8 @@ public class ChartData {
         items.filter { item in item.timestamp >= startWindow && item.timestamp <= endWindow }
     }
 
+    public func last(name: String) -> Decimal? {
+        items.last?.indicators[name]
+    }
+
 }

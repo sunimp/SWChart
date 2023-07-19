@@ -156,7 +156,7 @@ class ChartBars: ChartPointsObject {
             }
             maxWidth = min(gap - onePixel, maxWidth)
         }
-        return max(maxWidth, onePixel)
+        return max(maxWidth, 2 * onePixel)
     }
 
     override func corrected(points: [CGPoint], newCount: Int) -> [CGPoint] {

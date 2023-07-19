@@ -18,6 +18,7 @@ public class RateChartView: UIView {
     private var configuration: ChartConfiguration
 
     public weak var delegate: IChartViewTouchDelegate?
+    public private(set) var isPressed: Bool = false
 
     private var chartData: ChartData?
     private var indicators = [ChartIndicator]()
@@ -197,6 +198,7 @@ public class RateChartView: UIView {
 extension RateChartView: ITouchAreaDelegate {
 
     func touchDown() {
+        isPressed = true
         mainChart.setLine(colorType: .pressed)
         viewModels.forEach { $0.set(selected: true) }
 
@@ -215,6 +217,7 @@ extension RateChartView: ITouchAreaDelegate {
     }
 
     func touchUp() {
+        isPressed = false
         mainChart.setLine(colorType: colorType)
         viewModels.forEach { $0.set(selected: false) }
 
