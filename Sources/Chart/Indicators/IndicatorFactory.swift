@@ -1,7 +1,6 @@
 import Foundation
 
 public class IndicatorFactory {
-
     public func store(indicators: [ChartIndicator], chartData: ChartData) -> [CalculatingError] {
         // 1. get all rates to calculate indicators
         let rates = chartData.values(name: ChartData.rate)
@@ -31,7 +30,7 @@ public class IndicatorFactory {
                 case let indicator as MacdIndicator:
                     // calculate data
                     let values = try IndicatorCalculator.macd(fast: indicator.fast, long: indicator.slow, signal: indicator.signal, values: rates)
-                    // todo: remove or replace MacdIndicator.MacdType.macd.name(id: indicatorName)
+                    // TODO: remove or replace MacdIndicator.MacdType.macd.name(id: indicatorName)
                     chartData.add(name: MacdIndicator.MacdType.macd.name(id: indicatorName), values: values.macd)
                     chartData.add(name: MacdIndicator.MacdType.signal.name(id: indicatorName), values: values.signal)
                     chartData.add(name: MacdIndicator.MacdType.histogram.name(id: indicatorName), values: values.histogram)
@@ -44,14 +43,11 @@ public class IndicatorFactory {
         return errors
     }
 
-    public init() {
-    }
-
+    public init() {}
 }
 
-extension IndicatorFactory {
-
-    public struct CalculatingError {
+public extension IndicatorFactory {
+    struct CalculatingError {
         public let id: String
         public let error: Error
 
@@ -60,5 +56,4 @@ extension IndicatorFactory {
             self.error = error
         }
     }
-
 }

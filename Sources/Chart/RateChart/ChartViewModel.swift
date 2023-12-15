@@ -10,27 +10,26 @@ class ChartViewModel: Equatable {
         self.onChart = onChart
     }
 
-    @discardableResult func add(to chart: Chart) -> Self { self }
-    @discardableResult func remove(from chart: Chart) -> Self { self }
+    @discardableResult func add(to _: Chart) -> Self { self }
+    @discardableResult func remove(from _: Chart) -> Self { self }
     @discardableResult func remove(from chartData: ChartData) -> Self {
         chartData.removeIndicator(id: id)
         return self
     }
 
-    func set(points: [String: [CGPoint]], animated: Bool) {}
+    func set(points _: [String: [CGPoint]], animated _: Bool) {}
     func set(hidden: Bool) {
         isHidden = hidden
     }
 
-    func set(selected: Bool) {}
+    func set(selected _: Bool) {}
 
-    static func ==(lhs: ChartViewModel, rhs: ChartViewModel) -> Bool {
+    static func == (lhs: ChartViewModel, rhs: ChartViewModel) -> Bool {
         lhs.id == rhs.id
     }
 }
 
 extension ChartViewModel {
-
     static func create(indicator: ChartIndicator, commonConfiguration: ChartConfiguration) throws -> ChartViewModel {
         let id = indicator.json
 
@@ -58,6 +57,5 @@ extension ChartViewModel {
             return ChartMacdViewModel(id: id, onChart: indicator.onChart, configuration: configuration)
         default: throw IndicatorCalculator.IndicatorError.invalidIndicator
         }
-
     }
 }

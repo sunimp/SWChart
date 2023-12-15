@@ -1,5 +1,5 @@
-import UIKit
 import UIExtensions
+import UIKit
 
 public struct ChartTimelineItem {
     let text: String
@@ -9,7 +9,6 @@ public struct ChartTimelineItem {
         self.text = text
         self.timestamp = timestamp
     }
-
 }
 
 class TimelineChart: Chart {
@@ -36,7 +35,7 @@ class TimelineChart: Chart {
     @discardableResult func apply(configuration: ChartConfiguration?) -> Self {
         self.configuration = configuration
 
-        if let configuration = configuration {
+        if let configuration {
             horizontalLines.gridType = .horizontal
             horizontalLines.width = configuration.borderWidth
             horizontalLines.strokeColor = configuration.borderColor
@@ -56,7 +55,7 @@ class TimelineChart: Chart {
         texts.forEach {
             let text = ChartText()
             text.set(text: $0)
-            if let configuration = configuration {
+            if let configuration {
                 text.textColor = configuration.timelineTextColor
                 text.font = configuration.timelineFont
             }
@@ -66,16 +65,15 @@ class TimelineChart: Chart {
     }
 
     func updateTextInsets() {
-        guard let configuration = configuration else {
+        guard let configuration else {
             return
         }
 
-        for i in (0..<timelineTexts.count).reversed() {
+        for i in (0 ..< timelineTexts.count).reversed() {
             var currentPosition = ShapeHelper.convertRelative(point: timelinePositions[i], size: bounds.size, padding: .zero)
             var insets = configuration.timelineInsets
 
             if i == texts.count - 1 { // check last element position
-
                 // check text does not go beyond bounds
                 let textSize = timelineTexts[i].size(containerWidth: layer.bounds.width, font: configuration.timelineFont)
 

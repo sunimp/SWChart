@@ -1,5 +1,5 @@
-import UIKit
 import UIExtensions
+import UIKit
 
 public struct ChartColor: Codable {
     public let value: UIColor
@@ -26,16 +26,14 @@ public struct ChartColor: Codable {
     public var hex: Int {
         value.hex
     }
-
 }
 
 extension UIColor {
-
     var hex: Int {
-        var r:CGFloat = 0
-        var g:CGFloat = 0
-        var b:CGFloat = 0
-        var a:CGFloat = 0
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
 
         getRed(&r, green: &g, blue: &b, alpha: &a)
 
@@ -44,11 +42,10 @@ extension UIColor {
 
     public convenience init(hexa: Int) {
         self.init(
-                red: CGFloat((hexa >> 24) & 0xff) / 255,
-                green: CGFloat((hexa >> 16) & 0xff) / 255,
-                blue: CGFloat((hexa >> 8) & 0xff) / 255,
-                alpha: CGFloat(hexa & 0xff) / 255
+            red: CGFloat((hexa >> 24) & 0xFF) / 255,
+            green: CGFloat((hexa >> 16) & 0xFF) / 255,
+            blue: CGFloat((hexa >> 8) & 0xFF) / 255,
+            alpha: CGFloat(hexa & 0xFF) / 255
         )
     }
-
 }

@@ -25,7 +25,7 @@ class ChartTouchArea: Chart {
         add(verticalLine)
         add(pointCircle)
 
-        if let configuration = configuration {
+        if let configuration {
             apply(configuration: configuration)
         }
     }
@@ -64,9 +64,9 @@ class ChartTouchArea: Chart {
 
     // The Pan Gesture
     private func createPanGestureRecognizer() {
-        gestureRecognizer = UILongPressGestureRecognizer(target: self, action:#selector(handlePanGesture(gesture:)))
-        if let gestureRecognizer = gestureRecognizer {
-            self.addGestureRecognizer(gestureRecognizer)
+        gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
+        if let gestureRecognizer {
+            addGestureRecognizer(gestureRecognizer)
             gestureRecognizer.minimumPressDuration = 0.05
             gestureRecognizer.delaysTouchesBegan = false
         }
@@ -94,24 +94,24 @@ class ChartTouchArea: Chart {
         guard bounds.width > 0 else { return nil }
 
         let position = (position - curvePadding.left) / (bounds.width - curvePadding.width)
-        for i in 0..<points.count {
-            if position == points[i].x {                    // x equal point.x . Return point
+        for i in 0 ..< points.count {
+            if position == points[i].x { // x equal point.x . Return point
                 return i
             }
-            if position < points[i].x {                     // x less than point.x
-                guard (i - 1) >= 0 else {                   // When no previous point, return current
+            if position < points[i].x { // x less than point.x
+                guard (i - 1) >= 0 else { // When no previous point, return current
                     return i
                 }
-                                                            // calculate which point is nearest to x
+                // calculate which point is nearest to x
                 let halfInterval = (points[i].x - points[i - 1].x) / 2
                 let nearPrevious = (points[i - 1].x + halfInterval) > position
 
                 return nearPrevious ? (i - 1) : i
             }
-            guard (i + 1) < points.count else {             // When x more than point.x and no next point, return current
+            guard (i + 1) < points.count else { // When x more than point.x and no next point, return current
                 return i
             }
-                                                            // else go next loop
+            // else go next loop
         }
         return nil
     }
@@ -148,13 +148,11 @@ class ChartTouchArea: Chart {
 }
 
 extension ChartTouchArea: UIGestureRecognizerDelegate {
-
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_: UIGestureRecognizer, shouldRequireFailureOf _: UIGestureRecognizer) -> Bool {
         true
     }
 
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    public func gestureRecognizer(_: UIGestureRecognizer, shouldReceive _: UITouch) -> Bool {
         true
     }
-
 }

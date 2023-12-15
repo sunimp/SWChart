@@ -28,12 +28,14 @@ class ChartBars: ChartPointsObject {
             barsLayer.strokeColor = strokeColor.cgColor
         }
     }
+
     override var fillColor: UIColor {
         didSet {
             barsLayer.fillColor = fillColor.cgColor
             barsLayer.displayIfNeeded()
         }
     }
+
     override public var width: CGFloat {
         didSet {
             barsLayer.displayIfNeeded()
@@ -92,15 +94,15 @@ class ChartBars: ChartPointsObject {
         let barsPath = UIBezierPath()
         let width = calculateBarWidth(points: points, width: barsLayer.bounds.width - padding.width)
 
-        barsLayer.lineWidth = onePixel        // set minimal line width. All pixels inside will be filled
-        let pixelShift = onePixel / 2             // pixel shift, because line drawing by center of x/y
+        barsLayer.lineWidth = onePixel // set minimal line width. All pixels inside will be filled
+        let pixelShift = onePixel / 2 // pixel shift, because line drawing by center of x/y
 
         let reverse = pathDirection == .bottom
         let drawCap = lineCapStyle == .round
 
         let sign: CGFloat = reverse ? -1 : 1
 
-        points.enumerated().forEach { index, point in
+        points.enumerated().forEach { _, point in
             var startX: CGFloat
             switch barPosition {
             case .start:
@@ -123,7 +125,7 @@ class ChartBars: ChartPointsObject {
             let endX = startX + width - onePixel
 
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: centerX, y: high), radius: !tooSmallForArc ? width / 2 - onePixel: 0, startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
+                barsPath.addArc(withCenter: CGPoint(x: centerX, y: high), radius: !tooSmallForArc ? width / 2 - onePixel : 0, startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
             }
 
             barsPath.addLine(to: CGPoint(x: endX, y: high))
@@ -138,15 +140,15 @@ class ChartBars: ChartPointsObject {
         return barsPath.cgPath
     }
 
-    func calculateBarWidth(points: [CGPoint], width: CGFloat) -> CGFloat {
-        guard points.count > 3 else { return self.width }
-        var maxWidth = self.width
+    func calculateBarWidth(points: [CGPoint], width _: CGFloat) -> CGFloat {
+        guard points.count > 3 else { return width }
+        var maxWidth = width
 
         // if gap more than 2 pixels, we can add gap between bars
         let minimumWithGap = 2 * onePixel
         // don't use for calculation first and last points.
         // Because sometimes for 1day chart it's position too close to next point
-        for index in 1..<(points.count - 3) {
+        for index in 1 ..< (points.count - 3) {
             // distance between two bars
             let gap = points[index + 1].x - points[index].x
             // if there is not enough space, set smallest width
@@ -159,7 +161,7 @@ class ChartBars: ChartPointsObject {
         return max(maxWidth, 2 * onePixel)
     }
 
-    override func corrected(points: [CGPoint], newCount: Int) -> [CGPoint] {
+    override func corrected(points: [CGPoint], newCount _: Int) -> [CGPoint] {
         points
     }
 
@@ -168,7 +170,7 @@ class ChartBars: ChartPointsObject {
             return super.transformAnimation(oldPath: oldPath, new: new, duration: duration, timingFunction: timingFunction)
         }
         // when count is different we animated hiding old bars and show new
-        let downOldPath = path(points: absolute(points: self.points).map { CGPoint(x: $0.x, y: zeroY) })
+        let downOldPath = path(points: absolute(points: points).map { CGPoint(x: $0.x, y: zeroY) })
 
         let downNewPath = path(points: new.map { CGPoint(x: $0.x, y: zeroY) })
         let newPath = path(points: new)
@@ -176,15 +178,15 @@ class ChartBars: ChartPointsObject {
         let halfDuration = duration / 2
 
         let downAnimation = ShapeHelper.animation(keyPath: "path", from: oldPath,
-                to: downOldPath,
-                duration: duration,
-                timingFunction: timingFunction)
+                                                  to: downOldPath,
+                                                  duration: duration,
+                                                  timingFunction: timingFunction)
         downAnimation.duration = halfDuration
 
         let upAnimation = ShapeHelper.animation(keyPath: "path", from: downNewPath,
-                to: newPath,
-                duration: duration,
-                timingFunction: timingFunction)
+                                                to: newPath,
+                                                duration: duration,
+                                                timingFunction: timingFunction)
         upAnimation.duration = halfDuration
         upAnimation.beginTime = halfDuration
 
@@ -201,5 +203,4 @@ class ChartBars: ChartPointsObject {
 
         maskLayer.bounds = barsLayer.bounds
     }
-
 }

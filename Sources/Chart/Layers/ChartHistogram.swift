@@ -50,6 +50,7 @@ class ChartHistogram: ChartPointsObject {
             negativeBars.barFillColor = negativeBarFillColor
         }
     }
+
     override var padding: UIEdgeInsets {
         didSet {
             positiveBars.padding = padding
@@ -77,7 +78,7 @@ class ChartHistogram: ChartPointsObject {
         reversePoint = false
     }
 
-    override func corrected(points: [CGPoint], newCount: Int) -> [CGPoint] {
+    override func corrected(points: [CGPoint], newCount _: Int) -> [CGPoint] {
         points
     }
 
@@ -100,9 +101,7 @@ class ChartHistogram: ChartPointsObject {
         return (positive: positive, negative: negative)
     }
 
-
-
-    override func update(start: Bool, old: [CGPoint], new: [CGPoint], duration: CFTimeInterval?, timingFunction: CAMediaTimingFunction?) {
+    override func update(start _: Bool, old: [CGPoint], new: [CGPoint], duration: CFTimeInterval?, timingFunction _: CAMediaTimingFunction?) {
         let oldPoints = split(points: old)
         let newPoints = split(points: new)
 
@@ -124,5 +123,4 @@ class ChartHistogram: ChartPointsObject {
         frame.origin.y = frame.height
         negativeBars.updateFrame(in: frame, duration: duration, timingFunction: timingFunction)
     }
-
 }

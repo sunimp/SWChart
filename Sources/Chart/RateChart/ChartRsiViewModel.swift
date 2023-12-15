@@ -1,5 +1,4 @@
 import UIKit
-import UIKit
 
 public class ChartRsiConfiguration {
     public var animationDuration: TimeInterval = 0.35
@@ -7,20 +6,20 @@ public class ChartRsiConfiguration {
     public var lineColor: UIColor = .blue
     public var lineWidth: CGFloat = 1
 
-    public var padding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    public var padding: UIEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)
     public var topLimitValue: CGFloat = 0.7
     public var bottomLimitValue: CGFloat = 0.3
 
-    public var highTextInsets: UIEdgeInsets = UIEdgeInsets(top: 6, left: 16, bottom: -1, right: -1)
-    public var lowTextInsets: UIEdgeInsets = UIEdgeInsets(top: -1, left: 16, bottom: -2, right: -1)
+    public var highTextInsets: UIEdgeInsets = .init(top: 6, left: 16, bottom: -1, right: -1)
+    public var lowTextInsets: UIEdgeInsets = .init(top: -1, left: 16, bottom: -2, right: -1)
 
-    public var textSize: CGSize = CGSize(width: 15, height: 14)
+    public var textSize: CGSize = .init(width: 15, height: 14)
 
     public var limitLinesWidth: CGFloat = ChartConfiguration.onePixel
     public var limitLinesDashPattern: [NSNumber]? = [2, 2]
-    public var limitLinesColor: UIColor = UIColor.white.withAlphaComponent(0.5)
+    public var limitLinesColor: UIColor = .white.withAlphaComponent(0.5)
 
-    public var limitTextColor: UIColor = UIColor.white.withAlphaComponent(0.5)
+    public var limitTextColor: UIColor = .white.withAlphaComponent(0.5)
     public var limitTextFont: UIFont = .systemFont(ofSize: 10)
 
     static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartRsiConfiguration {
@@ -45,7 +44,6 @@ public class ChartRsiConfiguration {
 
         return config
     }
-
 }
 
 class ChartRsiViewModel: ChartViewModel {
@@ -124,8 +122,7 @@ class ChartRsiViewModel: ChartViewModel {
         rsiBottomValue.layer.isHidden = hidden
     }
 
-    override func set(selected: Bool) {
+    override func set(selected _: Bool) {
         // dont change colors
     }
-
 }

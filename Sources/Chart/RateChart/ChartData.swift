@@ -17,7 +17,7 @@ public class ChartData {
     public func add(name: String, values: [Decimal]) {
         let start = items.count - values.count
 
-        for i in 0..<values.count {
+        for i in 0 ..< values.count {
             items[i + start].added(name: name, value: values[i])
         }
     }
@@ -57,5 +57,4 @@ public class ChartData {
     public func last(name: String) -> Decimal? {
         items.last?.indicators[name]
     }
-
 }

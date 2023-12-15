@@ -5,7 +5,7 @@ public class MaIndicator: ChartIndicator {
     public let type: MaType
     public let configuration: ChartIndicator.LineConfiguration
 
-    private enum CodingKeys : String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case period
         case type
         case configuration
@@ -24,7 +24,7 @@ public class MaIndicator: ChartIndicator {
         period
     }
 
-    public override var category: Category {
+    override public var category: Category {
         .movingAverage
     }
 
@@ -36,7 +36,7 @@ public class MaIndicator: ChartIndicator {
         try super.init(from: decoder)
     }
 
-    public override func encode(to encoder: Encoder) throws {
+    override public func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(period, forKey: .period)
@@ -44,22 +44,19 @@ public class MaIndicator: ChartIndicator {
         try container.encode(configuration, forKey: .configuration)
     }
 
-    public static func ==(lhs: MaIndicator, rhs: MaIndicator) -> Bool {
+    public static func == (lhs: MaIndicator, rhs: MaIndicator) -> Bool {
         lhs.id == rhs.id &&
-                lhs.index == rhs.index &&
-                lhs.period == rhs.period &&
-                lhs.type == rhs.type &&
-                lhs.configuration == rhs.configuration
+            lhs.index == rhs.index &&
+            lhs.period == rhs.period &&
+            lhs.type == rhs.type &&
+            lhs.configuration == rhs.configuration
     }
-
 }
 
-extension MaIndicator {
-
-    public enum MaType: String, CaseIterable, Codable {
+public extension MaIndicator {
+    enum MaType: String, CaseIterable, Codable {
         case ema
         case sma
         case wma
     }
-
 }

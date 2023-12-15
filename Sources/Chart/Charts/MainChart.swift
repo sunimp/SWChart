@@ -13,7 +13,7 @@ class MainChart: Chart {
 
     private static func curve(type: ChartConfiguration.CurveType?) -> ChartPointsObject {
         switch type {
-        case .bars:return ChartBars()
+        case .bars: return ChartBars()
         default: return ChartLine()
         }
     }
@@ -33,7 +33,7 @@ class MainChart: Chart {
         add(highLimitText)
         add(lowLimitText)
 
-        if let configuration = configuration {
+        if let configuration {
             apply(configuration: configuration)
         }
     }
@@ -85,7 +85,6 @@ class MainChart: Chart {
             verticalLines.invisibleIndent = configuration.verticalInvisibleIndent
         }
 
-
         updateUI()
 
         return self
@@ -98,7 +97,7 @@ class MainChart: Chart {
     }
 
     private func updateUI() {
-        guard let configuration = configuration else {
+        guard let configuration else {
             return
         }
 
@@ -123,7 +122,7 @@ class MainChart: Chart {
     }
 
     func setLine(colorType: ChartColorType) {
-        guard let configuration = configuration else {
+        guard let configuration else {
             return
         }
 
@@ -152,7 +151,6 @@ class MainChart: Chart {
     func setVerticalLines(hidden: Bool) {
         verticalLines.layer.isHidden = hidden
     }
-
 }
 
 public enum ChartColorType {
@@ -175,5 +173,4 @@ public enum ChartColorType {
         case .neutral: return configuration.neutralGradient
         }
     }
-
 }

@@ -3,16 +3,16 @@ import UIKit
 public class ChartMacdConfiguration {
     public var animationDuration: TimeInterval = 0.35
 
-    public var histogramPadding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-    public var linesPadding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    public var histogramPadding: UIEdgeInsets = .init(top: 8, left: 0, bottom: 8, right: 0)
+    public var linesPadding: UIEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)
 
     public var signalColor: UIColor = .blue
     public var signalLineWidth: CGFloat = 1
     public var macdColor: UIColor = .orange
     public var histogramWidth: CGFloat = 8
     public var lineWidth: CGFloat = 1
-    public var positiveColor: UIColor = UIColor.green.withAlphaComponent(0.5)
-    public var negativeColor: UIColor = UIColor.red.withAlphaComponent(0.5)
+    public var positiveColor: UIColor = .green.withAlphaComponent(0.5)
+    public var negativeColor: UIColor = .red.withAlphaComponent(0.5)
 
     static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartMacdConfiguration {
         let config = ChartMacdConfiguration()
@@ -32,7 +32,6 @@ public class ChartMacdConfiguration {
         lineWidth = configuration.signalWidth
         return self
     }
-
 }
 
 class ChartMacdViewModel: ChartViewModel {
@@ -103,8 +102,8 @@ class ChartMacdViewModel: ChartViewModel {
 
     func set(macd: [CGPoint]?, macdHistogram: [CGPoint]?, macdSignal: [CGPoint]?, animated: Bool) {
         self.macd.set(points: macd ?? [], animated: animated)
-        self.histogram.set(points: macdHistogram ?? [], animated: animated)
-        self.signal.set(points: macdSignal ?? [], animated: animated)
+        histogram.set(points: macdHistogram ?? [], animated: animated)
+        signal.set(points: macdSignal ?? [], animated: animated)
     }
 
     override func set(hidden: Bool) {
@@ -114,8 +113,7 @@ class ChartMacdViewModel: ChartViewModel {
         signal.layer.isHidden = hidden
     }
 
-    override func set(selected: Bool) {
-        //dont change colors
+    override func set(selected _: Bool) {
+        // dont change colors
     }
-
 }

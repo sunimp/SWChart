@@ -1,6 +1,6 @@
-import UIKit
 import Chart
 import SnapKit
+import UIKit
 
 class ViewController: UIViewController {
     static let maColors = [UIColor.green, UIColor.blue, UIColor.red]
@@ -62,7 +62,6 @@ class ViewController: UIViewController {
         toggleButton.setTitleColor(.black, for: .normal)
         toggleButton.setTitle("Toggle indicators", for: .normal)
         toggleButton.addTarget(self, action: #selector(toggleIndicators), for: .touchUpInside)
-
     }
 
     @objc func generateChartData() {
@@ -71,7 +70,7 @@ class ViewController: UIViewController {
         let minValue = 10
         let maxValue = 1000
 
-        let powScale = pow(10, Int.random(in: 2...6))
+        let powScale = pow(10, Int.random(in: 2 ... 6))
 
         var endInterval = Date().timeIntervalSince1970
         endInterval.round()
@@ -80,7 +79,7 @@ class ViewController: UIViewController {
         let deltaInterval = TimeInterval(2 * sevenDays / pointCount)
 
         var items = [ChartItem]()
-        for index in 0..<pointCount {
+        for index in 0 ..< pointCount {
             let chartItem = ChartItem(timestamp: startInterval + TimeInterval(index) * deltaInterval)
             chartItem.added(name: ChartData.rate, value: randomValue(start: minValue, end: maxValue, powScale: powScale))
             chartItem.added(name: ChartData.volume, value: randomValue(start: minValue, end: maxValue, powScale: powScale))
@@ -101,18 +100,18 @@ class ViewController: UIViewController {
         showIndicators = !showIndicators
         show()
     }
-    
+
     @objc func generateIndicators() {
         var indicators = [ChartIndicator]()
 
         // ma:
-        for i in 0...Int.random(in: 0...2) {
-            indicators.append(MaIndicator(id: "ma", index: i, enabled: true, period: Int.random(in: 10...25), type: Bool.random() ? .ema : .sma))
+        for i in 0 ... Int.random(in: 0 ... 2) {
+            indicators.append(MaIndicator(id: "ma", index: i, enabled: true, period: Int.random(in: 10 ... 25), type: Bool.random() ? .ema : .sma))
         }
         if Bool.random() {
-            indicators.append(RsiIndicator(id: "rsi", index: 0, enabled: true, period: Int.random(in: 10...25), onChart: false))
+            indicators.append(RsiIndicator(id: "rsi", index: 0, enabled: true, period: Int.random(in: 10 ... 25), onChart: false))
         } else {
-            indicators.append(MacdIndicator(id: "macd", index: 0, enabled: true, fast: Int.random(in: 6...10), slow: Int.random(in: 12...16), signal: 24))
+            indicators.append(MacdIndicator(id: "macd", index: 0, enabled: true, fast: Int.random(in: 6 ... 10), slow: Int.random(in: 12 ... 16), signal: 24))
         }
         self.indicators = indicators
         show()
@@ -123,7 +122,6 @@ class ViewController: UIViewController {
         let scaledStart = start * scale
         let scaledEnd = end * scale
 
-        return Decimal(Int.random(in: scaledStart...scaledEnd)) / powScale
+        return Decimal(Int.random(in: scaledStart ... scaledEnd)) / powScale
     }
-
 }

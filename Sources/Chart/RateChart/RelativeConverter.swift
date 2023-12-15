@@ -12,9 +12,8 @@ private class ChartRange {
     var all: [Decimal] { [min, max] }
 }
 
-class RelativeConverter {
-
-    private static func allRanges(chartData: ChartData, indicators: [ChartIndicator]) -> [String: ChartRange] {
+enum RelativeConverter {
+    private static func allRanges(chartData: ChartData, indicators _: [ChartIndicator]) -> [String: ChartRange] {
         var ranges = [String: ChartRange]()
 
         let visibleItems = chartData.visibleItems
@@ -37,7 +36,7 @@ class RelativeConverter {
         return ranges
     }
 
-    static private func ranges(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: ChartRange] {
+    private static func ranges(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: ChartRange] {
         var ranges = allRanges(chartData: chartData, indicators: indicators)
 
         // for rate and all MA indicator find extremum values
@@ -47,8 +46,8 @@ class RelativeConverter {
         }
 
         let maIds = indicators
-                .filter { $0.abstractType == .ma }
-                .map { $0.json }
+            .filter { $0.abstractType == .ma }
+            .map(\.json)
 
         if showIndicators {
             for id in maIds {
@@ -72,16 +71,16 @@ class RelativeConverter {
 
         // set 0..100 for every rsi
         let rsiIds = indicators
-                .filter { $0.abstractType == .rsi }
-                .map { $0.json }
+            .filter { $0.abstractType == .rsi }
+            .map(\.json)
 
         let rsiRange = ChartRange(min: 0, max: 100)
         rsiIds.forEach { ranges[$0] = rsiRange }
 
         // merge ranges for macd : to show all lines and zoom histogram to maximum
         let macdIds = indicators
-                .filter { $0.abstractType == .macd }
-                .map { $0.json }
+            .filter { $0.abstractType == .macd }
+            .map(\.json)
 
         for id in macdIds {
             let signalId = MacdIndicator.MacdType.signal.name(id: id)
@@ -105,7 +104,7 @@ class RelativeConverter {
         return ranges
     }
 
-    static private func relative(chartData: ChartData, ranges: [String: ChartRange]) -> [String: [CGPoint]] {
+    private static func relative(chartData: ChartData, ranges: [String: ChartRange]) -> [String: [CGPoint]] {
         let timestampDelta = chartData.endWindow - chartData.startWindow
         guard !timestampDelta.isZero else {
             return [:]
@@ -146,5 +145,4 @@ class RelativeConverter {
         // make relative points
         return relative(chartData: chartData, ranges: indicatorRanges)
     }
-
 }

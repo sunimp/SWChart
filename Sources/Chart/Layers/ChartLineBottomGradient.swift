@@ -25,7 +25,7 @@ class ChartLineBottomGradient: ChartPointsObject {
 
     public var gradientColors: [UIColor] = [.clear] {
         didSet {
-            gradientLayer.colors = gradientColors.map { $0.cgColor }
+            gradientLayer.colors = gradientColors.map(\.cgColor)
         }
     }
 
@@ -62,5 +62,4 @@ class ChartLineBottomGradient: ChartPointsObject {
             return CABasicAnimation(keyPath: animationKey)
         }
     }
-
 }

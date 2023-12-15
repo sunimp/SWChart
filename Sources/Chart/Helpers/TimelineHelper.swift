@@ -13,8 +13,8 @@ public class TimelineHelper: ITimelineHelper {
     private func stepBack(for timestamp: TimeInterval, separateHourlyInterval: Int) -> TimeInterval {
         let hourInSeconds: TimeInterval = 60 * 60
         switch separateHourlyInterval {
-        case 0..<24: return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
-        case 24..<(24 * 30): return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
+        case 0 ..< 24: return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
+        case 24 ..< (24 * 30): return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
         default:
             let date = Date(timeIntervalSince1970: timestamp)
             let ago = date.startOfMonth(ago: separateHourlyInterval / (24 * 30))
@@ -30,9 +30,9 @@ public class TimelineHelper: ITimelineHelper {
         var lastTimestamp: TimeInterval
 
         switch separateHourlyInterval {
-        case 0..<day: lastTimestamp = lastDate.startOfHour?.timeIntervalSince1970 ?? endTimestamp
-        case day..<month: lastTimestamp = lastDate.startOfDay.timeIntervalSince1970
-        case month..<year: lastTimestamp = lastDate.startOfMonth?.timeIntervalSince1970 ?? endTimestamp
+        case 0 ..< day: lastTimestamp = lastDate.startOfHour?.timeIntervalSince1970 ?? endTimestamp
+        case day ..< month: lastTimestamp = lastDate.startOfDay.timeIntervalSince1970
+        case month ..< year: lastTimestamp = lastDate.startOfMonth?.timeIntervalSince1970 ?? endTimestamp
         default: lastTimestamp = lastDate.startOfYear?.timeIntervalSince1970 ?? endTimestamp
         }
 
@@ -49,20 +49,20 @@ public class TimelineHelper: ITimelineHelper {
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour], from: date)
 
         switch separateHourlyInterval {
-        case 0..<day:
+        case 0 ..< day:
             guard let hour = components.hour else {
                 return "--"
             }
             return String("\(hour)")
-        case 24...(24 * 3):             // half week for show minimum 2 values
+        case 24 ... (24 * 3): // half week for show minimum 2 values
             dateFormatter.setLocalizedDateFormatFromTemplate("E")
             return dateFormatter.string(from: date)
-        case (24 * 3 + 1)..<month:
+        case (24 * 3 + 1) ..< month:
             guard let day = components.day else {
                 return "--"
             }
             return String("\(day)")
-        case month..<year:
+        case month ..< year:
             dateFormatter.setLocalizedDateFormatFromTemplate("MMM")
             return dateFormatter.string(from: date)
         default:
@@ -71,7 +71,5 @@ public class TimelineHelper: ITimelineHelper {
         }
     }
 
-    public init() {
-    }
-
+    public init() {}
 }

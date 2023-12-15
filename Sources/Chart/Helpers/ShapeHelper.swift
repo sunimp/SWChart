@@ -1,7 +1,6 @@
 import UIKit
 
-class ShapeHelper {
-
+enum ShapeHelper {
     static func linePath(points: [CGPoint]) -> CGPath {
         let newPath = UIBezierPath()
 
@@ -10,7 +9,7 @@ class ShapeHelper {
         }
 
         newPath.move(to: points[0])
-        for i in 1..<points.count {
+        for i in 1 ..< points.count {
             newPath.addLine(to: points[i])
         }
 
@@ -37,7 +36,7 @@ class ShapeHelper {
 
     private static func indexes(count: Int, elementCount: Int) -> [Int] {
         var arr = [Int]()
-        for i in 0..<count {
+        for i in 0 ..< count {
             let index = i * elementCount / count + elementCount / (2 * count)
             arr.append(index - 1)
         }
@@ -76,5 +75,4 @@ class ShapeHelper {
 
         return animation
     }
-
 }

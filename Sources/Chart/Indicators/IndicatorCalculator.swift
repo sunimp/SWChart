@@ -6,7 +6,7 @@ public struct MacdData {
     public let histogram: [Decimal]
 }
 
-public class IndicatorCalculator {
+public enum IndicatorCalculator {
     public static let maximumPeriod = 200
 
     static func checkValidData(period: Int, valueCount: Int) throws {
@@ -27,8 +27,8 @@ public class IndicatorCalculator {
 
         var result = [Decimal]()
 
-        for i in (0..<(values.count - period + 1)) {
-            let prev = values[i..<(i + period)].reduce(0, +) / Decimal(period)
+        for i in 0 ..< (values.count - period + 1) {
+            let prev = values[i ..< (i + period)].reduce(0, +) / Decimal(period)
 
             result.append(prev)
         }
@@ -42,10 +42,10 @@ public class IndicatorCalculator {
 
         var result = [Decimal]()
 
-        var prev = values[0..<period].reduce(0, +) / Decimal(period)
+        var prev = values[0 ..< period].reduce(0, +) / Decimal(period)
         result.append(prev)
 
-        for i in (period..<values.count) {
+        for i in period ..< values.count {
             prev = a * values[i] + (1 - a) * prev
 
             result.append(prev)
@@ -60,9 +60,9 @@ public class IndicatorCalculator {
 
         var result = [Decimal]()
 
-        for i in (0..<(values.count - period + 1)) {
+        for i in 0 ..< (values.count - period + 1) {
             var indicator: Decimal = 0
-            for j in (i..<(i + period)) {
+            for j in i ..< (i + period) {
                 indicator += values[j] * Decimal(j - i + 1)
             }
             indicator /= a
@@ -80,7 +80,7 @@ public class IndicatorCalculator {
         var upMove = [Decimal]()
         var downMove = [Decimal]()
 
-        for i in 1..<values.count {
+        for i in 1 ..< values.count {
             let change = values[i] - values[i - 1]
             upMove.append(change > 0 ? change : 0)
             downMove.append(change < 0 ? abs(change) : 0)
@@ -95,7 +95,7 @@ public class IndicatorCalculator {
         var maDown: Decimal = 0
         var rStrength: Decimal = 0
 
-        for i in 0..<upMove.count {
+        for i in 0 ..< upMove.count {
             let up = upMove[i]
             let down = downMove[i]
 
@@ -143,7 +143,7 @@ public class IndicatorCalculator {
 
         let emaFast = try ema(period: fast, values: values)
         let emaLong = try ema(period: long, values: values)
-        let macd = emaLong.enumerated().map { (index, long) in
+        let macd = emaLong.enumerated().map { index, long in
             emaFast[index + diff] - long
         }
         let emaSignal = try ema(period: signal, values: macd)
@@ -151,23 +151,20 @@ public class IndicatorCalculator {
         let signalDiff = macd.count - emaSignal.count
         let histogram: [Decimal]
 
-        histogram = emaSignal.enumerated().compactMap { (index, signal) in
+        histogram = emaSignal.enumerated().compactMap { index, signal in
             macd[index + signalDiff] - signal
         }
 
         return MacdData(macd: macd, signal: emaSignal, histogram: histogram)
     }
-
 }
 
-extension IndicatorCalculator {
-
-    public enum IndicatorError: Error {
+public extension IndicatorCalculator {
+    enum IndicatorError: Error {
         case notEnoughData
         case tooSmallPeriod
         case tooLargePeriod
         case wrongParameters
         case invalidIndicator
     }
-
 }

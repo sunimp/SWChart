@@ -1,5 +1,5 @@
-import UIKit
 import SnapKit
+import UIKit
 
 public protocol IChartViewTouchDelegate: AnyObject {
     func touchDown()
@@ -85,8 +85,8 @@ public class RateChartView: UIView {
         return self
     }
 
-
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("not implemented")
     }
 
@@ -106,7 +106,7 @@ public class RateChartView: UIView {
         indicatorChart.set(volumes: converted[ChartData.volume], animated: animated)
 
         // 4. get diff to update all chartIndicator layers
-        let updatedIds = indicators.map { $0.json }
+        let updatedIds = indicators.map(\.json)
 
         // 4a. remove unused viewModels and apply visibility
         for model in viewModels {
@@ -154,7 +154,7 @@ public class RateChartView: UIView {
             }
         }
 
-        //4c. check volume visibility: show always if indicators is hidden, or show when no indicators on indicator layer enabled
+        // 4c. check volume visibility: show always if indicators is hidden, or show when no indicators on indicator layer enabled
         let hasVisibleOffChainIndicator = viewModels.contains { viewModel in !viewModel.onChart && !viewModel.isHidden }
         indicatorChart.setVolumes(hidden: hasVisibleOffChainIndicator && showIndicators)
 
@@ -178,7 +178,7 @@ public class RateChartView: UIView {
         mainChart.setVerticalLines(points: positions)
         indicatorChart.setVerticalLines(points: positions)
 
-        timelineChart.set(texts: timeline.map { $0.text }, positions: positions)
+        timelineChart.set(texts: timeline.map(\.text), positions: positions)
     }
 
     public func setVolumes(hidden: Bool) {
@@ -192,11 +192,9 @@ public class RateChartView: UIView {
     public func set(highLimitText: String?, lowLimitText: String?) {
         mainChart.set(highLimitText: highLimitText, lowLimitText: lowLimitText)
     }
-
 }
 
 extension RateChartView: ITouchAreaDelegate {
-
     func touchDown() {
         isPressed = true
         mainChart.setLine(colorType: .pressed)
@@ -208,8 +206,8 @@ extension RateChartView: ITouchAreaDelegate {
     func select(at index: Int) {
         guard let data = chartData,
               index < data.visibleItems.count,
-              let item = chartData?.visibleItems[index] else {
-
+              let item = chartData?.visibleItems[index]
+        else {
             return
         }
 
@@ -223,5 +221,4 @@ extension RateChartView: ITouchAreaDelegate {
 
         delegate?.touchUp()
     }
-
 }
