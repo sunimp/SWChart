@@ -1,6 +1,6 @@
 import UIKit
 
-private class ChartRange {
+class ChartRange {
     var min: Decimal
     var max: Decimal
 
@@ -36,7 +36,7 @@ enum RelativeConverter {
         return ranges
     }
 
-    private static func ranges(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: ChartRange] {
+    static func ranges(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: ChartRange] {
         var ranges = allRanges(chartData: chartData, indicators: indicators)
 
         // for rate and all MA indicator find extremum values
@@ -104,7 +104,7 @@ enum RelativeConverter {
         return ranges
     }
 
-    private static func relative(chartData: ChartData, ranges: [String: ChartRange]) -> [String: [CGPoint]] {
+    static func relative(chartData: ChartData, ranges: [String: ChartRange]) -> [String: [CGPoint]] {
         let timestampDelta = chartData.endWindow - chartData.startWindow
         guard !timestampDelta.isZero else {
             return [:]
@@ -137,12 +137,5 @@ enum RelativeConverter {
         }
 
         return relativeData
-    }
-
-    static func convert(chartData: ChartData, indicators: [ChartIndicator], showIndicators: Bool) -> [String: [CGPoint]] {
-        // calculate ranges for all data
-        let indicatorRanges = ranges(chartData: chartData, indicators: indicators, showIndicators: showIndicators)
-        // make relative points
-        return relative(chartData: chartData, ranges: indicatorRanges)
     }
 }

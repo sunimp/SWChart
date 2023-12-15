@@ -90,13 +90,14 @@ public class RateChartView: UIView {
         fatalError("not implemented")
     }
 
-    @discardableResult public func set(chartData: ChartData, indicators: [ChartIndicator] = [], showIndicators: Bool = true, animated: Bool = true) -> [IndicatorFactory.CalculatingError] {
+    @discardableResult public func set(chartData: ChartData, indicators: [ChartIndicator] = [], showIndicators: Bool = true, limitFormatter: ((Decimal) -> String?)? = nil, animated: Bool = true) -> [IndicatorFactory.CalculatingError] {
         // 1. calculate all indicators and add it to chartData
         let factory = IndicatorFactory()
         let calculatingErrors = factory.store(indicators: indicators, chartData: chartData)
 
         // 2. convert real values to visible points from 0..1 by x&y
-        let converted = RelativeConverter.convert(chartData: chartData, indicators: indicators, showIndicators: showIndicators)
+        let ranges = RelativeConverter.ranges(chartData: chartData, indicators: indicators, showIndicators: showIndicators)
+        let converted = RelativeConverter.relative(chartData: chartData, ranges: ranges)
 
         // 3. set points for rate and volume
         if let points = converted[ChartData.rate] {
@@ -158,6 +159,9 @@ public class RateChartView: UIView {
         let hasVisibleOffChainIndicator = viewModels.contains { viewModel in !viewModel.onChart && !viewModel.isHidden }
         indicatorChart.setVolumes(hidden: hasVisibleOffChainIndicator && showIndicators)
 
+        let rateRange = ranges[ChartData.rate]
+        mainChart.set(highLimitText: rateRange.flatMap { limitFormatter?($0.max) }, lowLimitText: rateRange.flatMap { limitFormatter?($0.min) })
+
         return calculatingErrors
     }
 
@@ -187,10 +191,6 @@ public class RateChartView: UIView {
 
     public func setLimits(hidden: Bool) {
         mainChart.setLimits(hidden: hidden)
-    }
-
-    public func set(highLimitText: String?, lowLimitText: String?) {
-        mainChart.set(highLimitText: highLimitText, lowLimitText: lowLimitText)
     }
 }
 
