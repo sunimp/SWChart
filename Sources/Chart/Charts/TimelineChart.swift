@@ -52,9 +52,9 @@ class TimelineChart: Chart {
         timelineTexts = texts
         timelinePositions = positions
 
-        texts.forEach {
+        for item in texts {
             let text = ChartText()
-            text.set(text: $0)
+            text.set(text: item)
             if let configuration {
                 text.textColor = configuration.timelineTextColor
                 text.font = configuration.timelineFont

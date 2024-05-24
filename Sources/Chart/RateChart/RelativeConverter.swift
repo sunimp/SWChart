@@ -10,6 +10,8 @@ class ChartRange {
     }
 
     var all: [Decimal] { [min, max] }
+    var minPositive: Bool { min >= 0 }
+    var maxPositive: Bool { max >= 0 }
 }
 
 enum RelativeConverter {
@@ -114,13 +116,13 @@ enum RelativeConverter {
         for item in chartData.visibleItems {
             let timestamp = item.timestamp - chartData.startWindow
             let x = CGFloat(timestamp / timestampDelta)
-
             for (key, value) in item.indicators {
                 guard let range = ranges[key] else {
                     continue
                 }
 
                 let delta = range.max - range.min
+
                 let y = delta == 0 ? 0.5 : ((value - range.min) / delta).cgFloatValue
                 let point = CGPoint(x: x, y: y)
 

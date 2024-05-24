@@ -62,7 +62,7 @@ class Chart: UIView {
         } else {
             CATransaction.disableActions()
         }
-        chartObjects.forEach { object in
+        for object in chartObjects {
             object.updateFrame(in: bounds,
                                duration: animation?.duration,
                                timingFunction: animation?.timingFunction)

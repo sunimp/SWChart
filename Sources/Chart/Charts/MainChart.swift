@@ -14,6 +14,7 @@ class MainChart: Chart {
     private static func curve(type: ChartConfiguration.CurveType?) -> ChartPointsObject {
         switch type {
         case .bars: return ChartBars()
+        case .histogram: return ChartHistogram()
         default: return ChartLine()
         }
     }
@@ -111,6 +112,26 @@ class MainChart: Chart {
         lowLimitText.textColor = configuration.limitTextColor
     }
 
+    func set(curveRange: ChartRange?) {
+        // need to change historgam 0 line position
+        guard let curveRange else { return }
+        guard let curve = curve as? ChartHistogram else { return }
+        if curveRange.minPositive == curveRange.maxPositive {
+            // all points under 0-value
+            curve.verticalSplitValue = curveRange.minPositive ? 0 : 1
+            return
+        }
+
+        let fullRange = curveRange.max - curveRange.min
+
+        guard !fullRange.isZero else {
+            curve.verticalSplitValue = 0.5
+            return
+        }
+
+        curve.verticalSplitValue = (abs(curveRange.min) / fullRange).cgFloatValue
+    }
+
     func set(points: [CGPoint], animated: Bool = false) {
         curve.set(points: points, animated: animated)
         gradient.set(points: points, animated: animated)
@@ -127,9 +148,19 @@ class MainChart: Chart {
         }
 
         curve.strokeColor = colorType.curveColor(configuration: configuration)
-        if configuration.curveType == .bars {
+        if let curve = curve as? ChartBars {
             curve.fillColor = colorType.curveColor(configuration: configuration)
         }
+        if let curve = curve as? ChartHistogram {
+            if colorType.isPressed {
+                curve.positiveBarFillColor = configuration.pressedColor
+                curve.negativeBarFillColor = configuration.pressedColor
+            } else {
+                curve.positiveBarFillColor = configuration.trendUpColor
+                curve.negativeBarFillColor = configuration.trendDownColor
+            }
+        }
+
         gradient.gradientColors = zip(colorType.gradientColors(configuration: configuration), configuration.gradientAlphas).map { $0.withAlphaComponent($1) }
         gradient.gradientLocations = configuration.gradientLocations
     }
@@ -172,5 +203,9 @@ public enum ChartColorType {
         case .pressed: return configuration.pressedGradient
         case .neutral: return configuration.neutralGradient
         }
+    }
+
+    var isPressed: Bool {
+        self == .pressed
     }
 }

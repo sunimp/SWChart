@@ -101,9 +101,11 @@ public class RateChartView: UIView {
 
         // 3. set points for rate and volume
         if let points = converted[ChartData.rate] {
+            mainChart.set(curveRange: ranges[ChartData.rate])
             mainChart.set(points: points, animated: animated)
             chartTouchArea.set(points: points)
         }
+
         indicatorChart.set(volumes: converted[ChartData.volume], animated: animated)
 
         // 4. get diff to update all chartIndicator layers

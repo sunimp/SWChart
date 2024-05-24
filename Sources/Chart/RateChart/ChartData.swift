@@ -41,7 +41,7 @@ public class ChartData {
     }
 
     public func removeIndicator(id: String) {
-        items.forEach { item in
+        for item in items {
             item.indicators[id] = nil
         }
     }

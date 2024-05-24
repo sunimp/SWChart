@@ -102,7 +102,7 @@ class ChartBars: ChartPointsObject {
 
         let sign: CGFloat = reverse ? -1 : 1
 
-        points.enumerated().forEach { _, point in
+        for (_, point) in points.enumerated() {
             var startX: CGFloat
             switch barPosition {
             case .start:

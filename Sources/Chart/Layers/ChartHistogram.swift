@@ -6,6 +6,11 @@ class ChartHistogram: ChartPointsObject {
     private let negativeBars = ChartBars()
 
     var barPosition: ChartBarPosition = .center
+    var verticalSplitValue: CGFloat = 0.5 {
+        didSet {
+            updateFrame(in: wrapperLayer.bounds, duration: nil, timingFunction: nil)
+        }
+    }
 
     override var layer: CALayer {
         wrapperLayer
@@ -53,24 +58,34 @@ class ChartHistogram: ChartPointsObject {
 
     override var padding: UIEdgeInsets {
         didSet {
-            positiveBars.padding = padding
-            negativeBars.padding = padding
+            positiveBars.padding = UIEdgeInsets(
+                top: padding.top,
+                left: padding.left,
+                bottom: .zero,
+                right: padding.right
+            )
+            negativeBars.padding = UIEdgeInsets(
+                top: .zero,
+                left: padding.left,
+                bottom: padding.bottom,
+                right: padding.right
+            )
         }
     }
 
     override init() {
         super.init()
 
-        [positiveBars, negativeBars].forEach {
-            $0.layer.shouldRasterize = true
-            $0.layer.rasterizationScale = UIScreen.main.scale
+        for item in [positiveBars, negativeBars] {
+            item.layer.shouldRasterize = true
+            item.layer.rasterizationScale = UIScreen.main.scale
 
-            $0.strokeColor = .clear
-            $0.barFillColor = nil
-            $0.barPosition = barPosition
-            $0.lineCapStyle = .square
+            item.strokeColor = .clear
+            item.barFillColor = nil
+            item.barPosition = barPosition
+            item.lineCapStyle = .square
 
-            wrapperLayer.addSublayer($0.layer)
+            wrapperLayer.addSublayer(item.layer)
         }
 
         negativeBars.pathDirection = .top
@@ -91,10 +106,12 @@ class ChartHistogram: ChartPointsObject {
         var negative = [CGPoint]()
 
         for point in points {
-            if point.y >= 0.5 {
-                positive.append(CGPoint(x: point.x, y: (point.y - 0.5) * 2))
+            if point.y >= verticalSplitValue {
+                let y = (point.y - verticalSplitValue) / (1 - verticalSplitValue)
+                positive.append(CGPoint(x: point.x, y: y))
             } else {
-                negative.append(CGPoint(x: point.x, y: point.y * 2))
+                let y: CGFloat = point.y / verticalSplitValue
+                negative.append(CGPoint(x: point.x, y: y))
             }
         }
 
@@ -116,11 +133,26 @@ class ChartHistogram: ChartPointsObject {
     override func updateFrame(in bounds: CGRect, duration: CFTimeInterval?, timingFunction: CAMediaTimingFunction?) {
         super.updateFrame(in: bounds, duration: duration, timingFunction: timingFunction)
 
-        var frame = wrapperLayer.bounds
-        frame.size.height = frame.height / 2
-        positiveBars.updateFrame(in: frame, duration: duration, timingFunction: timingFunction)
+        let frame = wrapperLayer.bounds
+        let realAreaHeight = frame.height - padding.height
+        let realPositiveHeight = realAreaHeight * (1 - verticalSplitValue)
+        let realNegativeHeight = realAreaHeight - realPositiveHeight
 
-        frame.origin.y = frame.height
-        negativeBars.updateFrame(in: frame, duration: duration, timingFunction: timingFunction)
+        let positive = CGRect(
+            x: frame.origin.x,
+            y: frame.origin.y,
+            width: frame.width,
+            height: realPositiveHeight + padding.top
+        )
+
+        let negative = CGRect(
+            x: frame.origin.x,
+            y: frame.origin.y + positive.height,
+            width: frame.width,
+            height: realNegativeHeight + padding.bottom
+        )
+
+        positiveBars.updateFrame(in: positive, duration: duration, timingFunction: timingFunction)
+        negativeBars.updateFrame(in: negative, duration: duration, timingFunction: timingFunction)
     }
 }

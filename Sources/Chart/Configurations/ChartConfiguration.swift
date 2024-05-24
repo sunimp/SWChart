@@ -89,5 +89,6 @@ public class ChartConfiguration {
     public enum CurveType {
         case line
         case bars
+        case histogram
     }
 }
