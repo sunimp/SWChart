@@ -1,4 +1,4 @@
-import HsExtensions
+import WWExtensions
 import UIExtensions
 import UIKit
 

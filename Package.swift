@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -15,8 +15,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.0.1")),
-        .package(url: "https://github.com/horizontalsystems/UIExtensions.Swift.git", .upToNextMajor(from: "1.0.0")),
-        .package(url: "https://github.com/horizontalsystems/HSExtensions.Swift.git", .upToNextMajor(from: "1.0.0")),
+        .package(url: "https://github.com/sunimp/UIExtensions.Swift.git", .upToNextMajor(from: "1.0.2")),
+        .package(url: "https://github.com/sunimp/WWExtensions.Swift.git", .upToNextMajor(from: "1.0.7")),
     ],
     targets: [
         .target(
@@ -24,7 +24,7 @@ let package = Package(
             dependencies: [
                 "SnapKit",
                 .product(name: "UIExtensions", package: "UIExtensions.Swift"),
-                .product(name: "HsExtensions", package: "HSExtensions.Swift"),
+                .product(name: "WWExtensions", package: "WWExtensions.Swift"),
             ]
         ),
     ]

@@ -6,7 +6,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/horizontalsystems/Chart.Swift.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/sunimp/Chart.Swift.git", .upToNextMajor(from: "3.0.2"))
 ]
 ```
 

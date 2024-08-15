@@ -37,7 +37,7 @@ class Chart: UIView {
 
     func replace(_ oldObject: IChartObject, by object: IChartObject) {
         guard let objectIndex = chartObjects.firstIndex(where: { $0 === oldObject }),
-              let layerIndex = layer.sublayers?.firstIndex(of: oldObject.layer)
+              self.layer.sublayers?.firstIndex(of: oldObject.layer) != nil
         else {
             print("Can't found object")
             return
