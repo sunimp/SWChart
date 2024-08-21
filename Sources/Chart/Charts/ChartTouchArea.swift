@@ -1,3 +1,10 @@
+//
+//  ChartTouchArea.swift
+//  Chart
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
 
 protocol ITouchAreaDelegate: AnyObject {

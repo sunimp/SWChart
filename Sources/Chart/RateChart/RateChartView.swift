@@ -1,5 +1,13 @@
-import SnapKit
+//
+//  RateChartView.swift
+//  Chart
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
+
+import SnapKit
 
 public protocol IChartViewTouchDelegate: AnyObject {
     func touchDown()

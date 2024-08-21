@@ -1,3 +1,10 @@
+//
+//  ChartMacdConfiguration.swift
+//  Chart
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
 
 public class ChartMacdConfiguration {

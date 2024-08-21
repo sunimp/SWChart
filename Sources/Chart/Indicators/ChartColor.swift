@@ -1,5 +1,13 @@
-import UIExtensions
+//
+//  ChartColor.swift
+//  Chart
+//
+//  Created by Sun on 2024/8/21.
+//
+
 import UIKit
+
+import UIExtensions
 
 public struct ChartColor: Codable {
     public let value: UIColor

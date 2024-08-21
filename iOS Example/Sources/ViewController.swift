@@ -1,6 +1,14 @@
+//
+//  ViewController.swift
+//  Chart-Example
+//
+//  Created by Sun on 2024/8/21.
+//
+
+import UIKit
+
 import Chart
 import SnapKit
-import UIKit
 
 class ViewController: UIViewController {
     static let maColors = [UIColor.green, UIColor.blue, UIColor.red]

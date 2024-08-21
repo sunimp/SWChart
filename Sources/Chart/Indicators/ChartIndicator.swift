@@ -1,6 +1,14 @@
+//
+//  ChartIndicator.swift
+//  Chart
+//
+//  Created by Sun on 2024/8/21.
+//
+
+import UIKit
+
 import WWExtensions
 import UIExtensions
-import UIKit
 
 public class ChartIndicator: Codable {
     var _class: String
