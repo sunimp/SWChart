@@ -99,7 +99,7 @@ class ChartBars: ChartPointsObject {
 
     override func path(points: [CGPoint]) -> CGPath {
         let barsPath = UIBezierPath()
-        let width = calculateBarWidth(points: points, width: barsLayer.bounds.width - padding.width)
+        let width = calculateBarWidth(points: points, width: barsLayer.bounds.width - padding.horizontal)
 
         barsLayer.lineWidth = onePixel // set minimal line width. All pixels inside will be filled
         let pixelShift = onePixel / 2 // pixel shift, because line drawing by center of x/y

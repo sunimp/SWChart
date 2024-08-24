@@ -100,7 +100,7 @@ class ChartTouchArea: Chart {
     private func findNearest(position: CGFloat) -> Int? {
         guard bounds.width > 0 else { return nil }
 
-        let position = (position - curvePadding.left) / (bounds.width - curvePadding.width)
+        let position = (position - curvePadding.left) / (bounds.width - curvePadding.horizontal)
         for i in 0 ..< points.count {
             if position == points[i].x { // x equal point.x . Return point
                 return i

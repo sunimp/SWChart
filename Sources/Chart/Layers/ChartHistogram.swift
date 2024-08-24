@@ -141,7 +141,7 @@ class ChartHistogram: ChartPointsObject {
         super.updateFrame(in: bounds, duration: duration, timingFunction: timingFunction)
 
         let frame = wrapperLayer.bounds
-        let realAreaHeight = frame.height - padding.height
+        let realAreaHeight = frame.height - padding.vertical
         let realPositiveHeight = realAreaHeight * (1 - verticalSplitValue)
         let realNegativeHeight = realAreaHeight - realPositiveHeight
 
