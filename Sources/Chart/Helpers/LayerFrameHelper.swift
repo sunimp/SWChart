@@ -10,9 +10,8 @@ import UIKit
 enum LayerFrameHelper {
     static let halfDp = 0.5 / UIScreen.main.scale
 
-    /** calculate frame using layer insets and size.
-         for use size each one of axis inset must be negative(not using)
-     */
+    /// calculate frame using layer insets and size.
+    ///    for use size each one of axis inset must be negative(not using)
     static func frame(insets: UIEdgeInsets, size: CGSize?, in bounds: CGRect) -> CGRect {
         guard let size else { // no need to calculate frame, just add insets
             return bounds.inset(by: insets)

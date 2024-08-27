@@ -7,9 +7,13 @@
 
 import UIKit
 
+// MARK: - ChartGridType
+
 enum ChartGridType {
     case horizontal, vertical
 }
+
+// MARK: - ChartGridLines
 
 class ChartGridLines: ChartPointsObject {
     private let linesLayer = CAShapeLayer()
@@ -53,7 +57,7 @@ class ChartGridLines: ChartPointsObject {
         }
     }
 
-    public var retinaCorrected: Bool = true {
+    public var retinaCorrected = true {
         didSet {
             linesLayer.setNeedsDisplay()
         }
@@ -87,8 +91,9 @@ class ChartGridLines: ChartPointsObject {
         let offset = retinaCorrected ? LayerFrameHelper.offset(lineWidth: width) : 0
 
         for point in points {
-            if let invisibleIndent, // if point closer than ignoring size, dont show line
-               (point.x <= layer.bounds.origin.x + invisibleIndent) || (point.x >= layer.bounds.width - invisibleIndent)
+            if
+                let invisibleIndent, // if point closer than ignoring size, dont show line
+                (point.x <= layer.bounds.origin.x + invisibleIndent) || (point.x >= layer.bounds.width - invisibleIndent)
             {
                 continue
             }
@@ -100,6 +105,7 @@ class ChartGridLines: ChartPointsObject {
             case .horizontal:
                 let toX = lineDirection == .bottom ? (linesLayer.bounds.width) : 0
                 endPoint = CGPoint(x: toX + offset, y: correctedPoint.y)
+
             case .vertical:
                 let toY = lineDirection == .bottom ? (linesLayer.bounds.height - bottomInset) : bottomInset
                 endPoint = CGPoint(x: correctedPoint.x, y: toY + offset)

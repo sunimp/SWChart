@@ -12,7 +12,7 @@ class IndicatorChart: Chart {
     private let verticalLines = ChartGridLines()
     private let horizontalLines = ChartGridLines()
 
-    private var showVolume: Bool = true
+    private var showVolume = true
 
     init(configuration: ChartConfiguration? = nil) {
         super.init(frame: .zero)
@@ -30,7 +30,8 @@ class IndicatorChart: Chart {
         super.init(coder: coder)
     }
 
-    @discardableResult func apply(configuration: ChartConfiguration) -> Self {
+    @discardableResult
+    func apply(configuration: ChartConfiguration) -> Self {
         volumeBars.barFillColor = configuration.volumeBarsFillColor
         volumeBars.width = configuration.volumeBarsWidth
         volumeBars.strokeColor = configuration.volumeBarsColor

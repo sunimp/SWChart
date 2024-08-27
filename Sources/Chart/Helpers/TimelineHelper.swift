@@ -7,10 +7,14 @@
 
 import Foundation
 
+// MARK: - ITimelineHelper
+
 public protocol ITimelineHelper {
     func timestamps(startTimestamp: TimeInterval, endTimestamp: TimeInterval, separateHourlyInterval: Int) -> [TimeInterval]
     func text(timestamp: TimeInterval, separateHourlyInterval: Int, dateFormatter: DateFormatter) -> String
 }
+
+// MARK: - TimelineHelper
 
 public class TimelineHelper: ITimelineHelper {
     private let day = 24
@@ -29,19 +33,22 @@ public class TimelineHelper: ITimelineHelper {
         }
     }
 
-    // return timestamps in minutes for grid vertical lines
-    public func timestamps(startTimestamp: TimeInterval, endTimestamp: TimeInterval, separateHourlyInterval: Int) -> [TimeInterval] {
+    /// return timestamps in minutes for grid vertical lines
+    public func timestamps(
+        startTimestamp: TimeInterval,
+        endTimestamp: TimeInterval,
+        separateHourlyInterval: Int
+    ) -> [TimeInterval] {
         var timestamps = [TimeInterval]()
 
         let lastDate = Date(timeIntervalSince1970: endTimestamp)
-        var lastTimestamp: TimeInterval
-
-        switch separateHourlyInterval {
-        case 0 ..< day: lastTimestamp = lastDate.startOfHour?.timeIntervalSince1970 ?? endTimestamp
-        case day ..< month: lastTimestamp = lastDate.startOfDay.timeIntervalSince1970
-        case month ..< year: lastTimestamp = lastDate.startOfMonth?.timeIntervalSince1970 ?? endTimestamp
-        default: lastTimestamp = lastDate.startOfYear?.timeIntervalSince1970 ?? endTimestamp
-        }
+        var lastTimestamp: TimeInterval =
+            switch separateHourlyInterval {
+            case 0 ..< day: lastDate.startOfHour?.timeIntervalSince1970 ?? endTimestamp
+            case day ..< month: lastDate.startOfDay.timeIntervalSince1970
+            case month ..< year: lastDate.startOfMonth?.timeIntervalSince1970 ?? endTimestamp
+            default: lastDate.startOfYear?.timeIntervalSince1970 ?? endTimestamp
+            }
 
         while lastTimestamp >= startTimestamp {
             timestamps.append(lastTimestamp)
@@ -61,22 +68,26 @@ public class TimelineHelper: ITimelineHelper {
                 return "--"
             }
             return String("\(hour)")
+
         case 24 ... (24 * 3): // half week for show minimum 2 values
             dateFormatter.setLocalizedDateFormatFromTemplate("E")
             return dateFormatter.string(from: date)
+
         case (24 * 3 + 1) ..< month:
             guard let day = components.day else {
                 return "--"
             }
             return String("\(day)")
+
         case month ..< year:
             dateFormatter.setLocalizedDateFormatFromTemplate("MMM")
             return dateFormatter.string(from: date)
+
         default:
             dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
             return dateFormatter.string(from: date)
         }
     }
 
-    public init() {}
+    public init() { }
 }

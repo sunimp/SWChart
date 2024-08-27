@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - MacdIndicator
+
 public class MacdIndicator: ChartIndicator {
     public let fast: Int
     public let slow: Int
@@ -20,7 +22,17 @@ public class MacdIndicator: ChartIndicator {
         case configuration
     }
 
-    public init(id: String, index: Int, enabled: Bool, fast: Int, slow: Int, signal: Int, onChart: Bool = false, single: Bool = true, configuration: Configuration = .default) {
+    public init(
+        id: String,
+        index: Int,
+        enabled: Bool,
+        fast: Int,
+        slow: Int,
+        signal: Int,
+        onChart: Bool = false,
+        single: Bool = true,
+        configuration: Configuration = .default
+    ) {
         self.fast = fast
         self.slow = slow
         self.signal = signal
@@ -65,8 +77,8 @@ public class MacdIndicator: ChartIndicator {
     }
 }
 
-public extension MacdIndicator {
-    struct Configuration: Codable, Equatable {
+extension MacdIndicator {
+    public struct Configuration: Codable, Equatable {
         public let fastColor: ChartColor
         public let longColor: ChartColor
         public let positiveColor: ChartColor
@@ -75,10 +87,24 @@ public extension MacdIndicator {
         let signalWidth: CGFloat
 
         public static var `default`: Configuration {
-            Configuration(fastColor: ChartColor(.blue), longColor: ChartColor(.yellow), positiveColor: ChartColor(.green), negativeColor: ChartColor(.red), width: 1, signalWidth: 2)
+            Configuration(
+                fastColor: ChartColor(.blue),
+                longColor: ChartColor(.yellow),
+                positiveColor: ChartColor(.green),
+                negativeColor: ChartColor(.red),
+                width: 1,
+                signalWidth: 2
+            )
         }
 
-        public init(fastColor: ChartColor, longColor: ChartColor, positiveColor: ChartColor, negativeColor: ChartColor, width: CGFloat, signalWidth: CGFloat) {
+        public init(
+            fastColor: ChartColor,
+            longColor: ChartColor,
+            positiveColor: ChartColor,
+            negativeColor: ChartColor,
+            width: CGFloat,
+            signalWidth: CGFloat
+        ) {
             self.fastColor = fastColor
             self.longColor = longColor
             self.positiveColor = positiveColor
@@ -97,7 +123,7 @@ public extension MacdIndicator {
         }
     }
 
-    enum MacdType: String {
+    public enum MacdType: String {
         case macd
         case signal
         case histogram

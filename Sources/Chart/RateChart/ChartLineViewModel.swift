@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - ChartLineConfiguration
+
 class ChartLineConfiguration {
     public var lineColor: UIColor = .blue
     public var lineWidth: CGFloat = 1
@@ -25,6 +27,8 @@ class ChartLineConfiguration {
     }
 }
 
+// MARK: - ChartLineViewModel
+
 class ChartLineViewModel: ChartViewModel {
     private let maLine = ChartLine()
 
@@ -40,12 +44,14 @@ class ChartLineViewModel: ChartViewModel {
         maLine.bottomInset = configuration.bottomInset
     }
 
-    @discardableResult override func add(to chart: Chart) -> Self {
+    @discardableResult
+    override func add(to chart: Chart) -> Self {
         chart.add(maLine)
         return self
     }
 
-    @discardableResult override func remove(from chart: Chart) -> Self {
+    @discardableResult
+    override func remove(from chart: Chart) -> Self {
         chart.remove(maLine)
         return self
     }

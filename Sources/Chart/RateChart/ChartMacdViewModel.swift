@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - ChartMacdConfiguration
+
 public class ChartMacdConfiguration {
     public var animationDuration: TimeInterval = 0.35
 
@@ -30,7 +32,8 @@ public class ChartMacdConfiguration {
         return config
     }
 
-    @discardableResult func configured(_ configuration: MacdIndicator.Configuration) -> Self {
+    @discardableResult
+    func configured(_ configuration: MacdIndicator.Configuration) -> Self {
         signalColor = configuration.fastColor.value
         macdColor = configuration.longColor.value
         positiveColor = configuration.positiveColor.value
@@ -40,6 +43,8 @@ public class ChartMacdConfiguration {
         return self
     }
 }
+
+// MARK: - ChartMacdViewModel
 
 class ChartMacdViewModel: ChartViewModel {
     private let histogram = ChartHistogram()
@@ -55,7 +60,8 @@ class ChartMacdViewModel: ChartViewModel {
         apply(configuration: configuration)
     }
 
-    @discardableResult func apply(configuration: ChartMacdConfiguration) -> Self {
+    @discardableResult
+    func apply(configuration: ChartMacdConfiguration) -> Self {
         self.configuration = configuration
 
         histogram.positiveBarFillColor = configuration.positiveColor
@@ -77,7 +83,8 @@ class ChartMacdViewModel: ChartViewModel {
         return self
     }
 
-    @discardableResult override func add(to chart: Chart) -> Self {
+    @discardableResult
+    override func add(to chart: Chart) -> Self {
         chart.add(histogram)
         chart.add(signal)
         chart.add(macd)

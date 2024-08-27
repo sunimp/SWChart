@@ -20,7 +20,8 @@ class ChartLineBottomGradient: ChartPointsObject {
     }
 
     override func absolute(points: [CGPoint]) -> [CGPoint] {
-        let absolutePoints = points.map { ShapeHelper.convertRelative(point: $0, size: gradientLayer.bounds.size, padding: padding) }
+        let absolutePoints = points
+            .map { ShapeHelper.convertRelative(point: $0, size: gradientLayer.bounds.size, padding: padding) }
         return ShapeHelper.closePoints(points: absolutePoints, size: gradientLayer.bounds.size)
     }
 
@@ -58,13 +59,23 @@ class ChartLineBottomGradient: ChartPointsObject {
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 0)
     }
 
-    override func appearingAnimation(new: [CGPoint], duration: CFTimeInterval, timingFunction: CAMediaTimingFunction?) -> CAAnimation? {
+    override func appearingAnimation(
+        new: [CGPoint],
+        duration: CFTimeInterval,
+        timingFunction: CAMediaTimingFunction?
+    ) -> CAAnimation? {
         switch animationStyle {
         case .verticalGrowing:
             return super.appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)
         case .strokeEnd:
             let startBounds = CGRect(x: 0, y: 0, width: 0, height: gradientLayer.bounds.height)
-            let boundsAnimation = ShapeHelper.animation(keyPath: "bounds", from: startBounds, to: gradientLayer.bounds, duration: duration, timingFunction: timingFunction)
+            let boundsAnimation = ShapeHelper.animation(
+                keyPath: "bounds",
+                from: startBounds,
+                to: gradientLayer.bounds,
+                duration: duration,
+                timingFunction: timingFunction
+            )
             gradientLayer.add(boundsAnimation, forKey: strokeAnimationKey)
             return CABasicAnimation(keyPath: animationKey)
         }

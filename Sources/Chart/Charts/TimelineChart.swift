@@ -9,6 +9,8 @@ import UIKit
 
 import UIExtensions
 
+// MARK: - ChartTimelineItem
+
 public struct ChartTimelineItem {
     let text: String
     let timestamp: TimeInterval
@@ -18,6 +20,8 @@ public struct ChartTimelineItem {
         self.timestamp = timestamp
     }
 }
+
+// MARK: - TimelineChart
 
 class TimelineChart: Chart {
     private var texts = [ChartText]()
@@ -40,7 +44,8 @@ class TimelineChart: Chart {
         super.init(coder: coder)
     }
 
-    @discardableResult func apply(configuration: ChartConfiguration?) -> Self {
+    @discardableResult
+    func apply(configuration: ChartConfiguration?) -> Self {
         self.configuration = configuration
 
         if let configuration {
@@ -54,7 +59,7 @@ class TimelineChart: Chart {
     }
 
     func set(texts: [String], positions: [CGPoint]) {
-        self.texts.forEach { $0.layer.removeFromSuperlayer() }
+        for text in self.texts { text.layer.removeFromSuperlayer() }
         self.texts.removeAll()
 
         timelineTexts = texts
@@ -105,7 +110,7 @@ class TimelineChart: Chart {
     }
 
     func setTexts(hidden: Bool) {
-        texts.forEach { $0.layer.isHidden = hidden }
+        for text in texts { text.layer.isHidden = hidden }
     }
 
     override func layoutSubviews() {

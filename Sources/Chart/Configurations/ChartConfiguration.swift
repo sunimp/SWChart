@@ -43,7 +43,7 @@ public class ChartConfiguration {
     public var neutralGradient = [UIColor.gray, UIColor.gray]
 
     public var gradientPositions: [CGFloat] = [0, 1]
-    public var gradientLocations: [NSNumber]?
+    public var gradientLocations: [NSNumber]? = nil
     public var gradientAlphas: [CGFloat] = [0.05, 0.5]
 
     public var limitLinesWidth: CGFloat = onePixel
@@ -91,7 +91,7 @@ public class ChartConfiguration {
 
     public var rsiTextSize: CGSize = .init(width: 15, height: 14)
 
-    public init() {}
+    public init() { }
 
     public enum CurveType {
         case line

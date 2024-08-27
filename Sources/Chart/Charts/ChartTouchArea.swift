@@ -7,11 +7,15 @@
 
 import UIKit
 
+// MARK: - ITouchAreaDelegate
+
 protocol ITouchAreaDelegate: AnyObject {
     func touchDown()
     func select(at: Int)
     func touchUp()
 }
+
+// MARK: - ChartTouchArea
 
 class ChartTouchArea: Chart {
     private var gestureRecognizer: UILongPressGestureRecognizer?
@@ -41,7 +45,8 @@ class ChartTouchArea: Chart {
         super.init(coder: coder)
     }
 
-    @discardableResult func apply(configuration: ChartConfiguration) -> Self {
+    @discardableResult
+    func apply(configuration: ChartConfiguration) -> Self {
         self.configuration = configuration
 
         if configuration.isInteractive {
@@ -69,7 +74,7 @@ class ChartTouchArea: Chart {
         return self
     }
 
-    // The Pan Gesture
+    /// The Pan Gesture
     private func createPanGestureRecognizer() {
         gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
         if let gestureRecognizer {
@@ -83,15 +88,18 @@ class ChartTouchArea: Chart {
         self.points = points
     }
 
-    @objc private func handlePanGesture(gesture: UILongPressGestureRecognizer) {
+    @objc
+    private func handlePanGesture(gesture: UILongPressGestureRecognizer) {
         let location = gesture.location(in: self)
 
         switch gesture.state {
         case .began:
             delegate?.touchDown()
             update(at: location)
+
         case .changed:
             update(at: location)
+
         default:
             stop()
         }
@@ -153,6 +161,8 @@ class ChartTouchArea: Chart {
         updateUI()
     }
 }
+
+// MARK: UIGestureRecognizerDelegate
 
 extension ChartTouchArea: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_: UIGestureRecognizer, shouldRequireFailureOf _: UIGestureRecognizer) -> Bool {

@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - MaIndicator
+
 public class MaIndicator: ChartIndicator {
     public let period: Int
     public let type: MaType
@@ -19,7 +21,16 @@ public class MaIndicator: ChartIndicator {
         case width
     }
 
-    public init(id: String, index: Int, enabled: Bool, period: Int, type: MaType, onChart: Bool = true, single: Bool = false, configuration: ChartIndicator.LineConfiguration = .default) {
+    public init(
+        id: String,
+        index: Int,
+        enabled: Bool,
+        period: Int,
+        type: MaType,
+        onChart: Bool = true,
+        single: Bool = false,
+        configuration: ChartIndicator.LineConfiguration = .default
+    ) {
         self.period = period
         self.type = type
         self.configuration = configuration
@@ -60,8 +71,10 @@ public class MaIndicator: ChartIndicator {
     }
 }
 
-public extension MaIndicator {
-    enum MaType: String, CaseIterable, Codable {
+// MARK: MaIndicator.MaType
+
+extension MaIndicator {
+    public enum MaType: String, CaseIterable, Codable {
         case ema
         case sma
         case wma

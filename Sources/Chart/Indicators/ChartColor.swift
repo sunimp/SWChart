@@ -9,6 +9,8 @@ import UIKit
 
 import UIExtensions
 
+// MARK: - ChartColor
+
 public struct ChartColor: Codable {
     public let value: UIColor
 

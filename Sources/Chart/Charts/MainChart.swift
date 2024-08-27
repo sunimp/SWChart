@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - MainChart
+
 class MainChart: Chart {
     private let border = ChartBorder()
     private var curve: ChartPointsObject
@@ -20,9 +22,9 @@ class MainChart: Chart {
 
     private static func curve(type: ChartConfiguration.CurveType?) -> ChartPointsObject {
         switch type {
-        case .bars: return ChartBars()
-        case .histogram: return ChartHistogram()
-        default: return ChartLine()
+        case .bars: ChartBars()
+        case .histogram: ChartHistogram()
+        default: ChartLine()
         }
     }
 
@@ -51,7 +53,8 @@ class MainChart: Chart {
         super.init(coder: coder)
     }
 
-    @discardableResult func apply(configuration: ChartConfiguration) -> Self {
+    @discardableResult
+    func apply(configuration: ChartConfiguration) -> Self {
         self.configuration = configuration
 
         if configuration.showBorders {
@@ -168,7 +171,8 @@ class MainChart: Chart {
             }
         }
 
-        gradient.gradientColors = zip(colorType.gradientColors(configuration: configuration), configuration.gradientAlphas).map { $0.withAlphaComponent($1) }
+        gradient.gradientColors = zip(colorType.gradientColors(configuration: configuration), configuration.gradientAlphas)
+            .map { $0.withAlphaComponent($1) }
         gradient.gradientLocations = configuration.gradientLocations
     }
 
@@ -191,24 +195,26 @@ class MainChart: Chart {
     }
 }
 
+// MARK: - ChartColorType
+
 public enum ChartColorType {
     case up, down, neutral, pressed
 
     func curveColor(configuration: ChartConfiguration) -> UIColor {
         switch self {
-        case .up: return configuration.trendUpColor
-        case .down: return configuration.trendDownColor
-        case .pressed: return configuration.pressedColor
-        case .neutral: return configuration.outdatedColor
+        case .up: configuration.trendUpColor
+        case .down: configuration.trendDownColor
+        case .pressed: configuration.pressedColor
+        case .neutral: configuration.outdatedColor
         }
     }
 
     func gradientColors(configuration: ChartConfiguration) -> [UIColor] {
         switch self {
-        case .up: return configuration.trendUpGradient
-        case .down: return configuration.trendDownGradient
-        case .pressed: return configuration.pressedGradient
-        case .neutral: return configuration.neutralGradient
+        case .up: configuration.trendUpGradient
+        case .down: configuration.trendDownGradient
+        case .pressed: configuration.pressedGradient
+        case .neutral: configuration.neutralGradient
         }
     }
 

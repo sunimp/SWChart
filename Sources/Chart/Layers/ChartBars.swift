@@ -7,9 +7,13 @@
 
 import UIKit
 
+// MARK: - ChartBarPosition
+
 enum ChartBarPosition {
     case start, center, end
 }
+
+// MARK: - ChartBars
 
 class ChartBars: ChartPointsObject {
     private let onePixel: CGFloat = 1 / UIScreen.main.scale
@@ -79,7 +83,11 @@ class ChartBars: ChartPointsObject {
         maskLayer.backgroundColor = UIColor.black.cgColor
     }
 
-    override func appearingAnimation(new: [CGPoint], duration: CFTimeInterval, timingFunction: CAMediaTimingFunction?) -> CAAnimation? {
+    override func appearingAnimation(
+        new: [CGPoint],
+        duration: CFTimeInterval,
+        timingFunction: CAMediaTimingFunction?
+    ) -> CAAnimation? {
         switch animationStyle {
         case .verticalGrowing:
             return super.appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)
@@ -87,7 +95,13 @@ class ChartBars: ChartPointsObject {
             maskLayer.bounds = barsLayer.bounds
 
             let startBounds = CGRect(x: 0, y: 0, width: 0, height: barsLayer.bounds.height - bottomInset)
-            let boundsAnimation = ShapeHelper.animation(keyPath: "bounds", from: startBounds, to: barsLayer.bounds, duration: duration, timingFunction: timingFunction)
+            let boundsAnimation = ShapeHelper.animation(
+                keyPath: "bounds",
+                from: startBounds,
+                to: barsLayer.bounds,
+                duration: duration,
+                timingFunction: timingFunction
+            )
             maskLayer.add(boundsAnimation, forKey: strokeAnimationKey)
             return CABasicAnimation(keyPath: animationKey)
         }
@@ -110,14 +124,14 @@ class ChartBars: ChartPointsObject {
         let sign: CGFloat = reverse ? -1 : 1
 
         for (_, point) in points.enumerated() {
-            var startX: CGFloat
+            let startX: CGFloat =
             switch barPosition {
             case .start:
-                startX = point.x + pixelShift
+                point.x + pixelShift
             case .center:
-                startX = point.x - width / 2 + pixelShift
+                point.x - width / 2 + pixelShift
             case .end:
-                startX = point.x - width + pixelShift
+                point.x - width + pixelShift
             }
 
             let tooSmallForArc = reverse ? ((zeroY - point.y) < width) : ((point.y - zeroY) < width)
@@ -132,14 +146,26 @@ class ChartBars: ChartPointsObject {
             let endX = startX + width - onePixel
 
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: centerX, y: high), radius: !tooSmallForArc ? width / 2 - onePixel : 0, startAngle: -Double.pi, endAngle: 0, clockwise: reverse)
+                barsPath.addArc(
+                    withCenter: CGPoint(x: centerX, y: high),
+                    radius: !tooSmallForArc ? width / 2 - onePixel : 0,
+                    startAngle: -Double.pi,
+                    endAngle: 0,
+                    clockwise: reverse
+                )
             }
 
             barsPath.addLine(to: CGPoint(x: endX, y: high))
             barsPath.addLine(to: CGPoint(x: endX, y: low))
 
             if drawCap {
-                barsPath.addArc(withCenter: CGPoint(x: centerX, y: low), radius: !tooSmallForArc ? width / 2 - onePixel : 0, startAngle: 0, endAngle: Double.pi, clockwise: reverse)
+                barsPath.addArc(
+                    withCenter: CGPoint(x: centerX, y: low),
+                    radius: !tooSmallForArc ? width / 2 - onePixel : 0,
+                    startAngle: 0,
+                    endAngle: Double.pi,
+                    clockwise: reverse
+                )
             }
 
             barsPath.close()
@@ -172,7 +198,12 @@ class ChartBars: ChartPointsObject {
         points
     }
 
-    override func transformAnimation(oldPath: CGPath, new: [CGPoint], duration: CFTimeInterval, timingFunction: CAMediaTimingFunction?) -> CAAnimation {
+    override func transformAnimation(
+        oldPath: CGPath,
+        new: [CGPoint],
+        duration: CFTimeInterval,
+        timingFunction: CAMediaTimingFunction?
+    ) -> CAAnimation {
         guard points.count != new.count || morphingAnimationDisabled else {
             return super.transformAnimation(oldPath: oldPath, new: new, duration: duration, timingFunction: timingFunction)
         }
@@ -184,16 +215,22 @@ class ChartBars: ChartPointsObject {
 
         let halfDuration = duration / 2
 
-        let downAnimation = ShapeHelper.animation(keyPath: "path", from: oldPath,
-                                                  to: downOldPath,
-                                                  duration: duration,
-                                                  timingFunction: timingFunction)
+        let downAnimation = ShapeHelper.animation(
+            keyPath: "path",
+            from: oldPath,
+            to: downOldPath,
+            duration: duration,
+            timingFunction: timingFunction
+        )
         downAnimation.duration = halfDuration
 
-        let upAnimation = ShapeHelper.animation(keyPath: "path", from: downNewPath,
-                                                to: newPath,
-                                                duration: duration,
-                                                timingFunction: timingFunction)
+        let upAnimation = ShapeHelper.animation(
+            keyPath: "path",
+            from: downNewPath,
+            to: newPath,
+            duration: duration,
+            timingFunction: timingFunction
+        )
         upAnimation.duration = halfDuration
         upAnimation.beginTime = halfDuration
 

@@ -9,11 +9,15 @@ import UIKit
 
 import SnapKit
 
+// MARK: - IChartViewTouchDelegate
+
 public protocol IChartViewTouchDelegate: AnyObject {
     func touchDown()
     func select(item: ChartItem, indicators: [ChartIndicator])
     func touchUp()
 }
+
+// MARK: - RateChartView
 
 public class RateChartView: UIView {
     private let mainChart = MainChart()
@@ -26,7 +30,7 @@ public class RateChartView: UIView {
     private var configuration: ChartConfiguration
 
     public weak var delegate: IChartViewTouchDelegate?
-    public private(set) var isPressed: Bool = false
+    public private(set) var isPressed = false
 
     private var chartData: ChartData?
     private var indicators = [ChartIndicator]()
@@ -47,7 +51,8 @@ public class RateChartView: UIView {
         apply(configuration: configuration)
     }
 
-    @discardableResult public func apply(configuration: ChartConfiguration) -> Self {
+    @discardableResult
+    public func apply(configuration: ChartConfiguration) -> Self {
         self.configuration = configuration
 
         backgroundColor = configuration.backgroundColor
@@ -98,7 +103,14 @@ public class RateChartView: UIView {
         fatalError("not implemented")
     }
 
-    @discardableResult public func set(chartData: ChartData, indicators: [ChartIndicator] = [], showIndicators: Bool = true, limitFormatter: ((Decimal) -> String?)? = nil, animated: Bool = true) -> [IndicatorFactory.CalculatingError] {
+    @discardableResult
+    public func set(
+        chartData: ChartData,
+        indicators: [ChartIndicator] = [],
+        showIndicators: Bool = true,
+        limitFormatter: ((Decimal) -> String?)? = nil,
+        animated: Bool = true
+    ) -> [IndicatorFactory.CalculatingError] {
         // 1. calculate all indicators and add it to chartData
         let factory = IndicatorFactory()
         let calculatingErrors = factory.store(indicators: indicators, chartData: chartData)
@@ -117,12 +129,12 @@ public class RateChartView: UIView {
         indicatorChart.set(volumes: converted[ChartData.volume], animated: animated)
 
         // 4. get diff to update all chartIndicator layers
-        let updatedIds = indicators.map(\.json)
+        let updatedIDs = indicators.map(\.json)
 
         // 4a. remove unused viewModels and apply visibility
         for model in viewModels {
             model.set(hidden: !showIndicators)
-            if !updatedIds.contains(model.id) {
+            if !updatedIDs.contains(model.id) {
                 // remove from chart
                 if model.onChart {
                     model.remove(from: mainChart)
@@ -170,7 +182,10 @@ public class RateChartView: UIView {
         indicatorChart.setVolumes(hidden: hasVisibleOffChainIndicator && showIndicators)
 
         let rateRange = ranges[ChartData.rate]
-        mainChart.set(highLimitText: rateRange.flatMap { limitFormatter?($0.max) }, lowLimitText: rateRange.flatMap { limitFormatter?($0.min) })
+        mainChart.set(
+            highLimitText: rateRange.flatMap { limitFormatter?($0.max) },
+            lowLimitText: rateRange.flatMap { limitFormatter?($0.min) }
+        )
 
         return calculatingErrors
     }
@@ -204,19 +219,22 @@ public class RateChartView: UIView {
     }
 }
 
+// MARK: ITouchAreaDelegate
+
 extension RateChartView: ITouchAreaDelegate {
     func touchDown() {
         isPressed = true
         mainChart.setLine(colorType: .pressed)
-        viewModels.forEach { $0.set(selected: true) }
+        for viewModel in viewModels { viewModel.set(selected: true) }
 
         delegate?.touchDown()
     }
 
     func select(at index: Int) {
-        guard let data = chartData,
-              index < data.visibleItems.count,
-              let item = chartData?.visibleItems[index]
+        guard
+            let data = chartData,
+            index < data.visibleItems.count,
+            let item = chartData?.visibleItems[index]
         else {
             return
         }
@@ -227,7 +245,7 @@ extension RateChartView: ITouchAreaDelegate {
     func touchUp() {
         isPressed = false
         mainChart.setLine(colorType: colorType)
-        viewModels.forEach { $0.set(selected: false) }
+        for viewModel in viewModels { viewModel.set(selected: false) }
 
         delegate?.touchUp()
     }

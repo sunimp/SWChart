@@ -7,19 +7,27 @@
 
 import UIKit
 
+// MARK: - IChartObject
+
 protocol IChartObject: AnyObject {
     var layer: CALayer { get }
     func updateFrame(in bounds: CGRect, duration: CFTimeInterval?, timingFunction: CAMediaTimingFunction?)
 }
+
+// MARK: - ChartStartAnimationStyle
 
 enum ChartStartAnimationStyle: Int {
     case verticalGrowing
     case strokeEnd
 }
 
+// MARK: - ChartPathDirection
+
 enum ChartPathDirection {
     case top, bottom
 }
+
+// MARK: - ChartPointsObject
 
 class ChartPointsObject: NSObject, IChartObject {
     let strokeAnimationKey = "strokeEndAnimation"
@@ -58,7 +66,7 @@ class ChartPointsObject: NSObject, IChartObject {
         points.map { ShapeHelper.convertRelative(point: $0, size: layer.bounds.size, padding: padding) }
     }
 
-    // point correction when old point count not equal to new count
+    /// point correction when old point count not equal to new count
     func corrected(points: [CGPoint], newCount: Int) -> [CGPoint] {
         ShapeHelper.correctPoints(lastPoints: points, newCount: newCount)
     }
@@ -79,7 +87,13 @@ class ChartPointsObject: NSObject, IChartObject {
 
         let data = diffData(for: reverted)
 
-        update(start: data.start, old: data.old, new: data.new, duration: animated ? animationDuration : nil, timingFunction: CAMediaTimingFunction(name: .easeInEaseOut))
+        update(
+            start: data.start,
+            old: data.old,
+            new: data.new,
+            duration: animated ? animationDuration : nil,
+            timingFunction: CAMediaTimingFunction(name: .easeInEaseOut)
+        )
         self.points = reverted
     }
 
@@ -87,26 +101,46 @@ class ChartPointsObject: NSObject, IChartObject {
         ShapeHelper.linePath(points: points)
     }
 
-    func update(start: Bool = false, old: [CGPoint], new: [CGPoint], duration: CFTimeInterval?, timingFunction _: CAMediaTimingFunction?) {
+    func update(
+        start: Bool = false,
+        old: [CGPoint],
+        new: [CGPoint],
+        duration: CFTimeInterval?,
+        timingFunction _: CAMediaTimingFunction?
+    ) {
         guard let animationLayer = animationLayer as? CAShapeLayer else {
             return
         }
-        update(layer: animationLayer, start: start, old: old, new: new, duration: duration, timingFunction: CAMediaTimingFunction(name: .easeInEaseOut))
+        update(
+            layer: animationLayer,
+            start: start,
+            old: old,
+            new: new,
+            duration: duration,
+            timingFunction: CAMediaTimingFunction(name: .easeInEaseOut)
+        )
     }
 
-    func update(layer: CAShapeLayer, start: Bool = false, old: [CGPoint], new: [CGPoint], duration: CFTimeInterval?, timingFunction: CAMediaTimingFunction?) {
+    func update(
+        layer: CAShapeLayer,
+        start: Bool = false,
+        old: [CGPoint],
+        new: [CGPoint],
+        duration: CFTimeInterval?,
+        timingFunction: CAMediaTimingFunction?
+    ) {
         layer.path = path(points: new)
 
         guard let duration else {
             return
         }
 
-        let animation: CAAnimation?
-        if start { // if its first appearing animation, use animation style
-            animation = appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)
-        } else {
-            animation = transformAnimation(oldPath: path(points: old), new: new, duration: duration, timingFunction: timingFunction)
-        }
+        let animation: CAAnimation? =
+            if start { // if its first appearing animation, use animation style
+                appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)
+            } else {
+                transformAnimation(oldPath: path(points: old), new: new, duration: duration, timingFunction: timingFunction)
+            }
 
         if let animation {
             layer.add(animation, forKey: animationKey)
@@ -121,20 +155,31 @@ class ChartPointsObject: NSObject, IChartObject {
             let newPath = path(points: new)
             let oldPath = path(points: new.map { CGPoint(x: $0.x, y: zeroY) })
 
-            return ShapeHelper.animation(keyPath: "path", from: oldPath,
-                                         to: newPath,
-                                         duration: duration,
-                                         timingFunction: timingFunction)
+            return ShapeHelper.animation(
+                keyPath: "path",
+                from: oldPath,
+                to: newPath,
+                duration: duration,
+                timingFunction: timingFunction
+            )
         }
     }
 
-    func transformAnimation(oldPath: CGPath, new: [CGPoint], duration: CFTimeInterval, timingFunction: CAMediaTimingFunction?) -> CAAnimation {
+    func transformAnimation(
+        oldPath: CGPath,
+        new: [CGPoint],
+        duration: CFTimeInterval,
+        timingFunction: CAMediaTimingFunction?
+    ) -> CAAnimation {
         let newPath = path(points: new)
 
-        return ShapeHelper.animation(keyPath: "path", from: oldPath,
-                                     to: newPath,
-                                     duration: duration,
-                                     timingFunction: timingFunction)
+        return ShapeHelper.animation(
+            keyPath: "path",
+            from: oldPath,
+            to: newPath,
+            duration: duration,
+            timingFunction: timingFunction
+        )
     }
 
     func updateFrame(in bounds: CGRect, duration: CFTimeInterval?, timingFunction: CAMediaTimingFunction?) {
@@ -142,7 +187,11 @@ class ChartPointsObject: NSObject, IChartObject {
         layer.frame = LayerFrameHelper.frame(insets: insets, size: size, in: bounds)
         let new = absolute(points: points)
 
-        update(old: old, new: new,
-               duration: duration, timingFunction: timingFunction)
+        update(
+            old: old,
+            new: new,
+            duration: duration,
+            timingFunction: timingFunction
+        )
     }
 }

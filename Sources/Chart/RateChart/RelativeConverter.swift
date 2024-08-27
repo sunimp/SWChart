@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - ChartRange
+
 class ChartRange {
     var min: Decimal
     var max: Decimal
@@ -20,6 +22,8 @@ class ChartRange {
     var minPositive: Bool { min >= 0 }
     var maxPositive: Bool { max >= 0 }
 }
+
+// MARK: - RelativeConverter
 
 enum RelativeConverter {
     private static func allRanges(chartData: ChartData, indicators _: [ChartIndicator]) -> [String: ChartRange] {
@@ -54,12 +58,12 @@ enum RelativeConverter {
             extremums.append(contentsOf: rate.all)
         }
 
-        let maIds = indicators
+        let maIDs = indicators
             .filter { $0.abstractType == .ma }
             .map(\.json)
 
         if showIndicators {
-            for id in maIds {
+            for id in maIDs {
                 guard let range = ranges[id] else {
                     continue
                 }
@@ -71,7 +75,7 @@ enum RelativeConverter {
 
         // set range for all onChart indicators and rate
         ranges[ChartData.rate] = extremumRange
-        maIds.forEach { ranges[$0] = extremumRange }
+        for maID in maIDs { ranges[maID] = extremumRange }
 
         // set ranges for volume : from 0 to max
         if let volumeRange = ranges[ChartData.volume] {
@@ -79,35 +83,35 @@ enum RelativeConverter {
         }
 
         // set 0..100 for every rsi
-        let rsiIds = indicators
+        let rsiIDs = indicators
             .filter { $0.abstractType == .rsi }
             .map(\.json)
 
         let rsiRange = ChartRange(min: 0, max: 100)
-        rsiIds.forEach { ranges[$0] = rsiRange }
+        for rsiID in rsiIDs { ranges[rsiID] = rsiRange }
 
         // merge ranges for macd : to show all lines and zoom histogram to maximum
-        let macdIds = indicators
+        let macdIDs = indicators
             .filter { $0.abstractType == .macd }
             .map(\.json)
 
-        for id in macdIds {
-            let signalId = MacdIndicator.MacdType.signal.name(id: id)
-            let macdId = MacdIndicator.MacdType.macd.name(id: id)
-            let histogramId = MacdIndicator.MacdType.histogram.name(id: id)
+        for id in macdIDs {
+            let signalID = MacdIndicator.MacdType.signal.name(id: id)
+            let macdID = MacdIndicator.MacdType.macd.name(id: id)
+            let histogramID = MacdIndicator.MacdType.histogram.name(id: id)
 
-            var extremums = ranges[signalId]?.all ?? []
-            extremums.append(contentsOf: ranges[macdId]?.all ?? [])
-            let histogramExtremums = ranges[histogramId]?.all ?? []
+            var extremums = ranges[signalID]?.all ?? []
+            extremums.append(contentsOf: ranges[macdID]?.all ?? [])
+            let histogramExtremums = ranges[histogramID]?.all ?? []
 
             let maxValue = extremums.map { abs($0) }.max() ?? 0
             let histogramMaxValue = histogramExtremums.map { abs($0) }.max() ?? 0
 
             let result = ChartRange(min: -maxValue, max: maxValue)
 
-            ranges[signalId] = result
-            ranges[macdId] = result
-            ranges[histogramId] = ChartRange(min: -histogramMaxValue, max: histogramMaxValue)
+            ranges[signalID] = result
+            ranges[macdID] = result
+            ranges[histogramID] = ChartRange(min: -histogramMaxValue, max: histogramMaxValue)
         }
 
         return ranges

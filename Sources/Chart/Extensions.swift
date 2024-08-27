@@ -38,8 +38,8 @@ extension Date {
     }
 }
 
-public extension Decimal {
-    var integerDigitCount: Int {
+extension Decimal {
+    public var integerDigitCount: Int {
         var value = abs(self)
         var count = 1
         while value >= 10 {
@@ -49,13 +49,13 @@ public extension Decimal {
         return count
     }
 
-    var cgFloatValue: CGFloat {
+    public var cgFloatValue: CGFloat {
         CGFloat(truncating: self as NSNumber)
     }
 }
 
-public extension CGFloat {
-    var decimalValue: Decimal {
+extension CGFloat {
+    public var decimalValue: Decimal {
         (self as NSNumber).decimalValue
     }
 }

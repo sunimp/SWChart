@@ -125,7 +125,13 @@ class ChartHistogram: ChartPointsObject {
         return (positive: positive, negative: negative)
     }
 
-    override func update(start _: Bool, old: [CGPoint], new: [CGPoint], duration: CFTimeInterval?, timingFunction _: CAMediaTimingFunction?) {
+    override func update(
+        start _: Bool,
+        old: [CGPoint],
+        new: [CGPoint],
+        duration: CFTimeInterval?,
+        timingFunction _: CAMediaTimingFunction?
+    ) {
         let oldPoints = split(points: old)
         let newPoints = split(points: new)
 

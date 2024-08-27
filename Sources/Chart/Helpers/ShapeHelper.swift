@@ -26,7 +26,10 @@ enum ShapeHelper {
     static func convertRelative(point: CGPoint, size: CGSize, padding: UIEdgeInsets) -> CGPoint {
         let paddingSize = CGSize(width: padding.left + padding.right, height: padding.top + padding.bottom)
 
-        return CGPoint(x: padding.left + (size.width - paddingSize.width) * point.x, y: padding.top + (size.height - paddingSize.height) * point.y)
+        return CGPoint(
+            x: padding.left + (size.width - paddingSize.width) * point.x,
+            y: padding.top + (size.height - paddingSize.height) * point.y
+        )
     }
 
     static func closePoints(points: [CGPoint], size: CGSize) -> [CGPoint] {
@@ -71,7 +74,13 @@ enum ShapeHelper {
         return startPoints
     }
 
-    static func animation(keyPath: String, from: Any?, to: Any?, duration: CFTimeInterval, timingFunction: CAMediaTimingFunction?) -> CABasicAnimation {
+    static func animation(
+        keyPath: String,
+        from: Any?,
+        to: Any?,
+        duration: CFTimeInterval,
+        timingFunction: CAMediaTimingFunction?
+    ) -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: keyPath)
         animation.fromValue = from
         animation.toValue = to

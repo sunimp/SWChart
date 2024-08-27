@@ -43,8 +43,9 @@ class Chart: UIView {
     }
 
     func replace(_ oldObject: IChartObject, by object: IChartObject) {
-        guard let objectIndex = chartObjects.firstIndex(where: { $0 === oldObject }),
-              self.layer.sublayers?.firstIndex(of: oldObject.layer) != nil
+        guard
+            let objectIndex = chartObjects.firstIndex(where: { $0 === oldObject }),
+            layer.sublayers?.firstIndex(of: oldObject.layer) != nil
         else {
             print("Can't found object")
             return
@@ -70,9 +71,11 @@ class Chart: UIView {
             CATransaction.disableActions()
         }
         for object in chartObjects {
-            object.updateFrame(in: bounds,
-                               duration: animation?.duration,
-                               timingFunction: animation?.timingFunction)
+            object.updateFrame(
+                in: bounds,
+                duration: animation?.duration,
+                timingFunction: animation?.timingFunction
+            )
         }
 
         CATransaction.commit()

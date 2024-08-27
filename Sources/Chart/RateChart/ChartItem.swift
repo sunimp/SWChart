@@ -16,7 +16,8 @@ public class ChartItem: Comparable {
         self.timestamp = timestamp
     }
 
-    @discardableResult public func added(name: String, value: Decimal) -> Self {
+    @discardableResult
+    public func added(name: String, value: Decimal) -> Self {
         indicators[name] = value
 
         return self

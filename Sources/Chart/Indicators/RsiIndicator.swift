@@ -17,7 +17,15 @@ public class RsiIndicator: ChartIndicator {
         case configuration
     }
 
-    public init(id: String, index: Int, enabled: Bool, period: Int, onChart: Bool = false, single: Bool = true, configuration: ChartIndicator.LineConfiguration = .default) {
+    public init(
+        id: String,
+        index: Int,
+        enabled: Bool,
+        period: Int,
+        onChart: Bool = false,
+        single: Bool = true,
+        configuration: ChartIndicator.LineConfiguration = .default
+    ) {
         self.period = period
         self.configuration = configuration
 

@@ -7,11 +7,15 @@
 
 import Foundation
 
+// MARK: - MacdData
+
 public struct MacdData {
     public let macd: [Decimal]
     public let signal: [Decimal]
     public let histogram: [Decimal]
 }
+
+// MARK: - IndicatorCalculator
 
 public enum IndicatorCalculator {
     public static let maximumPeriod = 200
@@ -166,8 +170,10 @@ public enum IndicatorCalculator {
     }
 }
 
-public extension IndicatorCalculator {
-    enum IndicatorError: Error {
+// MARK: IndicatorCalculator.IndicatorError
+
+extension IndicatorCalculator {
+    public enum IndicatorError: Error {
         case notEnoughData
         case tooSmallPeriod
         case tooLargePeriod

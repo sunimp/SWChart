@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: - ChartRsiConfiguration
+
 public class ChartRsiConfiguration {
     public var animationDuration: TimeInterval = 0.35
 
@@ -53,6 +55,8 @@ public class ChartRsiConfiguration {
     }
 }
 
+// MARK: - ChartRsiViewModel
+
 class ChartRsiViewModel: ChartViewModel {
     private let rsi = ChartLine()
 
@@ -69,7 +73,8 @@ class ChartRsiViewModel: ChartViewModel {
         apply(configuration: configuration)
     }
 
-    @discardableResult func apply(configuration: ChartRsiConfiguration) -> Self {
+    @discardableResult
+    func apply(configuration: ChartRsiConfiguration) -> Self {
         self.configuration = configuration
 
         rsi.strokeColor = configuration.lineColor
@@ -82,7 +87,10 @@ class ChartRsiViewModel: ChartViewModel {
         rsiLimitLines.width = configuration.limitLinesWidth
         rsiLimitLines.lineDashPattern = configuration.limitLinesDashPattern
         rsiLimitLines.padding = configuration.padding
-        rsiLimitLines.set(points: [CGPoint(x: 0, y: configuration.bottomLimitValue), CGPoint(x: 0, y: configuration.topLimitValue)])
+        rsiLimitLines.set(points: [
+            CGPoint(x: 0, y: configuration.bottomLimitValue),
+            CGPoint(x: 0, y: configuration.topLimitValue),
+        ])
 
         rsiTopValue.textColor = configuration.limitTextColor
         rsiTopValue.font = configuration.limitTextFont
@@ -100,7 +108,8 @@ class ChartRsiViewModel: ChartViewModel {
         return self
     }
 
-    @discardableResult override func add(to chart: Chart) -> Self {
+    @discardableResult
+    override func add(to chart: Chart) -> Self {
         chart.add(rsi)
         chart.add(rsiLimitLines)
         chart.add(rsiTopValue)
