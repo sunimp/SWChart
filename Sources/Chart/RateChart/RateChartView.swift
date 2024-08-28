@@ -129,12 +129,12 @@ public class RateChartView: UIView {
         indicatorChart.set(volumes: converted[ChartData.volume], animated: animated)
 
         // 4. get diff to update all chartIndicator layers
-        let updatedIDs = indicators.map(\.json)
+        let updatedIds = indicators.map(\.json)
 
         // 4a. remove unused viewModels and apply visibility
         for model in viewModels {
             model.set(hidden: !showIndicators)
-            if !updatedIDs.contains(model.id) {
+            if !updatedIds.contains(model.id) {
                 // remove from chart
                 if model.onChart {
                     model.remove(from: mainChart)

@@ -58,12 +58,12 @@ enum RelativeConverter {
             extremums.append(contentsOf: rate.all)
         }
 
-        let maIDs = indicators
+        let maIds = indicators
             .filter { $0.abstractType == .ma }
             .map(\.json)
 
         if showIndicators {
-            for id in maIDs {
+            for id in maIds {
                 guard let range = ranges[id] else {
                     continue
                 }
@@ -75,7 +75,7 @@ enum RelativeConverter {
 
         // set range for all onChart indicators and rate
         ranges[ChartData.rate] = extremumRange
-        for maID in maIDs { ranges[maID] = extremumRange }
+        for maId in maIds { ranges[maId] = extremumRange }
 
         // set ranges for volume : from 0 to max
         if let volumeRange = ranges[ChartData.volume] {
@@ -83,35 +83,35 @@ enum RelativeConverter {
         }
 
         // set 0..100 for every rsi
-        let rsiIDs = indicators
+        let rsiIds = indicators
             .filter { $0.abstractType == .rsi }
             .map(\.json)
 
         let rsiRange = ChartRange(min: 0, max: 100)
-        for rsiID in rsiIDs { ranges[rsiID] = rsiRange }
+        for rsiId in rsiIds { ranges[rsiId] = rsiRange }
 
         // merge ranges for macd : to show all lines and zoom histogram to maximum
-        let macdIDs = indicators
+        let macdIds = indicators
             .filter { $0.abstractType == .macd }
             .map(\.json)
 
-        for id in macdIDs {
-            let signalID = MacdIndicator.MacdType.signal.name(id: id)
-            let macdID = MacdIndicator.MacdType.macd.name(id: id)
-            let histogramID = MacdIndicator.MacdType.histogram.name(id: id)
+        for id in macdIds {
+            let signalId = MacdIndicator.MacdType.signal.name(id: id)
+            let macdId = MacdIndicator.MacdType.macd.name(id: id)
+            let histogramId = MacdIndicator.MacdType.histogram.name(id: id)
 
-            var extremums = ranges[signalID]?.all ?? []
-            extremums.append(contentsOf: ranges[macdID]?.all ?? [])
-            let histogramExtremums = ranges[histogramID]?.all ?? []
+            var extremums = ranges[signalId]?.all ?? []
+            extremums.append(contentsOf: ranges[macdId]?.all ?? [])
+            let histogramExtremums = ranges[histogramId]?.all ?? []
 
             let maxValue = extremums.map { abs($0) }.max() ?? 0
             let histogramMaxValue = histogramExtremums.map { abs($0) }.max() ?? 0
 
             let result = ChartRange(min: -maxValue, max: maxValue)
 
-            ranges[signalID] = result
-            ranges[macdID] = result
-            ranges[histogramID] = ChartRange(min: -histogramMaxValue, max: histogramMaxValue)
+            ranges[signalId] = result
+            ranges[macdId] = result
+            ranges[histogramId] = ChartRange(min: -histogramMaxValue, max: histogramMaxValue)
         }
 
         return ranges

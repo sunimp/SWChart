@@ -125,14 +125,14 @@ class ChartBars: ChartPointsObject {
 
         for (_, point) in points.enumerated() {
             let startX: CGFloat =
-            switch barPosition {
-            case .start:
-                point.x + pixelShift
-            case .center:
-                point.x - width / 2 + pixelShift
-            case .end:
-                point.x - width + pixelShift
-            }
+                switch barPosition {
+                case .start:
+                    point.x + pixelShift
+                case .center:
+                    point.x - width / 2 + pixelShift
+                case .end:
+                    point.x - width + pixelShift
+                }
 
             let tooSmallForArc = reverse ? ((zeroY - point.y) < width) : ((point.y - zeroY) < width)
             let placeForArc = drawCap && !tooSmallForArc ? (width / 2) * sign : 0
