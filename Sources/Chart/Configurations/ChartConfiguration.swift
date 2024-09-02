@@ -1,14 +1,25 @@
 //
 //  ChartConfiguration.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 public class ChartConfiguration {
+    // MARK: Nested Types
+
+    public enum CurveType {
+        case line
+        case bars
+        case histogram
+    }
+
+    // MARK: Static Properties
+
     static let onePixel = 1 / UIScreen.main.scale
+
+    // MARK: Properties
 
     public var showBorders = true
     public var showIndicatorArea = true
@@ -91,11 +102,7 @@ public class ChartConfiguration {
 
     public var rsiTextSize: CGSize = .init(width: 15, height: 14)
 
-    public init() { }
+    // MARK: Lifecycle
 
-    public enum CurveType {
-        case line
-        case bars
-        case histogram
-    }
+    public init() { }
 }

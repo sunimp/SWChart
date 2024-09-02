@@ -1,8 +1,7 @@
 //
 //  ChartIndicator.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import UIKit
@@ -13,20 +12,20 @@ import WWExtensions
 // MARK: - ChartIndicator
 
 public class ChartIndicator: Codable {
-    var _class: String
+    // MARK: Properties
+
     public let id: String
     public let index: Int
     public var enabled: Bool
     public let onChart: Bool
     public let single: Bool
 
-    init(id: String, index: Int, enabled: Bool, onChart: Bool, single: Bool) {
-        _class = String(describing: Self.self)
-        self.id = id
-        self.index = index
-        self.enabled = enabled
-        self.onChart = onChart
-        self.single = single
+    var _class: String
+
+    // MARK: Computed Properties
+
+    open var category: Category {
+        fatalError("must be overridden by subclass")
     }
 
     public var json: String {
@@ -50,9 +49,18 @@ public class ChartIndicator: Codable {
         0
     }
 
-    open var category: Category {
-        fatalError("must be overridden by subclass")
+    // MARK: Lifecycle
+
+    init(id: String, index: Int, enabled: Bool, onChart: Bool, single: Bool) {
+        _class = String(describing: Self.self)
+        self.id = id
+        self.index = index
+        self.enabled = enabled
+        self.onChart = onChart
+        self.single = single
     }
+
+    // MARK: Static Functions
 
     static func json(from object: some Encodable) throws -> String {
         let encoder = JSONEncoder()
@@ -90,17 +98,25 @@ extension ChartIndicator {
     }
 
     public struct LineConfiguration: Codable, Equatable {
+        // MARK: Static Computed Properties
+
+        public static var `default`: LineConfiguration {
+            LineConfiguration(color: ChartColor(.blue), width: 1)
+        }
+
+        // MARK: Properties
+
         public let color: ChartColor
         public let width: CGFloat
+
+        // MARK: Lifecycle
 
         public init(color: ChartColor, width: CGFloat) {
             self.color = color
             self.width = width
         }
 
-        public static var `default`: LineConfiguration {
-            LineConfiguration(color: ChartColor(.blue), width: 1)
-        }
+        // MARK: Static Functions
 
         public static func == (lhs: LineConfiguration, rhs: LineConfiguration) -> Bool {
             lhs.color.hex == rhs.color.hex &&

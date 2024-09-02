@@ -1,27 +1,25 @@
 //
 //  ChartItem.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import Foundation
 
 public class ChartItem: Comparable {
+    // MARK: Properties
+
     public var indicators = [String: Decimal]()
 
     public let timestamp: TimeInterval
+
+    // MARK: Lifecycle
 
     public init(timestamp: TimeInterval) {
         self.timestamp = timestamp
     }
 
-    @discardableResult
-    public func added(name: String, value: Decimal) -> Self {
-        indicators[name] = value
-
-        return self
-    }
+    // MARK: Static Functions
 
     public static func < (lhs: ChartItem, rhs: ChartItem) -> Bool {
         lhs.timestamp < rhs.timestamp
@@ -29,5 +27,14 @@ public class ChartItem: Comparable {
 
     public static func == (lhs: ChartItem, rhs: ChartItem) -> Bool {
         lhs.timestamp == rhs.timestamp
+    }
+
+    // MARK: Functions
+
+    @discardableResult
+    public func added(name: String, value: Decimal) -> Self {
+        indicators[name] = value
+
+        return self
     }
 }

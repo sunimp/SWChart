@@ -1,8 +1,7 @@
 //
 //  ChartPointsObject.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -24,16 +23,18 @@ enum ChartStartAnimationStyle: Int {
 // MARK: - ChartPathDirection
 
 enum ChartPathDirection {
-    case top, bottom
+    case top
+    case bottom
 }
 
 // MARK: - ChartPointsObject
 
 class ChartPointsObject: NSObject, IChartObject {
-    let strokeAnimationKey = "strokeEndAnimation"
-    let animationKey = "lineAnimation"
+    // MARK: Properties
 
-    var reversePoint = true
+    open var strokeColor: UIColor = .clear
+    open var fillColor: UIColor = .clear
+    open var width: CGFloat = 4
 
     public var pathDirection: ChartPathDirection = .bottom
     public var animationDuration: TimeInterval = 0.3
@@ -41,12 +42,17 @@ class ChartPointsObject: NSObject, IChartObject {
     public var insets: UIEdgeInsets = .zero
     public var size: CGSize? = nil
 
-    open var strokeColor: UIColor = .clear
-    open var fillColor: UIColor = .clear
-    open var width: CGFloat = 4
-
     public var padding: UIEdgeInsets = .zero
     public var bottomInset: CGFloat = .zero
+
+    let strokeAnimationKey = "strokeEndAnimation"
+    let animationKey = "lineAnimation"
+
+    var reversePoint = true
+
+    var points = [CGPoint]()
+
+    // MARK: Computed Properties
 
     var layer: CALayer { // layer which will be added to chart
         fatalError("Must be implemented by Concrete subclass.")
@@ -60,7 +66,24 @@ class ChartPointsObject: NSObject, IChartObject {
         layer
     }
 
-    var points = [CGPoint]()
+    // MARK: Functions
+
+    public func set(points: [CGPoint]?, animated: Bool = false) {
+        let points = points ?? []
+        // we must revert y-coordinate before set
+        let reverted = reversePoint ? points.map { CGPoint(x: $0.x, y: 1 - $0.y) } : points
+
+        let data = diffData(for: reverted)
+
+        update(
+            start: data.start,
+            old: data.old,
+            new: data.new,
+            duration: animated ? animationDuration : nil,
+            timingFunction: CAMediaTimingFunction(name: .easeInEaseOut)
+        )
+        self.points = reverted
+    }
 
     func absolute(points: [CGPoint]) -> [CGPoint] {
         points.map { ShapeHelper.convertRelative(point: $0, size: layer.bounds.size, padding: padding) }
@@ -78,23 +101,6 @@ class ChartPointsObject: NSObject, IChartObject {
         let new = absolute(points: points)
 
         return (start: start, old: old, new: new)
-    }
-
-    public func set(points: [CGPoint]?, animated: Bool = false) {
-        let points = points ?? []
-        // we must revert y-coordinate before set
-        let reverted = reversePoint ? points.map { CGPoint(x: $0.x, y: 1 - $0.y) } : points
-
-        let data = diffData(for: reverted)
-
-        update(
-            start: data.start,
-            old: data.old,
-            new: data.new,
-            duration: animated ? animationDuration : nil,
-            timingFunction: CAMediaTimingFunction(name: .easeInEaseOut)
-        )
-        self.points = reverted
     }
 
     func path(points: [CGPoint]) -> CGPath {
@@ -139,7 +145,12 @@ class ChartPointsObject: NSObject, IChartObject {
             if start { // if its first appearing animation, use animation style
                 appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)
             } else {
-                transformAnimation(oldPath: path(points: old), new: new, duration: duration, timingFunction: timingFunction)
+                transformAnimation(
+                    oldPath: path(points: old),
+                    new: new,
+                    duration: duration,
+                    timingFunction: timingFunction
+                )
             }
 
         if let animation {
@@ -147,10 +158,22 @@ class ChartPointsObject: NSObject, IChartObject {
         }
     }
 
-    func appearingAnimation(new: [CGPoint], duration: CFTimeInterval, timingFunction: CAMediaTimingFunction?) -> CAAnimation? {
+    func appearingAnimation(
+        new: [CGPoint],
+        duration: CFTimeInterval,
+        timingFunction: CAMediaTimingFunction?
+    )
+        -> CAAnimation? {
         switch animationStyle {
         case .strokeEnd:
-            return ShapeHelper.animation(keyPath: "strokeEnd", from: 0, to: 1, duration: duration, timingFunction: timingFunction)
+            return ShapeHelper.animation(
+                keyPath: "strokeEnd",
+                from: 0,
+                to: 1,
+                duration: duration,
+                timingFunction: timingFunction
+            )
+
         case .verticalGrowing:
             let newPath = path(points: new)
             let oldPath = path(points: new.map { CGPoint(x: $0.x, y: zeroY) })
@@ -170,7 +193,8 @@ class ChartPointsObject: NSObject, IChartObject {
         new: [CGPoint],
         duration: CFTimeInterval,
         timingFunction: CAMediaTimingFunction?
-    ) -> CAAnimation {
+    )
+        -> CAAnimation {
         let newPath = path(points: new)
 
         return ShapeHelper.animation(

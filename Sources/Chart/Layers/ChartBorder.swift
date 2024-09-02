@@ -1,23 +1,22 @@
 //
 //  ChartBorder.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class ChartBorder: IChartObject {
-    private let borderLayer = CAShapeLayer()
+    // MARK: Properties
 
     public var insets: UIEdgeInsets = .zero
     public var size: CGSize? = nil
 
     public var padding: UIEdgeInsets = .zero
 
-    var layer: CALayer {
-        borderLayer
-    }
+    private let borderLayer = CAShapeLayer()
+
+    // MARK: Computed Properties
 
     public var backgroundColor: UIColor? {
         didSet {
@@ -43,6 +42,12 @@ class ChartBorder: IChartObject {
         }
     }
 
+    var layer: CALayer {
+        borderLayer
+    }
+
+    // MARK: Lifecycle
+
     init() {
         borderLayer.shouldRasterize = true
         borderLayer.rasterizationScale = UIScreen.main.scale
@@ -53,11 +58,15 @@ class ChartBorder: IChartObject {
         borderLayer.lineWidth = lineWidth
     }
 
+    // MARK: Functions
+
     func path() -> CGPath {
         let offset: CGFloat = LayerFrameHelper.offset(lineWidth: lineWidth)
 
-//        let size = CGSize(width: borderLayer.bounds.width - 2 * offset, height: borderLayer.bounds.height)// - 1 / UIScreen.main.scale)
-//        return UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: offset, y: offset), size: size), cornerRadius: 0).cgPath
+//        let size = CGSize(width: borderLayer.bounds.width - 2 * offset, height: borderLayer.bounds.height)// - 1 /
+//        UIScreen.main.scale)
+//        return UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: offset, y: offset), size: size), cornerRadius:
+//        0).cgPath
 
 //      only bottom chart border
         let path = UIBezierPath()

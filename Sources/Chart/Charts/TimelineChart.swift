@@ -1,8 +1,7 @@
 //
 //  TimelineChart.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -12,8 +11,12 @@ import UIExtensions
 // MARK: - ChartTimelineItem
 
 public struct ChartTimelineItem {
+    // MARK: Properties
+
     let text: String
     let timestamp: TimeInterval
+
+    // MARK: Lifecycle
 
     public init(text: String, timestamp: TimeInterval) {
         self.text = text
@@ -24,6 +27,8 @@ public struct ChartTimelineItem {
 // MARK: - TimelineChart
 
 class TimelineChart: Chart {
+    // MARK: Properties
+
     private var texts = [ChartText]()
 
     private var timelineTexts = [String]()
@@ -31,6 +36,8 @@ class TimelineChart: Chart {
     private let horizontalLines = ChartGridLines()
 
     private var configuration: ChartConfiguration?
+
+    // MARK: Lifecycle
 
     init(configuration: ChartConfiguration? = nil) {
         super.init(frame: .zero)
@@ -43,6 +50,16 @@ class TimelineChart: Chart {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+
+    // MARK: Overridden Functions
+
+    override func layoutSubviews() {
+        updateTextInsets()
+
+        super.layoutSubviews()
+    }
+
+    // MARK: Functions
 
     @discardableResult
     func apply(configuration: ChartConfiguration?) -> Self {
@@ -59,7 +76,9 @@ class TimelineChart: Chart {
     }
 
     func set(texts: [String], positions: [CGPoint]) {
-        for text in self.texts { text.layer.removeFromSuperlayer() }
+        for text in self.texts {
+            text.layer.removeFromSuperlayer()
+        }
         self.texts.removeAll()
 
         timelineTexts = texts
@@ -83,12 +102,19 @@ class TimelineChart: Chart {
         }
 
         for i in (0 ..< timelineTexts.count).reversed() {
-            var currentPosition = ShapeHelper.convertRelative(point: timelinePositions[i], size: bounds.size, padding: .zero)
+            var currentPosition = ShapeHelper.convertRelative(
+                point: timelinePositions[i],
+                size: bounds.size,
+                padding: .zero
+            )
             var insets = configuration.timelineInsets
 
             if i == texts.count - 1 { // check last element position
                 // check text does not go beyond bounds
-                let textSize = timelineTexts[i].size(containerWidth: layer.bounds.width, font: configuration.timelineFont)
+                let textSize = timelineTexts[i].size(
+                    containerWidth: layer.bounds.width,
+                    font: configuration.timelineFont
+                )
 
                 let width = textSize.width + configuration.timelineInsets.left + configuration.timelineInsets.right
                 if (currentPosition.x + width) > layer.bounds.width {
@@ -110,12 +136,8 @@ class TimelineChart: Chart {
     }
 
     func setTexts(hidden: Bool) {
-        for text in texts { text.layer.isHidden = hidden }
-    }
-
-    override func layoutSubviews() {
-        updateTextInsets()
-
-        super.layoutSubviews()
+        for text in texts {
+            text.layer.isHidden = hidden
+        }
     }
 }

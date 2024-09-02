@@ -1,14 +1,17 @@
 //
 //  Chart.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class Chart: UIView {
+    // MARK: Properties
+
     var chartObjects = [IChartObject]()
+
+    // MARK: Lifecycle
 
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
@@ -22,9 +25,33 @@ class Chart: UIView {
         commonInit()
     }
 
-    private func commonInit() {
-        clipsToBounds = true
+    // MARK: Overridden Functions
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        // If the view is animating apply the animation to the sublayer
+        CATransaction.begin()
+
+        let animation = layer.animation(forKey: "position")
+        if let duration = animation?.duration {
+            CATransaction.setAnimationDuration(duration)
+            CATransaction.setAnimationTimingFunction(animation?.timingFunction)
+        } else {
+            CATransaction.disableActions()
+        }
+        for object in chartObjects {
+            object.updateFrame(
+                in: bounds,
+                duration: animation?.duration,
+                timingFunction: animation?.timingFunction
+            )
+        }
+
+        CATransaction.commit()
     }
+
+    // MARK: Functions
 
     func add(_ object: IChartObject) {
         chartObjects.append(object)
@@ -57,27 +84,7 @@ class Chart: UIView {
         object.layer.setNeedsLayout()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        // If the view is animating apply the animation to the sublayer
-        CATransaction.begin()
-
-        let animation = layer.animation(forKey: "position")
-        if let duration = animation?.duration {
-            CATransaction.setAnimationDuration(duration)
-            CATransaction.setAnimationTimingFunction(animation?.timingFunction)
-        } else {
-            CATransaction.disableActions()
-        }
-        for object in chartObjects {
-            object.updateFrame(
-                in: bounds,
-                duration: animation?.duration,
-                timingFunction: animation?.timingFunction
-            )
-        }
-
-        CATransaction.commit()
+    private func commonInit() {
+        clipsToBounds = true
     }
 }

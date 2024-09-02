@@ -1,8 +1,7 @@
 //
 //  ChartTouchArea.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -18,6 +17,10 @@ protocol ITouchAreaDelegate: AnyObject {
 // MARK: - ChartTouchArea
 
 class ChartTouchArea: Chart {
+    // MARK: Properties
+
+    weak var delegate: ITouchAreaDelegate?
+
     private var gestureRecognizer: UILongPressGestureRecognizer?
     private var verticalLine = ChartGridLines()
     private var pointCircle = ChartCircle()
@@ -26,8 +29,9 @@ class ChartTouchArea: Chart {
 
     private var curvePadding: UIEdgeInsets = .zero
 
-    weak var delegate: ITouchAreaDelegate?
     private var configuration: ChartConfiguration?
+
+    // MARK: Lifecycle
 
     init(configuration: ChartConfiguration? = nil) {
         super.init(frame: .zero)
@@ -44,6 +48,16 @@ class ChartTouchArea: Chart {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+
+    // MARK: Overridden Functions
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        updateUI()
+    }
+
+    // MARK: Functions
 
     @discardableResult
     func apply(configuration: ChartConfiguration) -> Self {
@@ -74,6 +88,10 @@ class ChartTouchArea: Chart {
         return self
     }
 
+    func set(points: [CGPoint]) {
+        self.points = points
+    }
+
     /// The Pan Gesture
     private func createPanGestureRecognizer() {
         gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
@@ -82,10 +100,6 @@ class ChartTouchArea: Chart {
             gestureRecognizer.minimumPressDuration = 0.05
             gestureRecognizer.delaysTouchesBegan = false
         }
-    }
-
-    func set(points: [CGPoint]) {
-        self.points = points
     }
 
     @objc
@@ -106,7 +120,9 @@ class ChartTouchArea: Chart {
     }
 
     private func findNearest(position: CGFloat) -> Int? {
-        guard bounds.width > 0 else { return nil }
+        guard bounds.width > 0 else {
+            return nil
+        }
 
         let position = (position - curvePadding.left) / (bounds.width - curvePadding.horizontal)
         for i in 0 ..< points.count {
@@ -153,12 +169,6 @@ class ChartTouchArea: Chart {
     private func updateUI() {
         verticalLine.strokeColor = configuration?.touchLineColor ?? .clear
         pointCircle.backgroundColor = configuration?.touchCircleColor
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        updateUI()
     }
 }
 

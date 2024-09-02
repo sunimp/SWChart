@@ -1,15 +1,25 @@
 //
 //  PrecalculatedIndicator.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import UIKit
 
 public class PrecalculatedIndicator: ChartIndicator {
+    // MARK: Nested Types
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case configuration
+    }
+
+    // MARK: Properties
+
     let values: [Decimal]
     let configuration: ChartIndicator.LineConfiguration
+
+    // MARK: Lifecycle
 
     public init(
         id: String,
@@ -26,11 +36,6 @@ public class PrecalculatedIndicator: ChartIndicator {
         super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case configuration
-    }
-
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         configuration = try container.decode(ChartIndicator.LineConfiguration.self, forKey: .configuration)
@@ -39,11 +44,15 @@ public class PrecalculatedIndicator: ChartIndicator {
         try super.init(from: decoder)
     }
 
+    // MARK: Overridden Functions
+
     override public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(configuration, forKey: .configuration)
         try super.encode(to: encoder)
     }
+
+    // MARK: Static Functions
 
     public static func == (lhs: PrecalculatedIndicator, rhs: PrecalculatedIndicator) -> Bool {
         lhs.id == rhs.id &&

@@ -1,8 +1,7 @@
 //
-//  ChartMacdConfiguration.swift
-//  Chart
+//  ChartMacdViewModel.swift
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import UIKit
@@ -10,6 +9,8 @@ import UIKit
 // MARK: - ChartMacdConfiguration
 
 public class ChartMacdConfiguration {
+    // MARK: Properties
+
     public var animationDuration: TimeInterval = 0.35
 
     public var histogramPadding: UIEdgeInsets = .init(top: 8, left: 0, bottom: 8, right: 0)
@@ -23,6 +24,8 @@ public class ChartMacdConfiguration {
     public var positiveColor: UIColor = .green.withAlphaComponent(0.5)
     public var negativeColor: UIColor = .red.withAlphaComponent(0.5)
 
+    // MARK: Static Functions
+
     static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartMacdConfiguration {
         let config = ChartMacdConfiguration()
         config.histogramPadding = onChart ? configuration.curvePadding : configuration.indicatorAreaPadding
@@ -31,6 +34,8 @@ public class ChartMacdConfiguration {
 
         return config
     }
+
+    // MARK: Functions
 
     @discardableResult
     func configured(_ configuration: MacdIndicator.Configuration) -> Self {
@@ -47,11 +52,15 @@ public class ChartMacdConfiguration {
 // MARK: - ChartMacdViewModel
 
 class ChartMacdViewModel: ChartViewModel {
+    // MARK: Properties
+
     private let histogram = ChartHistogram()
     private let signal = ChartLine()
     private let macd = ChartLine()
 
     private var configuration: ChartMacdConfiguration
+
+    // MARK: Lifecycle
 
     init(id: String, onChart: Bool, configuration: ChartMacdConfiguration) {
         self.configuration = configuration
@@ -60,28 +69,7 @@ class ChartMacdViewModel: ChartViewModel {
         apply(configuration: configuration)
     }
 
-    @discardableResult
-    func apply(configuration: ChartMacdConfiguration) -> Self {
-        self.configuration = configuration
-
-        histogram.positiveBarFillColor = configuration.positiveColor
-        histogram.negativeBarFillColor = configuration.negativeColor
-        histogram.width = configuration.histogramWidth
-        histogram.padding = configuration.histogramPadding
-        histogram.animationDuration = configuration.animationDuration
-
-        signal.strokeColor = configuration.signalColor
-        signal.width = configuration.signalLineWidth
-        signal.padding = configuration.linesPadding
-        signal.animationDuration = configuration.animationDuration
-
-        macd.strokeColor = configuration.macdColor
-        macd.width = configuration.lineWidth
-        macd.padding = configuration.linesPadding
-        macd.animationDuration = configuration.animationDuration
-
-        return self
-    }
+    // MARK: Overridden Functions
 
     @discardableResult
     override func add(to chart: Chart) -> Self {
@@ -114,12 +102,6 @@ class ChartMacdViewModel: ChartViewModel {
         histogram.set(points: points[MacdIndicator.MacdType.histogram.name(id: id)] ?? [], animated: animated)
     }
 
-    func set(macd: [CGPoint]?, macdHistogram: [CGPoint]?, macdSignal: [CGPoint]?, animated: Bool) {
-        self.macd.set(points: macd ?? [], animated: animated)
-        histogram.set(points: macdHistogram ?? [], animated: animated)
-        signal.set(points: macdSignal ?? [], animated: animated)
-    }
-
     override func set(hidden: Bool) {
         super.set(hidden: hidden)
         macd.layer.isHidden = hidden
@@ -129,5 +111,36 @@ class ChartMacdViewModel: ChartViewModel {
 
     override func set(selected _: Bool) {
         // dont change colors
+    }
+
+    // MARK: Functions
+
+    @discardableResult
+    func apply(configuration: ChartMacdConfiguration) -> Self {
+        self.configuration = configuration
+
+        histogram.positiveBarFillColor = configuration.positiveColor
+        histogram.negativeBarFillColor = configuration.negativeColor
+        histogram.width = configuration.histogramWidth
+        histogram.padding = configuration.histogramPadding
+        histogram.animationDuration = configuration.animationDuration
+
+        signal.strokeColor = configuration.signalColor
+        signal.width = configuration.signalLineWidth
+        signal.padding = configuration.linesPadding
+        signal.animationDuration = configuration.animationDuration
+
+        macd.strokeColor = configuration.macdColor
+        macd.width = configuration.lineWidth
+        macd.padding = configuration.linesPadding
+        macd.animationDuration = configuration.animationDuration
+
+        return self
+    }
+
+    func set(macd: [CGPoint]?, macdHistogram: [CGPoint]?, macdSignal: [CGPoint]?, animated: Bool) {
+        self.macd.set(points: macd ?? [], animated: animated)
+        histogram.set(points: macdHistogram ?? [], animated: animated)
+        signal.set(points: macdSignal ?? [], animated: animated)
     }
 }

@@ -1,25 +1,38 @@
 //
 //  ChartData.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import Foundation
 
 public class ChartData {
+    // MARK: Static Properties
+
     public static let rate = "rate"
     public static let volume = "volume"
+
+    // MARK: Properties
 
     public var items: [ChartItem]
     public var startWindow: TimeInterval
     public var endWindow: TimeInterval
+
+    // MARK: Computed Properties
+
+    public var visibleItems: [ChartItem] {
+        items.filter { item in item.timestamp >= startWindow && item.timestamp <= endWindow }
+    }
+
+    // MARK: Lifecycle
 
     public init(items: [ChartItem], startWindow: TimeInterval, endWindow: TimeInterval) {
         self.items = items
         self.startWindow = startWindow
         self.endWindow = endWindow
     }
+
+    // MARK: Functions
 
     public func add(name: String, values: [Decimal]) {
         let start = items.count - values.count
@@ -55,10 +68,6 @@ public class ChartData {
 
     public func values(name: String) -> [Decimal] {
         items.compactMap { $0.indicators[name] }
-    }
-
-    public var visibleItems: [ChartItem] {
-        items.filter { item in item.timestamp >= startWindow && item.timestamp <= endWindow }
     }
 
     public func last(name: String) -> Decimal? {

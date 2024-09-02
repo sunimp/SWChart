@@ -1,8 +1,7 @@
 //
 //  ChartColor.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import UIKit
@@ -12,11 +11,23 @@ import UIExtensions
 // MARK: - ChartColor
 
 public struct ChartColor: Codable {
-    public let value: UIColor
+    // MARK: Nested Types
 
     enum CodingKeys: CodingKey {
         case value
     }
+
+    // MARK: Properties
+
+    public let value: UIColor
+
+    // MARK: Computed Properties
+
+    public var hex: Int {
+        value.hex
+    }
+
+    // MARK: Lifecycle
 
     public init(_ color: UIColor) {
         value = color
@@ -28,13 +39,11 @@ public struct ChartColor: Codable {
         value = UIColor(hexa: hexa)
     }
 
+    // MARK: Functions
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(value.hex)
-    }
-
-    public var hex: Int {
-        value.hex
     }
 }
 

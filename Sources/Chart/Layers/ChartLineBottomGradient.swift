@@ -1,15 +1,13 @@
 //
 //  ChartLineBottomGradient.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class ChartLineBottomGradient: ChartPointsObject {
-    private let gradientLayer = CAGradientLayer()
-    private let maskLayer = CAShapeLayer()
+    // MARK: Overridden Properties
 
     override var layer: CALayer {
         gradientLayer
@@ -19,11 +17,12 @@ class ChartLineBottomGradient: ChartPointsObject {
         maskLayer
     }
 
-    override func absolute(points: [CGPoint]) -> [CGPoint] {
-        let absolutePoints = points
-            .map { ShapeHelper.convertRelative(point: $0, size: gradientLayer.bounds.size, padding: padding) }
-        return ShapeHelper.closePoints(points: absolutePoints, size: gradientLayer.bounds.size)
-    }
+    // MARK: Properties
+
+    private let gradientLayer = CAGradientLayer()
+    private let maskLayer = CAShapeLayer()
+
+    // MARK: Computed Properties
 
     public var backgroundColor: UIColor? {
         didSet {
@@ -43,6 +42,8 @@ class ChartLineBottomGradient: ChartPointsObject {
         }
     }
 
+    // MARK: Lifecycle
+
     override init() {
         super.init()
 
@@ -59,11 +60,20 @@ class ChartLineBottomGradient: ChartPointsObject {
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 0)
     }
 
+    // MARK: Overridden Functions
+
+    override func absolute(points: [CGPoint]) -> [CGPoint] {
+        let absolutePoints = points
+            .map { ShapeHelper.convertRelative(point: $0, size: gradientLayer.bounds.size, padding: padding) }
+        return ShapeHelper.closePoints(points: absolutePoints, size: gradientLayer.bounds.size)
+    }
+
     override func appearingAnimation(
         new: [CGPoint],
         duration: CFTimeInterval,
         timingFunction: CAMediaTimingFunction?
-    ) -> CAAnimation? {
+    )
+        -> CAAnimation? {
         switch animationStyle {
         case .verticalGrowing:
             return super.appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)

@@ -1,8 +1,7 @@
 //
 //  IndicatorFactory.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import Foundation
@@ -10,6 +9,12 @@ import Foundation
 // MARK: - IndicatorFactory
 
 public class IndicatorFactory {
+    // MARK: Lifecycle
+
+    public init() { }
+
+    // MARK: Functions
+
     public func store(indicators: [ChartIndicator], chartData: ChartData) -> [CalculatingError] {
         // 1. get all rates to calculate indicators
         let rates = chartData.values(name: ChartData.rate)
@@ -50,7 +55,10 @@ public class IndicatorFactory {
                     // TODO: remove or replace MacdIndicator.MacdType.macd.name(id: indicatorName)
                     chartData.add(name: MacdIndicator.MacdType.macd.name(id: indicatorName), values: values.macd)
                     chartData.add(name: MacdIndicator.MacdType.signal.name(id: indicatorName), values: values.signal)
-                    chartData.add(name: MacdIndicator.MacdType.histogram.name(id: indicatorName), values: values.histogram)
+                    chartData.add(
+                        name: MacdIndicator.MacdType.histogram.name(id: indicatorName),
+                        values: values.histogram
+                    )
 
                 default: throw IndicatorCalculator.IndicatorError.invalidIndicator
                 }
@@ -60,16 +68,18 @@ public class IndicatorFactory {
         }
         return errors
     }
-
-    public init() { }
 }
 
 // MARK: IndicatorFactory.CalculatingError
 
 extension IndicatorFactory {
     public struct CalculatingError {
+        // MARK: Properties
+
         public let id: String
         public let error: Error
+
+        // MARK: Lifecycle
 
         public init(id: String, error: Error) {
             self.id = id

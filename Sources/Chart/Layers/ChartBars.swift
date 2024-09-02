@@ -1,8 +1,7 @@
 //
 //  ChartBars.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -10,34 +9,36 @@ import UIKit
 // MARK: - ChartBarPosition
 
 enum ChartBarPosition {
-    case start, center, end
+    case start
+    case center
+    case end
 }
 
 // MARK: - ChartBars
 
 class ChartBars: ChartPointsObject {
-    private let onePixel: CGFloat = 1 / UIScreen.main.scale
-
-    private let barsLayer = CAShapeLayer()
-    private let maskLayer = CALayer()
-
-    var barPosition: ChartBarPosition = .center
-    var morphingAnimationDisabled = false
-
-    override var layer: CALayer {
-        barsLayer
-    }
-
-    public var backgroundColor: UIColor? {
-        didSet {
-            barsLayer.backgroundColor = backgroundColor?.cgColor
-        }
-    }
+    // MARK: Overridden Properties
 
     override public var strokeColor: UIColor {
         didSet {
             barsLayer.strokeColor = strokeColor.cgColor
         }
+    }
+
+    override public var width: CGFloat {
+        didSet {
+            barsLayer.displayIfNeeded()
+        }
+    }
+
+    override public var bottomInset: CGFloat {
+        didSet {
+            barsLayer.displayIfNeeded()
+        }
+    }
+
+    override var layer: CALayer {
+        barsLayer
     }
 
     override var fillColor: UIColor {
@@ -47,9 +48,21 @@ class ChartBars: ChartPointsObject {
         }
     }
 
-    override public var width: CGFloat {
+    // MARK: Properties
+
+    var barPosition: ChartBarPosition = .center
+    var morphingAnimationDisabled = false
+
+    private let onePixel: CGFloat = 1 / UIScreen.main.scale
+
+    private let barsLayer = CAShapeLayer()
+    private let maskLayer = CALayer()
+
+    // MARK: Computed Properties
+
+    public var backgroundColor: UIColor? {
         didSet {
-            barsLayer.displayIfNeeded()
+            barsLayer.backgroundColor = backgroundColor?.cgColor
         }
     }
 
@@ -65,11 +78,7 @@ class ChartBars: ChartPointsObject {
         }
     }
 
-    override public var bottomInset: CGFloat {
-        didSet {
-            barsLayer.displayIfNeeded()
-        }
-    }
+    // MARK: Lifecycle
 
     override init() {
         super.init()
@@ -83,11 +92,18 @@ class ChartBars: ChartPointsObject {
         maskLayer.backgroundColor = UIColor.black.cgColor
     }
 
+    // MARK: Overridden Functions
+
+    override public func set(points: [CGPoint]?, animated: Bool = false) {
+        super.set(points: points, animated: animated)
+    }
+
     override func appearingAnimation(
         new: [CGPoint],
         duration: CFTimeInterval,
         timingFunction: CAMediaTimingFunction?
-    ) -> CAAnimation? {
+    )
+        -> CAAnimation? {
         switch animationStyle {
         case .verticalGrowing:
             return super.appearingAnimation(new: new, duration: duration, timingFunction: timingFunction)
@@ -105,10 +121,6 @@ class ChartBars: ChartPointsObject {
             maskLayer.add(boundsAnimation, forKey: strokeAnimationKey)
             return CABasicAnimation(keyPath: animationKey)
         }
-    }
-
-    override public func set(points: [CGPoint]?, animated: Bool = false) {
-        super.set(points: points, animated: animated)
     }
 
     override func path(points: [CGPoint]) -> CGPath {
@@ -173,27 +185,6 @@ class ChartBars: ChartPointsObject {
         return barsPath.cgPath
     }
 
-    func calculateBarWidth(points: [CGPoint], width _: CGFloat) -> CGFloat {
-        guard points.count > 3 else { return width }
-        var maxWidth = width
-
-        // if gap more than 2 pixels, we can add gap between bars
-        let minimumWithGap = 2 * onePixel
-        // don't use for calculation first and last points.
-        // Because sometimes for 1day chart it's position too close to next point
-        for index in 1 ..< (points.count - 3) {
-            // distance between two bars
-            let gap = points[index + 1].x - points[index].x
-            // if there is not enough space, set smallest width
-            if gap < minimumWithGap {
-                maxWidth = onePixel
-                break
-            }
-            maxWidth = min(gap - onePixel, maxWidth)
-        }
-        return max(maxWidth, 2 * onePixel)
-    }
-
     override func corrected(points: [CGPoint], newCount _: Int) -> [CGPoint] {
         points
     }
@@ -203,9 +194,15 @@ class ChartBars: ChartPointsObject {
         new: [CGPoint],
         duration: CFTimeInterval,
         timingFunction: CAMediaTimingFunction?
-    ) -> CAAnimation {
+    )
+        -> CAAnimation {
         guard points.count != new.count || morphingAnimationDisabled else {
-            return super.transformAnimation(oldPath: oldPath, new: new, duration: duration, timingFunction: timingFunction)
+            return super.transformAnimation(
+                oldPath: oldPath,
+                new: new,
+                duration: duration,
+                timingFunction: timingFunction
+            )
         }
         // when count is different we animated hiding old bars and show new
         let downOldPath = path(points: absolute(points: points).map { CGPoint(x: $0.x, y: zeroY) })
@@ -246,5 +243,30 @@ class ChartBars: ChartPointsObject {
         super.updateFrame(in: bounds, duration: duration, timingFunction: timingFunction)
 
         maskLayer.bounds = barsLayer.bounds
+    }
+
+    // MARK: Functions
+
+    func calculateBarWidth(points: [CGPoint], width _: CGFloat) -> CGFloat {
+        guard points.count > 3 else {
+            return width
+        }
+        var maxWidth = width
+
+        // if gap more than 2 pixels, we can add gap between bars
+        let minimumWithGap = 2 * onePixel
+        // don't use for calculation first and last points.
+        // Because sometimes for 1day chart it's position too close to next point
+        for index in 1 ..< (points.count - 3) {
+            // distance between two bars
+            let gap = points[index + 1].x - points[index].x
+            // if there is not enough space, set smallest width
+            if gap < minimumWithGap {
+                maxWidth = onePixel
+                break
+            }
+            maxWidth = min(gap - onePixel, maxWidth)
+        }
+        return max(maxWidth, 2 * onePixel)
     }
 }

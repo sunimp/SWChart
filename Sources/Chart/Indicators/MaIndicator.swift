@@ -1,8 +1,7 @@
 //
 //  MaIndicator.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -10,9 +9,7 @@ import UIKit
 // MARK: - MaIndicator
 
 public class MaIndicator: ChartIndicator {
-    public let period: Int
-    public let type: MaType
-    public let configuration: ChartIndicator.LineConfiguration
+    // MARK: Nested Types
 
     private enum CodingKeys: String, CodingKey {
         case period
@@ -20,6 +17,24 @@ public class MaIndicator: ChartIndicator {
         case configuration
         case width
     }
+
+    // MARK: Overridden Properties
+
+    override public var greatestPeriod: Int {
+        period
+    }
+
+    override public var category: Category {
+        .movingAverage
+    }
+
+    // MARK: Properties
+
+    public let period: Int
+    public let type: MaType
+    public let configuration: ChartIndicator.LineConfiguration
+
+    // MARK: Lifecycle
 
     public init(
         id: String,
@@ -38,14 +53,6 @@ public class MaIndicator: ChartIndicator {
         super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
-    override public var greatestPeriod: Int {
-        period
-    }
-
-    override public var category: Category {
-        .movingAverage
-    }
-
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         period = try container.decode(Int.self, forKey: .period)
@@ -54,6 +61,8 @@ public class MaIndicator: ChartIndicator {
         try super.init(from: decoder)
     }
 
+    // MARK: Overridden Functions
+
     override public func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -61,6 +70,8 @@ public class MaIndicator: ChartIndicator {
         try container.encode(type, forKey: .type)
         try container.encode(configuration, forKey: .configuration)
     }
+
+    // MARK: Static Functions
 
     public static func == (lhs: MaIndicator, rhs: MaIndicator) -> Bool {
         lhs.id == rhs.id &&

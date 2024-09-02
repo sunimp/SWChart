@@ -1,18 +1,21 @@
 //
 //  IndicatorChart.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class IndicatorChart: Chart {
+    // MARK: Properties
+
     private let volumeBars = ChartBars()
     private let verticalLines = ChartGridLines()
     private let horizontalLines = ChartGridLines()
 
     private var showVolume = true
+
+    // MARK: Lifecycle
 
     init(configuration: ChartConfiguration? = nil) {
         super.init(frame: .zero)
@@ -29,6 +32,8 @@ class IndicatorChart: Chart {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+
+    // MARK: Functions
 
     @discardableResult
     func apply(configuration: ChartConfiguration) -> Self {

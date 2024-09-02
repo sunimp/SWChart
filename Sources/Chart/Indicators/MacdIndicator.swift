@@ -1,8 +1,7 @@
 //
 //  MacdIndicator.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -10,10 +9,7 @@ import UIKit
 // MARK: - MacdIndicator
 
 public class MacdIndicator: ChartIndicator {
-    public let fast: Int
-    public let slow: Int
-    public let signal: Int
-    public let configuration: Configuration
+    // MARK: Nested Types
 
     private enum CodingKeys: String, CodingKey {
         case fast
@@ -21,6 +17,25 @@ public class MacdIndicator: ChartIndicator {
         case signal
         case configuration
     }
+
+    // MARK: Overridden Properties
+
+    override public var greatestPeriod: Int {
+        slow + signal
+    }
+
+    override public var category: Category {
+        .oscillator
+    }
+
+    // MARK: Properties
+
+    public let fast: Int
+    public let slow: Int
+    public let signal: Int
+    public let configuration: Configuration
+
+    // MARK: Lifecycle
 
     public init(
         id: String,
@@ -41,14 +56,6 @@ public class MacdIndicator: ChartIndicator {
         super.init(id: id, index: index, enabled: enabled, onChart: onChart, single: single)
     }
 
-    override public var greatestPeriod: Int {
-        slow + signal
-    }
-
-    override public var category: Category {
-        .oscillator
-    }
-
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         fast = try container.decode(Int.self, forKey: .fast)
@@ -58,6 +65,8 @@ public class MacdIndicator: ChartIndicator {
         try super.init(from: decoder)
     }
 
+    // MARK: Overridden Functions
+
     override public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(fast, forKey: .fast)
@@ -66,6 +75,8 @@ public class MacdIndicator: ChartIndicator {
         try container.encode(configuration, forKey: .configuration)
         try super.encode(to: encoder)
     }
+
+    // MARK: Static Functions
 
     public static func == (lhs: MacdIndicator, rhs: MacdIndicator) -> Bool {
         lhs.id == rhs.id &&
@@ -79,12 +90,7 @@ public class MacdIndicator: ChartIndicator {
 
 extension MacdIndicator {
     public struct Configuration: Codable, Equatable {
-        public let fastColor: ChartColor
-        public let longColor: ChartColor
-        public let positiveColor: ChartColor
-        public let negativeColor: ChartColor
-        let width: CGFloat
-        let signalWidth: CGFloat
+        // MARK: Static Computed Properties
 
         public static var `default`: Configuration {
             Configuration(
@@ -96,6 +102,18 @@ extension MacdIndicator {
                 signalWidth: 2
             )
         }
+
+        // MARK: Properties
+
+        public let fastColor: ChartColor
+        public let longColor: ChartColor
+        public let positiveColor: ChartColor
+        public let negativeColor: ChartColor
+
+        let width: CGFloat
+        let signalWidth: CGFloat
+
+        // MARK: Lifecycle
 
         public init(
             fastColor: ChartColor,
@@ -113,6 +131,8 @@ extension MacdIndicator {
             self.signalWidth = signalWidth
         }
 
+        // MARK: Static Functions
+
         public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
             lhs.fastColor.hex == rhs.fastColor.hex &&
                 lhs.longColor.hex == rhs.longColor.hex &&
@@ -127,6 +147,8 @@ extension MacdIndicator {
         case macd
         case signal
         case histogram
+
+        // MARK: Functions
 
         public func name(id: String) -> String {
             [id, rawValue].joined(separator: "_")

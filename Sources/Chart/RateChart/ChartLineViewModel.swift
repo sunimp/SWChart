@@ -1,8 +1,7 @@
 //
 //  ChartLineViewModel.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import UIKit
@@ -10,12 +9,16 @@ import UIKit
 // MARK: - ChartLineConfiguration
 
 class ChartLineConfiguration {
+    // MARK: Properties
+
     public var lineColor: UIColor = .blue
     public var lineWidth: CGFloat = 1
 
     public var animationDuration: TimeInterval = 0.35
     public var padding: UIEdgeInsets = .init(top: 18, left: 0, bottom: 18, right: 0)
     public var bottomInset: CGFloat = 0
+
+    // MARK: Static Functions
 
     static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartLineConfiguration {
         let config = ChartLineConfiguration()
@@ -30,9 +33,13 @@ class ChartLineConfiguration {
 // MARK: - ChartLineViewModel
 
 class ChartLineViewModel: ChartViewModel {
+    // MARK: Properties
+
     private let maLine = ChartLine()
 
     private var configuration: ChartLineConfiguration
+
+    // MARK: Lifecycle
 
     init(id: String, onChart: Bool, configuration: ChartLineConfiguration) {
         self.configuration = configuration
@@ -43,6 +50,8 @@ class ChartLineViewModel: ChartViewModel {
         maLine.padding = configuration.padding
         maLine.bottomInset = configuration.bottomInset
     }
+
+    // MARK: Overridden Functions
 
     @discardableResult
     override func add(to chart: Chart) -> Self {

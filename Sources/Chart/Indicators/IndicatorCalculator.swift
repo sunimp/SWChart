@@ -1,8 +1,7 @@
 //
 //  IndicatorCalculator.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import Foundation
@@ -18,20 +17,11 @@ public struct MacdData {
 // MARK: - IndicatorCalculator
 
 public enum IndicatorCalculator {
+    // MARK: Static Properties
+
     public static let maximumPeriod = 200
 
-    static func checkValidData(period: Int, valueCount: Int) throws {
-        guard period > 0 else {
-            throw IndicatorError.tooSmallPeriod
-        }
-        guard period <= maximumPeriod else {
-            throw IndicatorError.tooLargePeriod
-        }
-
-        guard valueCount >= period else {
-            throw IndicatorError.notEnoughData
-        }
-    }
+    // MARK: Static Functions
 
     public static func ma(period: Int, values: [Decimal]) throws -> [Decimal] {
         try checkValidData(period: period, valueCount: values.count)
@@ -167,6 +157,19 @@ public enum IndicatorCalculator {
         }
 
         return MacdData(macd: macd, signal: emaSignal, histogram: histogram)
+    }
+
+    static func checkValidData(period: Int, valueCount: Int) throws {
+        guard period > 0 else {
+            throw IndicatorError.tooSmallPeriod
+        }
+        guard period <= maximumPeriod else {
+            throw IndicatorError.tooLargePeriod
+        }
+
+        guard valueCount >= period else {
+            throw IndicatorError.notEnoughData
+        }
     }
 }
 

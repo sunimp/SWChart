@@ -1,27 +1,22 @@
 //
 //  ChartText.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class ChartText: IChartObject {
+    // MARK: Properties
+
     public var insets: UIEdgeInsets = .zero
     public var size: CGSize? = nil
 
     public var padding: UIEdgeInsets = .zero
 
     private let textLayer = CATextLayer()
-    var layer: CALayer { textLayer }
 
-    init() {
-        textLayer.contentsScale = UIScreen.main.scale
-        textLayer.font = font
-        textLayer.fontSize = font.pointSize
-        textLayer.foregroundColor = textColor.cgColor
-    }
+    // MARK: Computed Properties
 
     public var backgroundColor: UIColor? {
         didSet {
@@ -47,6 +42,19 @@ class ChartText: IChartObject {
             textLayer.alignmentMode = textAlignment
         }
     }
+
+    var layer: CALayer { textLayer }
+
+    // MARK: Lifecycle
+
+    init() {
+        textLayer.contentsScale = UIScreen.main.scale
+        textLayer.font = font
+        textLayer.fontSize = font.pointSize
+        textLayer.foregroundColor = textColor.cgColor
+    }
+
+    // MARK: Functions
 
     public func set(text: String?) {
         textLayer.string = text

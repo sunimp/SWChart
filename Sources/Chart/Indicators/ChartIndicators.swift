@@ -1,14 +1,13 @@
 //
 //  ChartIndicators.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import Foundation
 
 public struct ChartIndicators: Codable {
-    public let indicators: [ChartIndicator]
+    // MARK: Nested Types
 
     enum CodingKeys: CodingKey {
         case indicators
@@ -17,6 +16,12 @@ public struct ChartIndicators: Codable {
     enum ObjectTypeKey: CodingKey {
         case _class
     }
+
+    // MARK: Properties
+
+    public let indicators: [ChartIndicator]
+
+    // MARK: Lifecycle
 
     public init(with indicators: [ChartIndicator]) {
         self.indicators = indicators

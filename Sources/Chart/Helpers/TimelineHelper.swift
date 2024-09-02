@@ -1,8 +1,7 @@
 //
 //  TimelineHelper.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import Foundation
@@ -10,35 +9,33 @@ import Foundation
 // MARK: - ITimelineHelper
 
 public protocol ITimelineHelper {
-    func timestamps(startTimestamp: TimeInterval, endTimestamp: TimeInterval, separateHourlyInterval: Int) -> [TimeInterval]
+    func timestamps(startTimestamp: TimeInterval, endTimestamp: TimeInterval, separateHourlyInterval: Int)
+        -> [TimeInterval]
     func text(timestamp: TimeInterval, separateHourlyInterval: Int, dateFormatter: DateFormatter) -> String
 }
 
 // MARK: - TimelineHelper
 
 public class TimelineHelper: ITimelineHelper {
+    // MARK: Properties
+
     private let day = 24
     private let month = 30 * 24
     private let year = 12 * 30 * 24
 
-    private func stepBack(for timestamp: TimeInterval, separateHourlyInterval: Int) -> TimeInterval {
-        let hourInSeconds: TimeInterval = 60 * 60
-        switch separateHourlyInterval {
-        case 0 ..< 24: return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
-        case 24 ..< (24 * 30): return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
-        default:
-            let date = Date(timeIntervalSince1970: timestamp)
-            let ago = date.startOfMonth(ago: separateHourlyInterval / (24 * 30))
-            return ago?.timeIntervalSince1970 ?? timestamp
-        }
-    }
+    // MARK: Lifecycle
+
+    public init() { }
+
+    // MARK: Functions
 
     /// return timestamps in minutes for grid vertical lines
     public func timestamps(
         startTimestamp: TimeInterval,
         endTimestamp: TimeInterval,
         separateHourlyInterval: Int
-    ) -> [TimeInterval] {
+    )
+        -> [TimeInterval] {
         var timestamps = [TimeInterval]()
 
         let lastDate = Date(timeIntervalSince1970: endTimestamp)
@@ -89,5 +86,15 @@ public class TimelineHelper: ITimelineHelper {
         }
     }
 
-    public init() { }
+    private func stepBack(for timestamp: TimeInterval, separateHourlyInterval: Int) -> TimeInterval {
+        let hourInSeconds: TimeInterval = 60 * 60
+        switch separateHourlyInterval {
+        case 0 ..< 24: return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
+        case 24 ..< (24 * 30): return timestamp - TimeInterval(separateHourlyInterval) * hourInSeconds
+        default:
+            let date = Date(timeIntervalSince1970: timestamp)
+            let ago = date.startOfMonth(ago: separateHourlyInterval / (24 * 30))
+            return ago?.timeIntervalSince1970 ?? timestamp
+        }
+    }
 }

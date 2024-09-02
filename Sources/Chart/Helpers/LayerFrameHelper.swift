@@ -1,14 +1,17 @@
 //
 //  LayerFrameHelper.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 enum LayerFrameHelper {
+    // MARK: Static Properties
+
     static let halfDp = 0.5 / UIScreen.main.scale
+
+    // MARK: Static Functions
 
     /// calculate frame using layer insets and size.
     ///    for use size each one of axis inset must be negative(not using)

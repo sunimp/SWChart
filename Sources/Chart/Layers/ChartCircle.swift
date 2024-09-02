@@ -1,29 +1,22 @@
 //
 //  ChartCircle.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class ChartCircle: ChartPointsObject {
-    private let circleLayer = CAShapeLayer()
-
-    override var layer: CALayer {
-        circleLayer
-    }
-
-    public var backgroundColor: UIColor? {
-        didSet {
-            circleLayer.fillColor = backgroundColor?.cgColor
-        }
-    }
+    // MARK: Overridden Properties
 
     override public var strokeColor: UIColor {
         didSet {
             circleLayer.strokeColor = strokeColor.cgColor
         }
+    }
+
+    override var layer: CALayer {
+        circleLayer
     }
 
     override var fillColor: UIColor {
@@ -38,7 +31,21 @@ class ChartCircle: ChartPointsObject {
         }
     }
 
+    // MARK: Properties
+
     public var radius: CGFloat = 3
+
+    private let circleLayer = CAShapeLayer()
+
+    // MARK: Computed Properties
+
+    public var backgroundColor: UIColor? {
+        didSet {
+            circleLayer.fillColor = backgroundColor?.cgColor
+        }
+    }
+
+    // MARK: Lifecycle
 
     override init() {
         super.init()
@@ -50,6 +57,8 @@ class ChartCircle: ChartPointsObject {
 
         circleLayer.lineWidth = 1 / UIScreen.main.scale
     }
+
+    // MARK: Overridden Functions
 
     override func path(points: [CGPoint]) -> CGPath {
         let path = UIBezierPath()

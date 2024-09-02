@@ -1,8 +1,7 @@
 //
 //  MainChart.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -10,6 +9,8 @@ import UIKit
 // MARK: - MainChart
 
 class MainChart: Chart {
+    // MARK: Properties
+
     private let border = ChartBorder()
     private var curve: ChartPointsObject
     private let gradient = ChartLineBottomGradient()
@@ -20,13 +21,7 @@ class MainChart: Chart {
 
     private var configuration: ChartConfiguration?
 
-    private static func curve(type: ChartConfiguration.CurveType?) -> ChartPointsObject {
-        switch type {
-        case .bars: ChartBars()
-        case .histogram: ChartHistogram()
-        default: ChartLine()
-        }
-    }
+    // MARK: Lifecycle
 
     init(configuration: ChartConfiguration? = nil) {
         self.configuration = configuration
@@ -52,6 +47,26 @@ class MainChart: Chart {
         curve = ChartLine()
         super.init(coder: coder)
     }
+
+    // MARK: Overridden Functions
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        updateUI()
+    }
+
+    // MARK: Static Functions
+
+    private static func curve(type: ChartConfiguration.CurveType?) -> ChartPointsObject {
+        switch type {
+        case .bars: ChartBars()
+        case .histogram: ChartHistogram()
+        default: ChartLine()
+        }
+    }
+
+    // MARK: Functions
 
     @discardableResult
     func apply(configuration: ChartConfiguration) -> Self {
@@ -101,31 +116,14 @@ class MainChart: Chart {
         return self
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        updateUI()
-    }
-
-    private func updateUI() {
-        guard let configuration else {
-            return
-        }
-
-        if configuration.showBorders {
-            border.strokeColor = configuration.borderColor
-        }
-
-        horizontalLines.strokeColor = configuration.limitLinesColor
-        verticalLines.strokeColor = configuration.verticalLinesColor
-        highLimitText.textColor = configuration.limitTextColor
-        lowLimitText.textColor = configuration.limitTextColor
-    }
-
     func set(curveRange: ChartRange?) {
         // need to change historgam 0 line position
-        guard let curveRange else { return }
-        guard let curve = curve as? ChartHistogram else { return }
+        guard let curveRange else {
+            return
+        }
+        guard let curve = curve as? ChartHistogram else {
+            return
+        }
         if curveRange.minPositive == curveRange.maxPositive {
             // all points under 0-value
             curve.verticalSplitValue = curveRange.minPositive ? 0 : 1
@@ -171,8 +169,11 @@ class MainChart: Chart {
             }
         }
 
-        gradient.gradientColors = zip(colorType.gradientColors(configuration: configuration), configuration.gradientAlphas)
-            .map { $0.withAlphaComponent($1) }
+        gradient.gradientColors = zip(
+            colorType.gradientColors(configuration: configuration),
+            configuration.gradientAlphas
+        )
+        .map { $0.withAlphaComponent($1) }
         gradient.gradientLocations = configuration.gradientLocations
     }
 
@@ -193,12 +194,38 @@ class MainChart: Chart {
     func setVerticalLines(hidden: Bool) {
         verticalLines.layer.isHidden = hidden
     }
+
+    private func updateUI() {
+        guard let configuration else {
+            return
+        }
+
+        if configuration.showBorders {
+            border.strokeColor = configuration.borderColor
+        }
+
+        horizontalLines.strokeColor = configuration.limitLinesColor
+        verticalLines.strokeColor = configuration.verticalLinesColor
+        highLimitText.textColor = configuration.limitTextColor
+        lowLimitText.textColor = configuration.limitTextColor
+    }
 }
 
 // MARK: - ChartColorType
 
 public enum ChartColorType {
-    case up, down, neutral, pressed
+    case up
+    case down
+    case neutral
+    case pressed
+
+    // MARK: Computed Properties
+
+    var isPressed: Bool {
+        self == .pressed
+    }
+
+    // MARK: Functions
 
     func curveColor(configuration: ChartConfiguration) -> UIColor {
         switch self {
@@ -216,9 +243,5 @@ public enum ChartColorType {
         case .pressed: configuration.pressedGradient
         case .neutral: configuration.neutralGradient
         }
-    }
-
-    var isPressed: Bool {
-        self == .pressed
     }
 }

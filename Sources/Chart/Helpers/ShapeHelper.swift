@@ -1,8 +1,7 @@
 //
 //  ShapeHelper.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -44,15 +43,6 @@ enum ShapeHelper {
         return arr
     }
 
-    private static func indexes(count: Int, elementCount: Int) -> [Int] {
-        var arr = [Int]()
-        for i in 0 ..< count {
-            let index = i * elementCount / count + elementCount / (2 * count)
-            arr.append(index - 1)
-        }
-        return arr
-    }
-
     static func correctPoints(lastPoints: [CGPoint], newCount: Int) -> [CGPoint] {
         guard !lastPoints.isEmpty else {
             return lastPoints
@@ -80,7 +70,8 @@ enum ShapeHelper {
         to: Any?,
         duration: CFTimeInterval,
         timingFunction: CAMediaTimingFunction?
-    ) -> CABasicAnimation {
+    )
+        -> CABasicAnimation {
         let animation = CABasicAnimation(keyPath: keyPath)
         animation.fromValue = from
         animation.toValue = to
@@ -90,5 +81,14 @@ enum ShapeHelper {
         animation.fillMode = .forwards
 
         return animation
+    }
+
+    private static func indexes(count: Int, elementCount: Int) -> [Int] {
+        var arr = [Int]()
+        for i in 0 ..< count {
+            let index = i * elementCount / count + elementCount / (2 * count)
+            arr.append(index - 1)
+        }
+        return arr
     }
 }

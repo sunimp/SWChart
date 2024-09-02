@@ -1,8 +1,7 @@
 //
 //  ChartViewModel.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import Foundation
@@ -10,14 +9,26 @@ import Foundation
 // MARK: - ChartViewModel
 
 class ChartViewModel: Equatable {
+    // MARK: Properties
+
     let id: String
     let onChart: Bool
     private(set) var isHidden = false
+
+    // MARK: Lifecycle
 
     init(id: String, onChart: Bool) {
         self.id = id
         self.onChart = onChart
     }
+
+    // MARK: Static Functions
+
+    static func == (lhs: ChartViewModel, rhs: ChartViewModel) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    // MARK: Functions
 
     @discardableResult
     func add(to _: Chart) -> Self { self }
@@ -35,10 +46,6 @@ class ChartViewModel: Equatable {
     }
 
     func set(selected _: Bool) { }
-
-    static func == (lhs: ChartViewModel, rhs: ChartViewModel) -> Bool {
-        lhs.id == rhs.id
-    }
 }
 
 extension ChartViewModel {

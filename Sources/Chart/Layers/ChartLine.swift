@@ -1,24 +1,13 @@
 //
 //  ChartLine.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
 
 class ChartLine: ChartPointsObject {
-    private let lineLayer = CAShapeLayer()
-
-    override var layer: CALayer {
-        lineLayer
-    }
-
-    public var backgroundColor: UIColor? {
-        didSet {
-            lineLayer.backgroundColor = backgroundColor?.cgColor
-        }
-    }
+    // MARK: Overridden Properties
 
     override public var fillColor: UIColor {
         didSet {
@@ -37,6 +26,24 @@ class ChartLine: ChartPointsObject {
             lineLayer.lineWidth = width
         }
     }
+
+    override var layer: CALayer {
+        lineLayer
+    }
+
+    // MARK: Properties
+
+    private let lineLayer = CAShapeLayer()
+
+    // MARK: Computed Properties
+
+    public var backgroundColor: UIColor? {
+        didSet {
+            lineLayer.backgroundColor = backgroundColor?.cgColor
+        }
+    }
+
+    // MARK: Lifecycle
 
     override init() {
         super.init()

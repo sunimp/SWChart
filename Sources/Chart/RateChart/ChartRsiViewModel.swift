@@ -1,8 +1,7 @@
 //
-//  ChartRsiConfiguration.swift
-//  Chart
+//  ChartRsiViewModel.swift
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2023/6/20.
 //
 
 import UIKit
@@ -10,6 +9,8 @@ import UIKit
 // MARK: - ChartRsiConfiguration
 
 public class ChartRsiConfiguration {
+    // MARK: Properties
+
     public var animationDuration: TimeInterval = 0.35
 
     public var lineColor: UIColor = .blue
@@ -30,6 +31,8 @@ public class ChartRsiConfiguration {
 
     public var limitTextColor: UIColor = .white.withAlphaComponent(0.5)
     public var limitTextFont: UIFont = .systemFont(ofSize: 10)
+
+    // MARK: Static Functions
 
     static func configured(_ configuration: ChartConfiguration, onChart: Bool) -> ChartRsiConfiguration {
         let config = ChartRsiConfiguration()
@@ -58,6 +61,8 @@ public class ChartRsiConfiguration {
 // MARK: - ChartRsiViewModel
 
 class ChartRsiViewModel: ChartViewModel {
+    // MARK: Properties
+
     private let rsi = ChartLine()
 
     private let rsiLimitLines = ChartGridLines()
@@ -66,12 +71,52 @@ class ChartRsiViewModel: ChartViewModel {
 
     private var configuration: ChartRsiConfiguration
 
+    // MARK: Lifecycle
+
     init(id: String, onChart: Bool, configuration: ChartRsiConfiguration) {
         self.configuration = configuration
         super.init(id: id, onChart: onChart)
 
         apply(configuration: configuration)
     }
+
+    // MARK: Overridden Functions
+
+    @discardableResult
+    override func add(to chart: Chart) -> Self {
+        chart.add(rsi)
+        chart.add(rsiLimitLines)
+        chart.add(rsiTopValue)
+        chart.add(rsiBottomValue)
+
+        return self
+    }
+
+    override func remove(from chart: Chart) -> Self {
+        chart.remove(rsi)
+        chart.remove(rsiLimitLines)
+        chart.remove(rsiTopValue)
+        chart.remove(rsiBottomValue)
+        return self
+    }
+
+    override func set(points: [String: [CGPoint]], animated: Bool) {
+        rsi.set(points: points[id] ?? [], animated: animated)
+    }
+
+    override func set(hidden: Bool) {
+        super.set(hidden: hidden)
+        rsi.layer.isHidden = hidden
+        rsiLimitLines.layer.isHidden = hidden
+        rsiTopValue.layer.isHidden = hidden
+        rsiBottomValue.layer.isHidden = hidden
+    }
+
+    override func set(selected _: Bool) {
+        // dont change colors
+    }
+
+    // MARK: Functions
 
     @discardableResult
     func apply(configuration: ChartRsiConfiguration) -> Self {
@@ -106,39 +151,5 @@ class ChartRsiViewModel: ChartViewModel {
         rsiBottomValue.set(text: "\(configuration.bottomLimitValue * 100)")
 
         return self
-    }
-
-    @discardableResult
-    override func add(to chart: Chart) -> Self {
-        chart.add(rsi)
-        chart.add(rsiLimitLines)
-        chart.add(rsiTopValue)
-        chart.add(rsiBottomValue)
-
-        return self
-    }
-
-    override func remove(from chart: Chart) -> Self {
-        chart.remove(rsi)
-        chart.remove(rsiLimitLines)
-        chart.remove(rsiTopValue)
-        chart.remove(rsiBottomValue)
-        return self
-    }
-
-    override func set(points: [String: [CGPoint]], animated: Bool) {
-        rsi.set(points: points[id] ?? [], animated: animated)
-    }
-
-    override func set(hidden: Bool) {
-        super.set(hidden: hidden)
-        rsi.layer.isHidden = hidden
-        rsiLimitLines.layer.isHidden = hidden
-        rsiTopValue.layer.isHidden = hidden
-        rsiBottomValue.layer.isHidden = hidden
-    }
-
-    override func set(selected _: Bool) {
-        // dont change colors
     }
 }

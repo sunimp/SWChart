@@ -1,8 +1,7 @@
 //
 //  ChartGridLines.swift
-//  Chart
 //
-//  Created by Sun on 2024/8/21.
+//  Created by Sun on 2021/11/29.
 //
 
 import UIKit
@@ -10,33 +9,35 @@ import UIKit
 // MARK: - ChartGridType
 
 enum ChartGridType {
-    case horizontal, vertical
+    case horizontal
+    case vertical
 }
 
 // MARK: - ChartGridLines
 
 class ChartGridLines: ChartPointsObject {
-    private let linesLayer = CAShapeLayer()
-
-    var lineDirection: ChartPathDirection = .bottom
-    var gridType: ChartGridType = .horizontal
-
-    var invisibleIndent: CGFloat?
-
-    override var layer: CALayer {
-        linesLayer
-    }
-
-    public var backgroundColor: UIColor? {
-        didSet {
-            linesLayer.backgroundColor = backgroundColor?.cgColor
-        }
-    }
+    // MARK: Overridden Properties
 
     override public var strokeColor: UIColor {
         didSet {
             linesLayer.strokeColor = strokeColor.cgColor
         }
+    }
+
+    override public var width: CGFloat {
+        didSet {
+            linesLayer.lineWidth = width
+        }
+    }
+
+    override public var bottomInset: CGFloat {
+        didSet {
+            linesLayer.displayIfNeeded()
+        }
+    }
+
+    override var layer: CALayer {
+        linesLayer
     }
 
     override var fillColor: UIColor {
@@ -45,9 +46,20 @@ class ChartGridLines: ChartPointsObject {
         }
     }
 
-    override public var width: CGFloat {
+    // MARK: Properties
+
+    var lineDirection: ChartPathDirection = .bottom
+    var gridType: ChartGridType = .horizontal
+
+    var invisibleIndent: CGFloat?
+
+    private let linesLayer = CAShapeLayer()
+
+    // MARK: Computed Properties
+
+    public var backgroundColor: UIColor? {
         didSet {
-            linesLayer.lineWidth = width
+            linesLayer.backgroundColor = backgroundColor?.cgColor
         }
     }
 
@@ -63,11 +75,7 @@ class ChartGridLines: ChartPointsObject {
         }
     }
 
-    override public var bottomInset: CGFloat {
-        didSet {
-            linesLayer.displayIfNeeded()
-        }
-    }
+    // MARK: Lifecycle
 
     override init() {
         super.init()
@@ -81,6 +89,8 @@ class ChartGridLines: ChartPointsObject {
         linesLayer.lineWidth = width
     }
 
+    // MARK: Overridden Functions
+
     override func path(points: [CGPoint]) -> CGPath {
         let path = UIBezierPath()
 
@@ -93,8 +103,8 @@ class ChartGridLines: ChartPointsObject {
         for point in points {
             if
                 let invisibleIndent, // if point closer than ignoring size, dont show line
-                (point.x <= layer.bounds.origin.x + invisibleIndent) || (point.x >= layer.bounds.width - invisibleIndent)
-            {
+                (point.x <= layer.bounds.origin.x + invisibleIndent) ||
+                (point.x >= layer.bounds.width - invisibleIndent) {
                 continue
             }
             let correctedPoint = retinaCorrected ? CGPoint(x: ceil(point.x) + offset, y: ceil(point.y) + offset) : point
