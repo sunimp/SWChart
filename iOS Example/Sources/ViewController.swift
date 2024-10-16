@@ -1,13 +1,13 @@
 //
 //  ViewController.swift
-//  Chart-Example
+//  SWChart-Example
 //
 //  Created by Sun on 2024/8/21.
 //
 
 import UIKit
 
-import Chart
+import SWChart
 import SnapKit
 
 class ViewController: UIViewController {

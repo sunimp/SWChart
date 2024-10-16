@@ -3,20 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		3A39D08C2754DF5B0022CB8B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A39D0872754DF5B0022CB8B /* ViewController.swift */; };
 		3A39D08D2754DF5B0022CB8B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A39D0882754DF5B0022CB8B /* AppDelegate.swift */; };
+		A46AFF952CBFE036000086AC /* SWChart in Frameworks */ = {isa = PBXBuildFile; productRef = A46AFF942CBFE036000086AC /* SWChart */; };
+		A46AFF982CBFE043000086AC /* SWChart in Frameworks */ = {isa = PBXBuildFile; productRef = A46AFF972CBFE043000086AC /* SWChart */; };
 		D94502FD261F98A500F6BF2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D94502FC261F98A500F6BF2E /* Assets.xcassets */; };
-		D945030C261F99CC00F6BF2E /* Chart in Frameworks */ = {isa = PBXBuildFile; productRef = D945030B261F99CC00F6BF2E /* Chart */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3A39D0872754DF5B0022CB8B /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3A39D0882754DF5B0022CB8B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D94502F5261F98A400F6BF2E /* Chart Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chart Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D94502F5261F98A400F6BF2E /* SWChart-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SWChart-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94502FC261F98A500F6BF2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D9450301261F98A500F6BF2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -26,7 +27,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D945030C261F99CC00F6BF2E /* Chart in Frameworks */,
+				A46AFF982CBFE043000086AC /* SWChart in Frameworks */,
+				A46AFF952CBFE036000086AC /* SWChart in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +47,7 @@
 		D94502F6261F98A400F6BF2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D94502F5261F98A400F6BF2E /* Chart Demo.app */,
+				D94502F5261F98A400F6BF2E /* SWChart-Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,10 +87,11 @@
 			);
 			name = "iOS Example";
 			packageProductDependencies = (
-				D945030B261F99CC00F6BF2E /* Chart */,
+				A46AFF942CBFE036000086AC /* SWChart */,
+				A46AFF972CBFE043000086AC /* SWChart */,
 			);
 			productName = "iOS Example";
-			productReference = D94502F5261F98A400F6BF2E /* Chart Demo.app */;
+			productReference = D94502F5261F98A400F6BF2E /* SWChart-Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +102,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					D94502F4261F98A400F6BF2E = {
 						CreatedOnToolsVersion = 12.4;
@@ -116,6 +119,9 @@
 				Base,
 			);
 			mainGroup = D94502EC261F98A400F6BF2E;
+			packageReferences = (
+				A46AFF962CBFE043000086AC /* XCLocalSwiftPackageReference "../../SWChart" */,
+			);
 			productRefGroup = D94502F6261F98A400F6BF2E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -283,7 +289,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sunimp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "Chart Demo";
+				PRODUCT_NAME = "SWChart-Example";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -309,7 +315,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sunimp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "Chart Demo";
+				PRODUCT_NAME = "SWChart-Example";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -341,10 +347,21 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		A46AFF962CBFE043000086AC /* XCLocalSwiftPackageReference "../../SWChart" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../SWChart;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		D945030B261F99CC00F6BF2E /* Chart */ = {
+		A46AFF942CBFE036000086AC /* SWChart */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Chart;
+			productName = SWChart;
+		};
+		A46AFF972CBFE043000086AC /* SWChart */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SWChart;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

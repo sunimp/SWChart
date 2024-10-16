@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Chart-Example
+//  SWChart-Example
 //
 //  Created by Sun on 2024/8/21.
 //
